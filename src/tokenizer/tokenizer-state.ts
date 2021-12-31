@@ -1,6 +1,6 @@
 export enum TokenizerState {
   DataState,
-  RCdataState,
+  RCDATAState,
   RawTextState,
   ScriptDataState,
   PlainTextState,
@@ -10,6 +10,7 @@ export enum TokenizerState {
   RCDATALessThanSignState,
   RCDATAEndTagOpenState,
   RCDATAEndTagNameState,
+  RawTextLessThanSignState,
   RawTextEndTagOpenState,
   RawTextEndTagNameState,
   ScriptDataLessThanSignState,

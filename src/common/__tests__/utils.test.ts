@@ -5,4 +5,8 @@ describe("utils", () => {
     expect(utils.isSurrogate(0xd800)).toBe(true);
     expect(utils.isSurrogate(0xdfff)).toBe(true);
   });
+
+  test("isWhiteSpace", () => {
+    expect(utils.isWhitespace(" ".charCodeAt(0))).toBe(true);
+  });
 });
