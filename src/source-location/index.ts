@@ -1,2 +1,2 @@
 export * from "./source-location";
-export * from "./type";
+export * from "./types";
