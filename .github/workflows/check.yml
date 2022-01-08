@@ -24,5 +24,5 @@ jobs:
         run: yarn
         working-directory: ${{env.working-directory}}
       - name: check all
-        run: yarn test
+        run: yarn check:all
         working-directory: ${{env.working-directory}}

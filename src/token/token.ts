@@ -1,48 +1,66 @@
-import type { IToken } from "./type";
-import {
-  SourceLocation,
-  ISourceCodeLocation,
-  IPosition,
-} from "../source-location";
+import { Position, SourceCodeLocation } from "../source-code-location";
+import { Range } from "../common/types";
+import { TokenType, TokenAPI } from "./types";
 
-export class Token implements IToken {
-  public type: string;
-  public loc: ISourceCodeLocation;
-  public value: string;
-  public range: [number, number];
-
-  private constructor(
-    type: string,
-    loc: ISourceCodeLocation,
-    value: string,
-    range: [number, number]
+class BaseToken<T extends TokenType> implements TokenAPI<T> {
+  loc: SourceCodeLocation;
+  range: Range;
+  constructor(
+    public type: T,
+    public value: string,
+    pos: Position,
+    index: number
   ) {
-    this.type = type;
-    this.loc = loc;
-    this.value = value;
-    this.range = range;
+    const len = value.length;
+    this.loc = {
+      start: pos,
+      end: {
+        column: pos.column + len,
+        line: pos.line,
+      },
+    };
+    this.range = [index, index + len];
   }
+}
 
-  /**
-   * Create `Token`.
-   * @param {string} type type of the token.
-   * @param {string} value value of the token.
-   * @param {number} startRange start range of the token.
-   * @param {IPosition} startPos start position of the token.
-   * @returns {IToken} returns `Token` instance.
-   */
-  public static create(
-    type: string,
-    value: string,
-    startRange: number,
-    startPos: IPosition
-  ): IToken {
-    const tokenLength = value.length;
-    const loc = SourceLocation.create(startPos, {
-      line: startPos.line,
-      column: startPos.column + tokenLength,
-    });
-    const range: [number, number] = [startRange, startRange + tokenLength];
-    return new Token(type, loc, value, range);
+export class TagNameToken extends BaseToken<TokenType.TagName> {
+  constructor(value: string, pos: Position, index: number) {
+    super(TokenType.TagName, value, pos, index);
+  }
+}
+
+export class AttrNameToken extends BaseToken<TokenType.AttrName> {
+  constructor(value: string, pos: Position, index: number) {
+    super(TokenType.AttrName, value, pos, index);
+  }
+}
+
+export class AttrValueToken extends BaseToken<TokenType.AttrValue> {
+  constructor(value: string, pos: Position, index: number) {
+    super(TokenType.AttrValue, value, pos, index);
+  }
+}
+
+export class PunctuatorToken extends BaseToken<TokenType.Punctuator> {
+  constructor(value: string, pos: Position, index: number) {
+    super(TokenType.Punctuator, value, pos, index);
+  }
+}
+
+export class CharactersToken extends BaseToken<TokenType.Characters> {
+  constructor(value: string, pos: Position, index: number) {
+    super(TokenType.Characters, value, pos, index);
+  }
+}
+
+export class WhiteSpacesToken extends BaseToken<TokenType.WhiteSpaces> {
+  constructor(value: string, pos: Position, index: number) {
+    super(TokenType.WhiteSpaces, value, pos, index);
+  }
+}
+
+export class NullCharacterToken extends BaseToken<TokenType.NullCharacter> {
+  constructor(value: string, pos: Position, index: number) {
+    super(TokenType.NullCharacter, value, pos, index);
   }
 }

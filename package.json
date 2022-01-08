@@ -6,10 +6,20 @@
   "author": "yeonjuan <yeonjuan93@naver.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "prepare": "husky install",
+    "test": "jest",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write .",
+    "check:all": "yarn check:ts && yarn lint && yarn check:format && yarn test",
+    "check:ts": "tsc --noEmit",
+    "check:format": "prettier --check ."
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "eslint": "^8.6.0",
+    "husky": "^7.0.4",
     "jest": "^27.4.5",
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.2",

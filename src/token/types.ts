@@ -1,8 +1,37 @@
-import type { ISourceCodeLocation } from "../source-location";
+import type { SourceCodeLocation } from "../source-code-location";
+import type { Range } from "../common/types";
+import type {
+  TagNameToken,
+  AttrNameToken,
+  AttrValueToken,
+  PunctuatorToken,
+  CharactersToken,
+  WhiteSpacesToken,
+  NullCharacterToken,
+} from "./token";
 
-export interface IToken {
-  type: string;
-  loc: ISourceCodeLocation;
-  range: [number, number];
+export enum TokenType {
+  TagName = "TagName",
+  AttrName = "AttrName",
+  AttrValue = "AttrValue",
+  Punctuator = "Punctuator",
+  Characters = "Characters",
+  WhiteSpaces = "WhiteSpaces",
+  NullCharacter = "NullCharacter",
+}
+
+export interface TokenAPI<T extends TokenType> {
+  type: T;
+  loc: SourceCodeLocation;
+  range: Range;
   value: string;
 }
+
+export type AnyToken =
+  | TagNameToken
+  | AttrNameToken
+  | AttrValueToken
+  | PunctuatorToken
+  | CharactersToken
+  | WhiteSpacesToken
+  | NullCharacterToken;
