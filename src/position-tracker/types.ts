@@ -1,4 +1,4 @@
-import type { Position } from "../source-code-location";
+import type { Position } from "../common/types";
 
 export interface PositionTrackerActionAPI {
   track(index: number, char: string): void;

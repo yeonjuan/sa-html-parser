@@ -1,6 +1,5 @@
 import type { PositionTrackerActionAPI, PositionTrackerGetAPI } from "./types";
-import type { Range } from "../common/types";
-import type { Position, SourceCodeLocation } from "../source-code-location";
+import type { Range, Position, SourceCodeLocation } from "../common/types";
 
 export class PositionTracker
   implements PositionTrackerActionAPI, PositionTrackerGetAPI

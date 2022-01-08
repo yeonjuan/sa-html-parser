@@ -1,5 +1,4 @@
-import type { SourceCodeLocation } from "../source-code-location";
-import type { Range } from "../common/types";
+import type { Range, SourceCodeLocation } from "../common/types";
 import type {
   TagNameToken,
   AttrNameToken,

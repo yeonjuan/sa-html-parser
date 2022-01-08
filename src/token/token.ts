@@ -1,5 +1,4 @@
-import { Position, SourceCodeLocation } from "../source-code-location";
-import { Range } from "../common/types";
+import { Range, Position, SourceCodeLocation } from "../common/types";
 import { TokenType, TokenAPI } from "./types";
 
 class BaseToken<T extends TokenType> implements TokenAPI<T> {
