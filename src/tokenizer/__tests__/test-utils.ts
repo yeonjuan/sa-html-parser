@@ -1,7 +1,7 @@
 import { HtmlTokenType } from "../../token-html";
 import { Tokenizer } from "../tokenizer";
 import { TokenType } from "../../token";
-import { Position } from "../../source-code-location";
+import { Position } from "../../common/types";
 
 export const testHtmlTokenizer = (
   description: string,
