@@ -22,6 +22,12 @@ $ yarn
 $ yarn test
 ```
 
+**Run lint**
+
+```
+$ yarn lint
+```
+
 **Format codes**
 
 ```
