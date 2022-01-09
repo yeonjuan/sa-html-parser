@@ -1,4 +1,4 @@
-import { HtmlTokenType } from "../../token-html";
+import { HtmlTokenType } from "../../tokens";
 import { testHtmlTokenizer as t } from "./test-utils";
 
 const { Doctype } = HtmlTokenType;

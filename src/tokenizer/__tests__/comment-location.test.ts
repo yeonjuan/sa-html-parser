@@ -1,4 +1,4 @@
-import { TokenType } from "../../token";
+import { AtomTokenType } from "../../tokens";
 import { testTokensLocations as t } from "./test-utils";
 
 describe("tokenizer - comment locations", () => {
@@ -6,7 +6,7 @@ describe("tokenizer - comment locations", () => {
     "<!-- comment -->",
     [
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "<!--",
         [0, 4],
         {
@@ -19,7 +19,7 @@ describe("tokenizer - comment locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         " comment ",
         [4, 13],
         {
@@ -32,7 +32,7 @@ describe("tokenizer - comment locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "-->",
         [13, 16],
         {
@@ -51,7 +51,7 @@ describe("tokenizer - comment locations", () => {
     "<!-- -->",
     [
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "<!--",
         [0, 4],
         {
@@ -64,7 +64,7 @@ describe("tokenizer - comment locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         " ",
         [4, 5],
         {
@@ -77,7 +77,7 @@ describe("tokenizer - comment locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "-->",
         [5, 8],
         {
@@ -97,7 +97,7 @@ describe("tokenizer - comment locations", () => {
 -->`,
     [
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "<!--",
         [0, 4],
         {
@@ -110,7 +110,7 @@ describe("tokenizer - comment locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         "\n",
         [4, 5],
         {
@@ -123,7 +123,7 @@ describe("tokenizer - comment locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "-->",
         [5, 8],
         {
@@ -142,7 +142,7 @@ describe("tokenizer - comment locations", () => {
     "<!--\r\n-->",
     [
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "<!--",
         [0, 4],
         {
@@ -155,7 +155,7 @@ describe("tokenizer - comment locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         "\r\n",
         [4, 6],
         {
@@ -168,7 +168,7 @@ describe("tokenizer - comment locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "-->",
         [6, 9],
         {

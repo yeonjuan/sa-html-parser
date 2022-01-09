@@ -1,6 +1,6 @@
-import { HtmlTokenType } from "../../token-html";
+import { HtmlTokenType } from "../../tokens";
 import { Tokenizer } from "../tokenizer";
-import { TokenType } from "../../token";
+import { AtomTokenType } from "../../tokens";
 import { Position } from "../../common/types";
 
 export const testHtmlTokenizer = (
@@ -19,7 +19,7 @@ export const testHtmlTokenizer = (
 
 export const testTokensLocations = (
   description: string,
-  testCase: [string, [TokenType, string, number[], Position, Position][]]
+  testCase: [string, [AtomTokenType, string, number[], Position, Position][]]
 ) => {
   test(description, () => {
     const [input, tokens] = testCase;

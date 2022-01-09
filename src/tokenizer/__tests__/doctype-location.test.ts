@@ -1,4 +1,4 @@
-import { TokenType } from "../../token";
+import { AtomTokenType } from "../../tokens";
 import { testTokensLocations as t } from "./test-utils";
 
 describe("tokenizer - tag locations", () => {
@@ -6,7 +6,7 @@ describe("tokenizer - tag locations", () => {
     "<!DOCTYPE html>",
     [
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "<!DOCTYPE",
         [0, 9],
         {
@@ -19,7 +19,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         "html",
         [10, 14],
         {
@@ -32,7 +32,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         ">",
         [14, 15],
         {
@@ -51,7 +51,7 @@ describe("tokenizer - tag locations", () => {
     `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">`,
     [
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "<!DOCTYPE",
         [0, 9],
         {
@@ -64,7 +64,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         "html",
         [10, 14],
         {
@@ -77,7 +77,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         "PUBLIC",
         [15, 21],
         {
@@ -90,7 +90,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         "-//W3C//DTD HTML 4.01 Transitional//EN",
         [23, 61],
         {
@@ -103,7 +103,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         "http://www.w3.org/TR/html4/loose.dtd",
         [64, 100],
         {
@@ -116,7 +116,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         ">",
         [101, 102],
         {
@@ -135,7 +135,7 @@ describe("tokenizer - tag locations", () => {
     `<!DOCTYPE document SYSTEM "subjects.dtd">`,
     [
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "<!DOCTYPE",
         [0, 9],
         {
@@ -148,7 +148,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         "document",
         [10, 18],
         {
@@ -161,7 +161,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         "SYSTEM",
         [19, 25],
         {
@@ -174,7 +174,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         "subjects.dtd",
         [27, 39],
         {
@@ -187,7 +187,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         ">",
         [40, 41],
         {

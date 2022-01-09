@@ -1,9 +1,6 @@
-import type { PositionTrackerActionAPI, PositionTrackerGetAPI } from "./types";
 import type { Range, Position, SourceCodeLocation } from "../common/types";
 
-export class PositionTracker
-  implements PositionTrackerActionAPI, PositionTrackerGetAPI
-{
+export class PositionTracker {
   private line: number = 1;
   private column: number = 0;
   private wasEndOfLine: boolean = false;
