@@ -38,6 +38,8 @@ export const testTokensLocations = (
       expect(atomTokens[index]?.range).toStrictEqual(range);
       expect(atomTokens[index]?.loc.start).toStrictEqual(start);
       expect(atomTokens[index]?.loc.end).toStrictEqual(end);
+      expect(atomTokens[index]?.start).toBe(range[0]);
+      expect(atomTokens[index]?.end).toBe(range[1]);
     });
   });
 };
