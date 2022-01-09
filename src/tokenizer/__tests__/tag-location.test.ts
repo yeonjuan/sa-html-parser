@@ -1,4 +1,4 @@
-import { TokenType } from "../../token";
+import { AtomTokenType } from "../../tokens";
 import { testTokensLocations as t } from "./test-utils";
 
 describe("tokenizer - tag locations", () => {
@@ -6,7 +6,7 @@ describe("tokenizer - tag locations", () => {
     "<div></div>",
     [
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "<",
         [0, 1],
         {
@@ -19,7 +19,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.TagName,
+        AtomTokenType.TagName,
         "div",
         [1, 4],
         {
@@ -32,7 +32,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         ">",
         [4, 5],
         {
@@ -45,7 +45,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "</",
         [5, 7],
         {
@@ -58,7 +58,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.TagName,
+        AtomTokenType.TagName,
         "div",
         [7, 10],
         {
@@ -71,7 +71,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         ">",
         [10, 11],
         {
@@ -90,7 +90,7 @@ describe("tokenizer - tag locations", () => {
     "<div> content </div>",
     [
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "<",
         [0, 1],
         {
@@ -103,7 +103,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.TagName,
+        AtomTokenType.TagName,
         "div",
         [1, 4],
         {
@@ -116,7 +116,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         ">",
         [4, 5],
         {
@@ -129,7 +129,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.WhiteSpaces,
+        AtomTokenType.WhiteSpaces,
         " ",
         [5, 6],
         {
@@ -142,7 +142,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Characters,
+        AtomTokenType.Characters,
         "content",
         [6, 13],
         {
@@ -155,7 +155,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.WhiteSpaces,
+        AtomTokenType.WhiteSpaces,
         " ",
         [13, 14],
         {
@@ -168,7 +168,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "</",
         [14, 16],
         {
@@ -181,7 +181,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.TagName,
+        AtomTokenType.TagName,
         "div",
         [16, 19],
         {
@@ -194,7 +194,7 @@ describe("tokenizer - tag locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         ">",
         [19, 20],
         {

@@ -4,7 +4,7 @@ import {
   REPLACEMENT_CHARACTER,
 } from "../common/constants";
 import { TokenizerState } from "./tokenizer-state";
-import { PositionTracker } from "../position-tracker";
+import { PositionTracker } from "./position-tracker";
 import * as utils from "../common/utils";
 import {
   AttributeToken,
@@ -16,7 +16,7 @@ import {
   CharacterLikeToken,
   AnyHtmlToken,
   HtmlTokenType,
-} from "../token-html";
+} from "../tokens";
 import {
   AttrNameToken,
   AttrValueToken,
@@ -24,9 +24,9 @@ import {
   NullCharacterToken,
   PunctuatorToken,
   TagNameToken,
-  TokenType,
+  AtomTokenType,
   WhiteSpacesToken,
-} from "../token";
+} from "../tokens";
 
 export class Tokenizer {
   private posTracker = new PositionTracker();
@@ -104,7 +104,7 @@ export class Tokenizer {
     const position = this.posTracker.getStartPosition();
     const index = this.posTracker.getStartRange();
     this.currentToken = new StartTagToken();
-    this.currentToken.tagName = new TagNameToken("", position, index);
+    this.currentToken.tagName = new TagNameToken("", index, position);
 
     const opening = this.punctuatorTokens.pop();
     if (!opening) {
@@ -117,7 +117,7 @@ export class Tokenizer {
     const position = this.posTracker.getStartPosition();
     const index = this.posTracker.getStartRange();
     this.currentToken = new EndTagToken();
-    this.currentToken.tagName = new TagNameToken("", position, index);
+    this.currentToken.tagName = new TagNameToken("", index, position);
     const opening = this.punctuatorTokens.pop();
     if (!opening) {
       throw new Error("TODO :" + this.state);
@@ -129,7 +129,7 @@ export class Tokenizer {
     const position = this.posTracker.getStartPosition();
     const index = this.posTracker.getStartRange();
     this.currentToken = new CommentToken();
-    this.currentToken.data = new CharactersToken("", position, index);
+    this.currentToken.data = new CharactersToken("", index, position);
     const opening = this.punctuatorTokens.pop();
     if (!opening) {
       throw new Error("TODO");
@@ -141,7 +141,7 @@ export class Tokenizer {
     const loc = this.posTracker.getStartPosition();
     const range = this.posTracker.getRange();
     this.currentToken = new DoctypeToken();
-    this.currentToken.name = new CharactersToken(value, loc, range[0]);
+    this.currentToken.name = new CharactersToken(value, range[0], loc);
     const opening = this.punctuatorTokens.pop();
     if (!opening) {
       throw new Error("TODO");
@@ -155,8 +155,8 @@ export class Tokenizer {
     this.currentAttributeToken = new AttributeToken();
     this.currentAttributeToken.name = new AttrNameToken(
       nameValue,
-      position,
-      index
+      index,
+      position
     );
   }
 
@@ -188,18 +188,18 @@ export class Tokenizer {
   }
 
   private emitCodePoint(codePoint: number): void {
-    let type = TokenType.Characters;
+    let type = AtomTokenType.Characters;
     if (utils.isWhitespace(codePoint)) {
-      type = TokenType.WhiteSpaces;
+      type = AtomTokenType.WhiteSpaces;
     } else if (codePoint === CODE_POINTS.NULL) {
-      type = TokenType.NullCharacter;
+      type = AtomTokenType.NullCharacter;
     }
     this.appendCharToCurrentCharacterToken(type, utils.toCharacter(codePoint));
   }
 
   private emitReplacementCharacter() {
     this.appendCharToCurrentCharacterToken(
-      TokenType.Characters,
+      AtomTokenType.Characters,
       REPLACEMENT_CHARACTER
     );
   }
@@ -207,7 +207,7 @@ export class Tokenizer {
   private pushToPunctuatorTokens(char: string) {
     const pos = this.posTracker.getStartPosition();
     const index = this.posTracker.getStartRange();
-    this.punctuatorTokens.push(new PunctuatorToken(char, pos, index));
+    this.punctuatorTokens.push(new PunctuatorToken(char, index, pos));
   }
 
   // ===================================================================
@@ -242,8 +242,8 @@ export class Tokenizer {
       const index = this.posTracker.getStartRange();
       this.currentAttributeToken!.value = new AttrValueToken(
         "",
-        position,
-        index
+        index,
+        position
       );
     }
     this.currentAttributeToken!.value.value += value;
@@ -264,7 +264,7 @@ export class Tokenizer {
         column: pos.column + 1,
       };
     } else {
-      this.punctuatorTokens.push(new PunctuatorToken(char, pos, index));
+      this.punctuatorTokens.push(new PunctuatorToken(char, index, pos));
     }
   }
 
@@ -292,7 +292,7 @@ export class Tokenizer {
     const loc = this.posTracker.getLocation();
     const range = this.posTracker.getRange();
     if (!doctypeToken.publicId) {
-      doctypeToken.publicId = new CharactersToken("", loc.start, range[0]);
+      doctypeToken.publicId = new CharactersToken("", range[0], loc.start);
     }
     doctypeToken.publicId.value += char;
     doctypeToken.publicId.range[1] = range[1];
@@ -304,7 +304,7 @@ export class Tokenizer {
     const loc = this.posTracker.getLocation();
     const range = this.posTracker.getRange();
     if (!doctypeToken.systemId) {
-      doctypeToken.systemId = new CharactersToken("", loc.start, range[0]);
+      doctypeToken.systemId = new CharactersToken("", range[0], loc.start);
     }
     doctypeToken.systemId.value += char;
     doctypeToken.systemId.range[1] = range[1];
@@ -331,25 +331,25 @@ export class Tokenizer {
       const startRange = this.posTracker.getStartRange();
       const pos = this.posTracker.getStartPosition();
       switch (type) {
-        case TokenType.WhiteSpaces:
+        case AtomTokenType.WhiteSpaces:
           this.currentCharacterData.value = new WhiteSpacesToken(
             char,
-            pos,
-            startRange
+            startRange,
+            pos
           );
           break;
-        case TokenType.NullCharacter:
+        case AtomTokenType.NullCharacter:
           this.currentCharacterData.value = new NullCharacterToken(
             char,
-            pos,
-            startRange
+            startRange,
+            pos
           );
           break;
-        case TokenType.Characters:
+        case AtomTokenType.Characters:
           this.currentCharacterData.value = new CharactersToken(
             char,
-            pos,
-            startRange
+            startRange,
+            pos
           );
           break;
       }
@@ -544,7 +544,7 @@ export class Tokenizer {
       this.temporaryBuffer = [];
       this.switchStateTo(TokenizerState.RCDATAEndTagOpenState);
     } else {
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "<");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
       this.reconsumeInState(TokenizerState.RCDATAState);
     }
   }
@@ -554,7 +554,7 @@ export class Tokenizer {
       this.createEndTagToken();
       this.reconsumeInState(TokenizerState.RCDATAEndTagNameState);
     } else {
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "</");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "</");
       this.reconsumeInState(TokenizerState.RCDATAState);
     }
   }
@@ -581,7 +581,7 @@ export class Tokenizer {
       this.temporaryBuffer = [];
       this.switchStateTo(TokenizerState.RawTextEndTagOpenState);
     } else {
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "<");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
       this.reconsumeInState(TokenizerState.RawTextState);
     }
   }
@@ -591,7 +591,7 @@ export class Tokenizer {
       this.createEndTagToken();
       this.reconsumeInState(TokenizerState.RawTextEndTagNameState);
     } else {
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "</");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "</");
       this.reconsumeInState(TokenizerState.RawTextState);
     }
   }
@@ -618,9 +618,9 @@ export class Tokenizer {
       this.switchStateTo(TokenizerState.ScriptDataEndTagOpenState);
     } else if (codePoint === CODE_POINTS.EXCLAMATION_MARK) {
       this.switchStateTo(TokenizerState.ScriptDataEscapeStartState);
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "<!");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<!");
     } else {
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "<");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
       this.reconsumeInState(TokenizerState.ScriptDataState);
     }
   }
@@ -630,7 +630,7 @@ export class Tokenizer {
       this.createEndTagToken();
       this.reconsumeInState(TokenizerState.ScriptDataEndTagNameState);
     } else {
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "</");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "</");
       this.reconsumeInState(TokenizerState.ScriptDataState);
     }
   }
@@ -655,7 +655,7 @@ export class Tokenizer {
   private [TokenizerState.ScriptDataEscapeStartState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.switchStateTo(TokenizerState.ScriptDataEscapeStartDashState);
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "-");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "-");
     } else {
       this.reconsumeInState(TokenizerState.ScriptDataState);
     }
@@ -664,7 +664,7 @@ export class Tokenizer {
   private [TokenizerState.ScriptDataEscapeStartDashState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.switchStateTo(TokenizerState.ScriptDataEscapedDashDashState);
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "-");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "-");
     } else {
       this.reconsumeInState(TokenizerState.ScriptDataState);
     }
@@ -673,13 +673,13 @@ export class Tokenizer {
   private [TokenizerState.ScriptDataEscapedState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.switchStateTo(TokenizerState.ScriptDataEscapedDashState);
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "-");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "-");
     } else if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.switchStateTo(TokenizerState.ScriptDataEscapedLessThanSignState);
     } else if (codePoint === CODE_POINTS.NULL) {
       // TODO: error
       this.appendCharToCurrentCharacterToken(
-        TokenType.Characters,
+        AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
@@ -693,13 +693,13 @@ export class Tokenizer {
   private [TokenizerState.ScriptDataEscapedDashState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.switchStateTo(TokenizerState.ScriptDataEscapedDashDashState);
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "-");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "-");
     } else if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.switchStateTo(TokenizerState.ScriptDataEscapedLessThanSignState);
     } else if (codePoint === CODE_POINTS.NULL) {
       // TODO: error
       this.appendCharToCurrentCharacterToken(
-        TokenType.Characters,
+        AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
@@ -713,17 +713,17 @@ export class Tokenizer {
 
   private [TokenizerState.ScriptDataEscapedDashDashState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "-");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "-");
     } else if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.switchStateTo(TokenizerState.ScriptDataEscapedLessThanSignState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.switchStateTo(TokenizerState.ScriptDataState);
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, ">");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, ">");
     } else if (codePoint === CODE_POINTS.NULL) {
       // TODO: error
       this.switchStateTo(TokenizerState.ScriptDataEscapedState);
       this.appendCharToCurrentCharacterToken(
-        TokenType.Characters,
+        AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
@@ -742,10 +742,10 @@ export class Tokenizer {
       this.temporaryBuffer = [];
       this.switchStateTo(TokenizerState.ScriptDataEscapedEndTagOpenState);
     } else if (utils.isAsciiAlpha(codePoint)) {
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "<");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
       this.reconsumeInState(TokenizerState.ScriptDataDoubleEscapeStartState);
     } else {
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "<");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
       this.reconsumeInState(TokenizerState.ScriptDataEscapedState);
     }
   }
@@ -755,7 +755,7 @@ export class Tokenizer {
       this.createEndTagToken();
       this.reconsumeInState(TokenizerState.ScriptDataEscapedEndTagNameState);
     } else {
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "</");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "</");
       this.reconsumeInState(TokenizerState.ScriptDataEscapedState);
     }
   }
@@ -797,16 +797,16 @@ export class Tokenizer {
   private [TokenizerState.ScriptDataDoubleEscapedState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedDashState);
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "-");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "-");
     } else if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.switchStateTo(
         TokenizerState.ScriptDataDoubleEscapedLessThanSignState
       );
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "<");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
     } else if (codePoint === CODE_POINTS.NULL) {
       // TODO: error
       this.appendCharToCurrentCharacterToken(
-        TokenType.Characters,
+        AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
@@ -820,17 +820,17 @@ export class Tokenizer {
   private [TokenizerState.ScriptDataDoubleEscapedDashState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedDashDashState);
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "-");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "-");
     } else if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.switchStateTo(
         TokenizerState.ScriptDataDoubleEscapedLessThanSignState
       );
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "<");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
     } else if (codePoint === CODE_POINTS.NULL) {
       // TODO: error
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedState);
       this.appendCharToCurrentCharacterToken(
-        TokenType.Characters,
+        AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
@@ -846,17 +846,17 @@ export class Tokenizer {
     codePoint: number
   ) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "-");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "-");
     } else if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.switchStateTo(
         TokenizerState.ScriptDataDoubleEscapedLessThanSignState
       );
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "<");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
     } else if (codePoint === CODE_POINTS.NULL) {
       // TODO: error
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedState);
       this.appendCharToCurrentCharacterToken(
-        TokenType.Characters,
+        AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
@@ -874,7 +874,7 @@ export class Tokenizer {
     if (codePoint === CODE_POINTS.SOLIDUS) {
       this.temporaryBuffer = [];
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapeEndState);
-      this.appendCharToCurrentCharacterToken(TokenType.Characters, "/");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "/");
     } else {
       this.reconsumeInState(TokenizerState.ScriptDataDoubleEscapedState);
     }
@@ -932,8 +932,8 @@ export class Tokenizer {
       const index = this.posTracker.getStartRange();
       this.currentAttributeToken!.between = new PunctuatorToken(
         "=",
-        position,
-        index
+        index,
+        position
       );
       this.leaveAttributeName(TokenizerState.BeforeAttributeValueState);
     } else if (utils.isAsciiUpperAlpha(codePoint)) {
@@ -1377,7 +1377,7 @@ export class Tokenizer {
         (pattern) => {
           const chars = pattern.map((p) => utils.toCharacter(p)).join("");
           const doctypeToken = this.currentToken as DoctypeToken;
-          doctypeToken.publicKeyword = new CharactersToken(chars, pos, index);
+          doctypeToken.publicKeyword = new CharactersToken(chars, index, pos);
           const endPos = this.posTracker.getEndPosition();
           const endRange = this.posTracker.getEndRange();
           doctypeToken.publicKeyword.loc.end = endPos;
@@ -1394,7 +1394,7 @@ export class Tokenizer {
         (pattern) => {
           const chars = pattern.map((p) => utils.toCharacter(p)).join("");
           const doctypeToken = this.currentToken as DoctypeToken;
-          doctypeToken.systemKeyword = new CharactersToken(chars, pos, index);
+          doctypeToken.systemKeyword = new CharactersToken(chars, index, pos);
           const endPos = this.posTracker.getEndPosition();
           const endRange = this.posTracker.getEndRange();
           doctypeToken.systemKeyword.loc.end = endPos;

@@ -1,6 +1,4 @@
-import { BaseHtmlTokenAPI, HtmlTokenType } from "./types";
 import {
-  AnyToken,
   AttrNameToken,
   AttrValueToken,
   PunctuatorToken,
@@ -8,12 +6,9 @@ import {
   WhiteSpacesToken,
   CharactersToken,
   NullCharacterToken,
-} from "../token";
-
-class BaseHtmlToken<T extends HtmlTokenType> implements BaseHtmlTokenAPI<T> {
-  constructor(public type: T) {}
-  public tokenize() {}
-}
+} from "./atom-tokens";
+import { HtmlTokenType, AnyAtomToken } from "./types";
+import { BaseHtmlToken } from "./base-tokens";
 
 export class EofToken extends BaseHtmlToken<HtmlTokenType.EOF> {
   constructor() {
@@ -34,7 +29,7 @@ export class DoctypeToken extends BaseHtmlToken<HtmlTokenType.Doctype> {
     super(HtmlTokenType.Doctype);
   }
   tokenize() {
-    const tokens: AnyToken[] = [this.opening];
+    const tokens: AnyAtomToken[] = [this.opening];
     this.name && tokens.push(this.name);
     this.publicKeyword && tokens.push(this.publicKeyword);
     this.systemKeyword && tokens.push(this.systemKeyword);
@@ -73,8 +68,8 @@ export class StartTagToken extends BaseHtmlToken<HtmlTokenType.StartTag> {
     super(HtmlTokenType.StartTag);
   }
 
-  tokenize(): AnyToken[] {
-    const tokens: AnyToken[] = [this.opening, this.tagName];
+  tokenize(): AnyAtomToken[] {
+    const tokens: AnyAtomToken[] = [this.opening, this.tagName];
     if (this.attrs.length) {
       this.attrs.forEach((attr) => {
         tokens.push(...attr.tokenize());
@@ -93,7 +88,7 @@ export class EndTagToken extends BaseHtmlToken<HtmlTokenType.EndTag> {
   constructor() {
     super(HtmlTokenType.EndTag);
   }
-  tokenize(): AnyToken[] {
+  tokenize(): AnyAtomToken[] {
     return [this.opening, this.tagName, this.closing];
   }
 }
@@ -105,8 +100,8 @@ export class AttributeToken extends BaseHtmlToken<HtmlTokenType.Attribute> {
   constructor() {
     super(HtmlTokenType.Attribute);
   }
-  tokenize(): AnyToken[] {
-    const tokens: AnyToken[] = [this.name];
+  tokenize(): AnyAtomToken[] {
+    const tokens: AnyAtomToken[] = [this.name];
     this.between && tokens.push(this.between);
     this.value && tokens.push(this.value);
     return tokens;
@@ -118,7 +113,7 @@ export class CharacterLikeToken extends BaseHtmlToken<HtmlTokenType.CharacterLik
   constructor() {
     super(HtmlTokenType.CharacterLike);
   }
-  tokenize(): AnyToken[] | void {
+  tokenize(): AnyAtomToken[] | void {
     if (this.value) {
       return [this.value];
     }

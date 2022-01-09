@@ -1,17 +1,6 @@
-import { Base, Range, SourceCodeLocation } from "../common/types";
-import { AnyNode } from "./types";
-
-class BaseNode<T extends string> implements Base<T> {
-  public range: Range;
-  constructor(
-    public type: T,
-    public start: number,
-    public end: number,
-    public loc: SourceCodeLocation
-  ) {
-    this.range = [start, end];
-  }
-}
+import type { SourceCodeLocation } from "../common/types";
+import type { AnyNode } from "./types";
+import { BaseNode } from "./base";
 
 export class TagNode extends BaseNode<string> {
   public children: AnyNode[] = [];

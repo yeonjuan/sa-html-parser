@@ -1,4 +1,4 @@
-import { TokenType } from "../../token";
+import { AtomTokenType } from "../../tokens";
 import { testTokensLocations as t } from "./test-utils";
 
 describe("tokenizer - attr locations", () => {
@@ -6,7 +6,7 @@ describe("tokenizer - attr locations", () => {
     `<div name="value">`,
     [
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "<",
         [0, 1],
         {
@@ -19,7 +19,7 @@ describe("tokenizer - attr locations", () => {
         },
       ],
       [
-        TokenType.TagName,
+        AtomTokenType.TagName,
         "div",
         [1, 4],
         {
@@ -32,7 +32,7 @@ describe("tokenizer - attr locations", () => {
         },
       ],
       [
-        TokenType.AttrName,
+        AtomTokenType.AttrName,
         "name",
         [5, 9],
         {
@@ -45,7 +45,7 @@ describe("tokenizer - attr locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         "=",
         [9, 10],
         {
@@ -58,7 +58,7 @@ describe("tokenizer - attr locations", () => {
         },
       ],
       [
-        TokenType.AttrValue,
+        AtomTokenType.AttrValue,
         `"value"`,
         [10, 17],
         {
@@ -71,7 +71,7 @@ describe("tokenizer - attr locations", () => {
         },
       ],
       [
-        TokenType.Punctuator,
+        AtomTokenType.Punctuator,
         ">",
         [17, 18],
         {
