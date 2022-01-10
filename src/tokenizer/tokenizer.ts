@@ -538,6 +538,7 @@ export class Tokenizer {
     if (utils.isWhitespace(codePoint)) {
       this.switchStateTo(TokenizerState.BeforeAttributeNameState);
     } else if (codePoint === CODE_POINTS.SOLIDUS) {
+      this.pushToPunctuatorTokens("/");
       this.switchStateTo(TokenizerState.SelfClosingStartTagState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.pushToPunctuatorTokens(">");
@@ -978,6 +979,7 @@ export class Tokenizer {
     if (utils.isWhitespace(codePoint)) {
       return;
     } else if (codePoint === CODE_POINTS.SOLIDUS) {
+      this.pushToPunctuatorTokens("/");
       this.switchStateTo(TokenizerState.SelfClosingStartTagState);
     } else if (codePoint === CODE_POINTS.EQUALS_SIGN) {
       this.switchStateTo(TokenizerState.BeforeAttributeValueState);
@@ -1082,6 +1084,7 @@ export class Tokenizer {
     if (utils.isWhitespace(codePoint)) {
       this.switchStateTo(TokenizerState.BeforeAttributeNameState);
     } else if (codePoint === CODE_POINTS.SOLIDUS) {
+      this.pushToPunctuatorTokens("/");
       this.switchStateTo(TokenizerState.SelfClosingStartTagState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.switchStateTo(TokenizerState.DataState);
@@ -1098,11 +1101,16 @@ export class Tokenizer {
 
   private [TokenizerState.SelfClosingStartTagState](codePoint: number) {
     if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: Set the self-closing flag of the current tag token. Switch to the data state. Emit the current tag token.
+      (this.currentToken as StartTagToken).selfClosing = true;
+      this.appendToLastPunctuatorTokens(">");
+      this.switchStateTo(TokenizerState.DataState);
+      this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: This is an eof-in-tag parse error. Emit an end-of-file token.
+      // TODO: error
+      this.emitEofToken();
     } else {
-      // TODO: This is an unexpected-solidus-in-tag parse error. Reconsume in the before attribute name state.
+      // TODO: error
+      this.reconsumeInState(TokenizerState.BeforeAttributeNameState);
     }
   }
 

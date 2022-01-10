@@ -208,4 +208,49 @@ describe("tokenizer - tag locations", () => {
       ],
     ],
   ]);
+
+  t("self closing", [
+    "<div />",
+    [
+      [
+        AtomTokenType.Punctuator,
+        "<",
+        [0, 1],
+        {
+          line: 1,
+          column: 0,
+        },
+        {
+          line: 1,
+          column: 1,
+        },
+      ],
+      [
+        AtomTokenType.TagName,
+        "div",
+        [1, 4],
+        {
+          line: 1,
+          column: 1,
+        },
+        {
+          line: 1,
+          column: 4,
+        },
+      ],
+      [
+        AtomTokenType.Punctuator,
+        "/>",
+        [5, 7],
+        {
+          line: 1,
+          column: 5,
+        },
+        {
+          line: 1,
+          column: 7,
+        },
+      ],
+    ],
+  ]);
 });

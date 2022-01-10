@@ -63,6 +63,7 @@ export class StartTagToken extends BaseHtmlToken<HtmlTokenType.StartTag> {
   opening!: PunctuatorToken;
   tagName!: TagNameToken;
   closing!: PunctuatorToken;
+  selfClosing: boolean = false;
   attrs: AttributeToken[] = [];
   constructor() {
     super(HtmlTokenType.StartTag);
