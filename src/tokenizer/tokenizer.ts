@@ -222,7 +222,9 @@ export class Tokenizer {
     }
     tagToken.tagName.value += char;
     tagToken.tagName.loc.end = this.posTracker.getEndPosition();
-    tagToken.tagName.range[1] = this.posTracker.getEndRange();
+    const endRange = this.posTracker.getEndRange();
+    tagToken.tagName.range[1] = endRange;
+    tagToken.tagName.end = endRange;
   }
 
   private appendCharToCurrentAttributeTokenName(char: string) {
@@ -233,7 +235,9 @@ export class Tokenizer {
     }
     attrToken.name.value += char;
     attrToken.name.loc.end = this.posTracker.getEndPosition();
-    attrToken.name.range[1] = this.posTracker.getEndRange();
+    const endRange = this.posTracker.getEndRange();
+    attrToken.name.range[1] = endRange;
+    attrToken.name.end = endRange;
   }
 
   private appendValueToCurrentAttributeToken(value: string) {
@@ -246,10 +250,14 @@ export class Tokenizer {
         position
       );
     }
+
     this.currentAttributeToken!.value.value += value;
     this.currentAttributeToken!.value.loc.end =
       this.posTracker.getEndPosition();
-    this.currentAttributeToken!.value.range[1] = this.posTracker.getEndRange();
+
+    const endRange = this.posTracker.getEndRange();
+    this.currentAttributeToken!.value.range[1] = endRange;
+    this.currentAttributeToken!.value.end = endRange;
   }
 
   private appendToLastPunctuatorTokens(char: string) {
@@ -263,6 +271,7 @@ export class Tokenizer {
         line: pos.line,
         column: pos.column + 1,
       };
+      last.end = last.range[1];
     } else {
       this.punctuatorTokens.push(new PunctuatorToken(char, index, pos));
     }
@@ -272,11 +281,16 @@ export class Tokenizer {
     const commentToken = this.currentToken as CommentToken;
     if (!commentToken.data.value.length) {
       commentToken.data.loc = this.posTracker.getLocation();
+      const range = this.posTracker.getRange();
       commentToken.data.range = this.posTracker.getRange();
+      commentToken.data.start = range[0];
+      commentToken.data.end = range[1];
     }
     commentToken.data.value += char;
+    const range = this.posTracker.getRange();
     commentToken.data.loc.end = this.posTracker.getEndPosition();
-    commentToken.data.range[1] = this.posTracker.getEndRange();
+    commentToken.data.range[1] = range[1];
+    commentToken.data.end = range[1];
   }
 
   private appendCharToDoctypeTokenName(char: string) {
@@ -284,7 +298,9 @@ export class Tokenizer {
     const doctypeToken = this.currentToken as DoctypeToken;
     doctypeToken.name.value += char;
     doctypeToken.name.loc.end = end;
-    doctypeToken.name.range[1] = this.posTracker.getEndRange();
+    const endRange = this.posTracker.getEndRange();
+    doctypeToken.name.range[1] = endRange;
+    doctypeToken.name.end = endRange;
   }
 
   private appendCharToDoctypePublicId(char: string) {
@@ -323,7 +339,11 @@ export class Tokenizer {
     }
     if (this.currentCharacterData?.value) {
       this.currentCharacterData.value.value += char;
-      this.currentCharacterData.value.range[1] = this.posTracker.getEndRange();
+
+      const endRange = this.posTracker.getEndRange();
+      this.currentCharacterData.value.range[1] = endRange;
+      this.currentCharacterData.value.end = endRange;
+
       this.currentCharacterData.value.loc.end =
         this.posTracker.getEndPosition();
     } else {
