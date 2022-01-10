@@ -1,27 +1,29 @@
 export class OpenElementStack {
   public readonly elements: any[] = [];
   public stackTop = -1;
-  public current: any = null;
+  public top: any = null;
 
   public push(element: any) {
-    this.elements.push(element);
-    this.current = element;
+    this.top = element;
+    this.stackTop++;
+    this.elements[this.stackTop] = element;
   }
 
   public pop() {
     this.stackTop--;
-    this.current = this.elements[this.stackTop];
+    this.top = this.elements[this.stackTop];
   }
 
-  public popUntilElementPopped(element: any) {
+  public popUntilElementPopped(element: any): any[] {
+    let elements: any[] = [];
     while (this.stackTop > -1) {
-      const poppedElement = this.current;
-
+      const poppedElement = this.top;
+      elements.push(poppedElement);
       this.pop();
-
       if (poppedElement === element) {
         break;
       }
     }
+    return elements;
   }
 }

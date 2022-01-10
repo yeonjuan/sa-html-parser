@@ -35,10 +35,39 @@ export class AttributeNode extends BaseNode<"#Attribute"> {
   }
 }
 
+export class StartTagNode extends BaseNode<"#StartTag"> {
+  private constructor(
+    public start: number,
+    public end: number,
+    public loc: SourceCodeLocation
+  ) {
+    super("#StartTag", start, end, loc);
+  }
+
+  static fromToken(token: StartTagToken) {
+    return new StartTagNode(token.start, token.end, token.loc);
+  }
+}
+
+export class EndTagNode extends BaseNode<"#EndTag"> {
+  private constructor(
+    public start: number,
+    public end: number,
+    public loc: SourceCodeLocation
+  ) {
+    super("#EndTag", start, end, loc);
+  }
+  static fromToken(token: EndTagToken) {
+    return new EndTagNode(token.start, token.end, token.loc);
+  }
+}
+
 export class TagNode extends BaseNode<string> {
   public children: AnyNode[] = [];
-  public closing!: EndTagToken;
+  public startTag!: StartTagNode;
+  public endTag: EndTagNode | null = null;
   public attrs: AttributeNode[] = [];
+  public selfClosing: boolean = false;
   private constructor(
     type: string,
     public start: number,
@@ -59,6 +88,7 @@ export class TagNode extends BaseNode<string> {
       },
       token.tagName.value
     );
+    element.startTag = StartTagNode.fromToken(token);
     element.attrs = token.attrs.map((tkn) => AttributeNode.fromToken(tkn));
     return element;
   }
@@ -68,12 +98,11 @@ export class Root extends BaseNode<"#Root"> {
   comments: CommentNode[] = [];
   children: AnyNode[] = [];
   tokens: AnyAtomToken[] = [];
-  constructor(
-    public start: number,
-    public end: number,
-    public loc: SourceCodeLocation
-  ) {
-    super("#Root", start, end, loc);
+  constructor() {
+    super("#Root", 0, 0, {
+      start: { column: 0, line: 1 },
+      end: { column: 0, line: 1 },
+    });
   }
 }
 
