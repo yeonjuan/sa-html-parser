@@ -25,9 +25,11 @@ export class AttributeNode extends BaseNode<"#Attribute"> {
   }
 
   static fromToken(token: AttributeToken) {
-    const node = new AttributeNode(token.start, token.end, {
-      start: token.loc.start,
-      end: token.loc.end,
+    const nameToken = token.name;
+    const valueToken = token.value || token.name;
+    const node = new AttributeNode(nameToken.start, valueToken.end, {
+      start: nameToken.loc.start,
+      end: valueToken.loc.end,
     });
     node.name = token.name;
     node.value = token.value;

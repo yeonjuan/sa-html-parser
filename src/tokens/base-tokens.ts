@@ -30,12 +30,12 @@ export class BaseAtomToken<T extends string> implements Base<T> {
   }
 }
 
-export class BaseHtmlToken<T extends string> implements Base<T> {
+export abstract class BaseHtmlToken<T extends string> implements Base<T> {
   public range!: Range;
   public start!: number;
   public end!: number;
   public loc!: SourceCodeLocation;
   constructor(public type: T) {}
-
   public tokenize() {}
+  abstract buildLocation(): void;
 }

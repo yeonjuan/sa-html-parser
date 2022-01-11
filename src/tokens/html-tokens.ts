@@ -14,6 +14,7 @@ export class EofToken extends BaseHtmlToken<HtmlTokenType.EOF> {
   constructor() {
     super(HtmlTokenType.EOF);
   }
+  buildLocation() {}
 }
 
 export class DoctypeToken extends BaseHtmlToken<HtmlTokenType.Doctype> {
@@ -27,6 +28,17 @@ export class DoctypeToken extends BaseHtmlToken<HtmlTokenType.Doctype> {
   systemKeyword!: CharactersToken;
   constructor() {
     super(HtmlTokenType.Doctype);
+  }
+  buildLocation() {
+    this.start = this.opening.start;
+    this.end = this.closing.end;
+
+    this.range = [this.opening.range[0], this.closing.range[1]];
+
+    this.loc = {
+      start: this.opening.loc.start,
+      end: this.closing.loc.end,
+    };
   }
   tokenize() {
     const tokens: AnyAtomToken[] = [this.opening];
@@ -47,7 +59,14 @@ export class CommentToken extends BaseHtmlToken<HtmlTokenType.Comment> {
   constructor() {
     super(HtmlTokenType.Comment);
   }
+  buildLocation() {
+    this.start = this.opening.start;
+    this.end = this.closing.end;
 
+    this.range = [this.opening.range[0], this.closing.range[1]];
+
+    this.loc = { start: this.opening.loc.start, end: this.closing.loc.end };
+  }
   tokenize() {
     return [this.opening, this.data, this.closing];
   }
@@ -57,6 +76,7 @@ export class NullToken extends BaseHtmlToken<HtmlTokenType.Null> {
   constructor() {
     super(HtmlTokenType.Null);
   }
+  buildLocation() {}
 }
 
 export class StartTagToken extends BaseHtmlToken<HtmlTokenType.StartTag> {
@@ -67,6 +87,14 @@ export class StartTagToken extends BaseHtmlToken<HtmlTokenType.StartTag> {
   attrs: AttributeToken[] = [];
   constructor() {
     super(HtmlTokenType.StartTag);
+  }
+  buildLocation() {
+    this.start = this.opening.start;
+    this.end = this.closing.end;
+
+    this.range = [this.opening.range[0], this.closing.range[1]];
+
+    this.loc = { start: this.opening.loc.start, end: this.closing.loc.end };
   }
 
   tokenize(): AnyAtomToken[] {
@@ -89,6 +117,18 @@ export class EndTagToken extends BaseHtmlToken<HtmlTokenType.EndTag> {
   constructor() {
     super(HtmlTokenType.EndTag);
   }
+  buildLocation() {
+    this.start = this.opening.start;
+    this.end = this.closing.end;
+
+    this.range = [this.opening.range[0], this.closing.range[1]];
+
+    this.loc = {
+      start: this.opening.loc.start,
+      end: this.closing.loc.end,
+    };
+  }
+
   tokenize(): AnyAtomToken[] {
     return [this.opening, this.tagName, this.closing];
   }
@@ -101,6 +141,19 @@ export class AttributeToken extends BaseHtmlToken<HtmlTokenType.Attribute> {
   constructor() {
     super(HtmlTokenType.Attribute);
   }
+  buildLocation() {
+    const valueIfExists = this.value || this.name;
+    this.start = this.name.start;
+    this.end = valueIfExists.end;
+
+    this.range = [this.name.range[0], valueIfExists.range[1]];
+
+    this.loc = {
+      start: this.name.loc.start,
+      end: valueIfExists.loc.end,
+    };
+  }
+
   tokenize(): AnyAtomToken[] {
     const tokens: AnyAtomToken[] = [this.name];
     this.between && tokens.push(this.between);
@@ -113,6 +166,14 @@ export class CharacterLikeToken extends BaseHtmlToken<HtmlTokenType.CharacterLik
   value!: WhiteSpacesToken | CharactersToken | NullCharacterToken;
   constructor() {
     super(HtmlTokenType.CharacterLike);
+  }
+  buildLocation() {
+    this.start = this.value.start;
+    this.end = this.value.end;
+
+    this.range = this.value.range;
+
+    this.loc = this.value.loc;
   }
   tokenize(): AnyAtomToken[] | void {
     if (this.value) {

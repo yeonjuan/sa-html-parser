@@ -2,6 +2,7 @@ import {
   CODE_POINTS,
   CODE_POINT_SEQUENCES,
   REPLACEMENT_CHARACTER,
+  C1_CONTROLS_REFERENCE_REPLACEMENTS,
 } from "../common/constants";
 import { TokenizerState } from "./tokenizer-state";
 import { PositionTracker } from "./position-tracker";
@@ -72,7 +73,9 @@ export class Tokenizer {
       const codePoint = this.consume();
       this[this.state](codePoint);
     }
-    return this.tokens.shift();
+    const token = this.tokens.shift();
+    token?.buildLocation();
+    return token;
   }
 
   private consume(): number {
@@ -1860,6 +1863,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#numeric-character-reference-state
+   */
   private [TokenizerState.NumericCharacterReferenceEndState](
     codePoint: number
   ) {
@@ -1871,11 +1877,21 @@ export class Tokenizer {
       this.charRefCode = CODE_POINTS.REPLACEMENT_CHARACTER;
     } else if (utils.isSurrogate(this.charRefCode)) {
       // TODO: error
+      this.charRefCode = CODE_POINTS.REPLACEMENT_CHARACTER;
     } else if (
       utils.isUndefinedCodePoint(codePoint) ||
       this.charRefCode === CODE_POINTS.CARRIAGE_RETURN
     ) {
       // TODO error
+      const replacement = (C1_CONTROLS_REFERENCE_REPLACEMENTS as any)[
+        this.charRefCode
+      ];
+      if (replacement) {
+        this.charRefCode = replacement;
+      }
     }
+    this.temporaryBuffer = [this.charRefCode];
+    //  this._flushCodePointsConsumedAsCharacterReference();
+    this.reconsumeInState(this.returnState!);
   }
 }
