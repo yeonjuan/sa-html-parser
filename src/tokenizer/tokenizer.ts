@@ -914,29 +914,56 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#script-data-escaped-end-tag-name-state
+   */
   private [TokenizerState.ScriptDataEscapedEndTagNameState](codePoint: number) {
-    if (utils.isWhitespace(codePoint)) {
-      // TODO: If the current end tag token is an appropriate end tag token, then switch to the before attribute name state. Otherwise, treat it as per the "anything else" entry below.
-    } else if (codePoint === CODE_POINTS.SOLIDUS) {
-      // TODO: If the current end tag token is an appropriate end tag token, then switch to the self-closing start tag state. Otherwise, treat it as per the "anything else" entry below.
-    } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: If the current end tag token is an appropriate end tag token, then switch to the data state and emit the current tag token. Otherwise, treat it as per the "anything else" entry below.
-    } else if (utils.isAsciiUpperAlpha(codePoint)) {
-      // TODO: Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name. Append the current input character to the temporary buffer.
+    if (utils.isAsciiUpperAlpha(codePoint)) {
+      this.appendCharToCurrentTagTokenName(
+        utils.toAsciiLowerCharacter(codePoint)
+      );
+      this.temporaryBuffer.push(codePoint);
     } else if (utils.isAsciiLowerAlpha(codePoint)) {
-      // TODO: Append the current input character to the current tag token's tag name. Append the current input character to the temporary buffer.
+      this.appendCharToCurrentTagTokenName(utils.toCharacter(codePoint));
+      this.temporaryBuffer.push(codePoint);
     } else {
-      // TODO: Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the script data escaped state.
+      if (
+        this.lastStartTagName ===
+        (this.currentToken as StartTagToken)?.tagName?.value
+      ) {
+        if (utils.isWhitespace(codePoint)) {
+          this.switchStateTo(TokenizerState.BeforeAttributeNameState);
+          return;
+        }
+        if (codePoint === CODE_POINTS.SOLIDUS) {
+          this.switchStateTo(TokenizerState.SelfClosingStartTagState);
+          return;
+        }
+        if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
+          this.emitCurrentToken();
+          this.switchStateTo(TokenizerState.DataState);
+          return;
+        }
+      }
+
+      // this._emitChars("</");
+      // this._emitSeveralCodePoints(this.tempBuff);
+      this.reconsumeInState(TokenizerState.ScriptDataEscapedState);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#script-data-double-escape-start-state
+   */
   private [TokenizerState.ScriptDataDoubleEscapeStartState](codePoint: number) {
     if (
       utils.isWhitespace(codePoint) ||
       codePoint === CODE_POINTS.SOLIDUS ||
       codePoint === CODE_POINTS.GREATER_THAN_SIGN
     ) {
-      // TODO: If the temporary buffer is the string "script", then switch to the script data double escaped state. Otherwise, switch to the script data escaped state. Emit the current input character as a character token.
+      //    this.state = this._isTempBufferEqualToScriptString()
+      //  ? SCRIPT_DATA_DOUBLE_ESCAPED_STATE
+      // : SCRIPT_DATA_ESCAPED_STATE;
     } else if (utils.isAsciiUpperAlpha(codePoint)) {
       this.temporaryBuffer.push(utils.toAsciiLowerCharacter(codePoint));
       this.emitCodePoint(codePoint);
@@ -948,6 +975,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#script-data-double-escaped-state
+   */
   private [TokenizerState.ScriptDataDoubleEscapedState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedDashState);
@@ -958,13 +988,13 @@ export class Tokenizer {
       );
       this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       this.appendCharToCurrentCharacterToken(
         AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInScriptHtmlCommentLikeText);
       this.emitEofToken();
     } else {
       this.emitCodePoint(codePoint);
