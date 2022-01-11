@@ -145,3 +145,5 @@ export const isAsciiUpperHexDigit = (codePoint: number): boolean =>
 export const isAsciiLowerHexDigit = (codePoint: number): boolean =>
   codePoint >= CODE_POINTS.LATIN_SMALL_A &&
   codePoint <= CODE_POINTS.LATIN_SMALL_F;
+
+export const last = <T>(arr: T[]): T | undefined => arr[arr.length - 1];

@@ -26,4 +26,17 @@ export class OpenElementStack {
     }
     return elements;
   }
+
+  public popUntilBeforeElementPopped(element: any): any[] {
+    let elements: any[] = [];
+    while (this.stackTop > -1) {
+      const poppedElement = this.top;
+      if (poppedElement === element) {
+        break;
+      }
+      elements.push(poppedElement);
+      this.pop();
+    }
+    return elements;
+  }
 }

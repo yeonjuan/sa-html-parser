@@ -9,12 +9,14 @@ import {
 import { Tokenizer } from "../tokenizer/tokenizer";
 import { AnyHtmlToken, HtmlTokenType } from "../tokens";
 import { OpenElementStack } from "./open-element-stack";
+import * as utils from "../common/utils";
 
 export class Parser {
   private root!: Root;
   private html!: string;
   private tokenizer!: Tokenizer;
   private openElementStack = new OpenElementStack();
+  private running = true;
 
   constructor() {}
 
@@ -23,9 +25,9 @@ export class Parser {
     this.tokenizer = Tokenizer.create(this.html);
     this.createRoot();
 
-    while (true) {
+    while (this.running) {
       const token = this.tokenizer.getNextToken();
-      if (!token || token.type === HtmlTokenType.EOF) {
+      if (!token) {
         break;
       }
       this.process(token);
@@ -54,7 +56,6 @@ export class Parser {
   }
 
   private popFromOpenStackUntilTagName(tagName: string): any[] {
-    debugger;
     let unclosedElements: any[] = [];
     for (let i = this.openElementStack.stackTop; i > 0; i--) {
       const element = this.openElementStack.elements[i];
@@ -74,18 +75,39 @@ export class Parser {
       this.insertToCurrent(doctypeNode);
     } else if (token.type === HtmlTokenType.StartTag) {
       const tagNode = TagNode.fromToken(token);
-      this.insertToCurrent(tagNode);
       if (!token.selfClosing) {
         this.pushToOpenStack(tagNode);
+      } else {
+        this.insertToCurrent(tagNode);
       }
       tagNode.selfClosing = token.selfClosing;
     } else if (token.type === HtmlTokenType.EndTag) {
-      debugger;
       const endTagNode = EndTagNode.fromToken(token);
+
       const poppedElements = this.popFromOpenStackUntilTagName(
         token.tagName.value
       );
-      poppedElements[poppedElements.length - 1].endTag = endTagNode;
+
+      const lastElement = utils.last(poppedElements);
+      lastElement.endTag = endTagNode;
+
+      this.insertToCurrent(lastElement);
+
+      if (poppedElements.length) {
+        for (let i = poppedElements.length - 2; i >= 0; i--) {
+          lastElement.children.push(poppedElements[i]);
+        }
+      }
+    } else if (token.type === HtmlTokenType.EOF) {
+      const poppedElements = this.openElementStack.popUntilBeforeElementPopped(
+        this.root
+      );
+      if (poppedElements.length) {
+        for (let i = poppedElements.length - 1; i >= 0; i--) {
+          this.root.children.push(poppedElements[i]);
+        }
+      }
+      this.running = false;
     }
   }
 }
