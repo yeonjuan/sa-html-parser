@@ -1404,16 +1404,19 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#comment-start-dash-state
+   */
   private [TokenizerState.CommentStartDashState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.appendToLastPunctuatorTokens("-");
       this.switchStateTo(TokenizerState.CommentEndState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: error
+      this.parseError(Errors.AbruptClosingOfEmptyComment);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInComment);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
@@ -1422,6 +1425,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#comment-state
+   */
   private [TokenizerState.CommentState](codePoint: number) {
     if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.appendCharToCurrentCommentTokenData("<");
@@ -1430,11 +1436,11 @@ export class Tokenizer {
       this.pushToPunctuatorTokens("-");
       this.switchStateTo(TokenizerState.CommentEndDashState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       (this.currentToken as CommentToken).data.value +=
         CODE_POINTS.REPLACEMENT_CHARACTER;
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInComment);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
@@ -1442,6 +1448,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#comment-less-than-sign-state
+   */
   private [TokenizerState.CommentLessThanSignState](codePoint: number) {
     if (codePoint === CODE_POINTS.EXCLAMATION_MARK) {
       this.appendCharToCurrentCommentTokenData("!");
