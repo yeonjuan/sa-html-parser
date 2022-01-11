@@ -1246,6 +1246,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#attribute-value-(unquoted)-state
+   */
   private [TokenizerState.AttributeValueUnquotedState](codePoint: number) {
     if (utils.isWhitespace(codePoint)) {
       this.switchStateTo(TokenizerState.BeforeAttributeNameState);
@@ -1257,7 +1260,7 @@ export class Tokenizer {
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       this.appendValueToCurrentAttributeToken(REPLACEMENT_CHARACTER);
     } else if (
       codePoint === CODE_POINTS.QUOTATION_MARK ||
@@ -1266,16 +1269,19 @@ export class Tokenizer {
       codePoint === CODE_POINTS.EQUALS_SIGN ||
       codePoint === CODE_POINTS.GRAVE_ACCENT
     ) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedCharacterInUnquotedAttributeValue);
       this.appendValueToCurrentAttributeToken(utils.toCharacter(codePoint));
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInTag);
       this.emitEofToken();
     } else {
       this.appendValueToCurrentAttributeToken(utils.toCharacter(codePoint));
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#after-attribute-value-(quoted)-state
+   */
   private [TokenizerState.AfterAttributeValueQuotedState](codePoint: number) {
     if (utils.isWhitespace(codePoint)) {
       this.switchStateTo(TokenizerState.BeforeAttributeNameState);
@@ -1287,14 +1293,17 @@ export class Tokenizer {
       this.pushToPunctuatorTokens(">");
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInTag);
       this.emitEofToken();
     } else {
-      // TODO: error
+      this.parseError(Errors.MissingWhitespaceBetweenAttributes);
       this.reconsumeInState(TokenizerState.BeforeAttributeNameState);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#self-closing-start-tag-state
+   */
   private [TokenizerState.SelfClosingStartTagState](codePoint: number) {
     if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       (this.currentToken as StartTagToken).selfClosing = true;
@@ -1302,29 +1311,35 @@ export class Tokenizer {
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInTag);
       this.emitEofToken();
     } else {
-      // TODO: error
+      this.parseError(Errors.UnexpectedSolidusInTag);
       this.reconsumeInState(TokenizerState.BeforeAttributeNameState);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#bogus-comment-state
+   */
   private [TokenizerState.BogusCommentState](codePoint: number) {
     if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
+      this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
-      // TODO: Emit the current comment token.
     } else if (codePoint === CODE_POINTS.EOF) {
       this.emitCurrentToken();
       this.emitEofToken();
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       this.appendCharToCurrentCommentTokenData(REPLACEMENT_CHARACTER);
     } else {
       this.appendCharToCurrentCommentTokenData(utils.toCharacter(codePoint));
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#markup-declaration-open-state
+   */
   private [TokenizerState.MarkupDeclarationOpenState](codePoint: number) {
     if (
       this.consumeSequenceIfMatch(
@@ -1373,12 +1388,15 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#comment-start-state
+   */
   private [TokenizerState.CommentStartState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.pushToPunctuatorTokens("-");
       this.switchStateTo(TokenizerState.CommentStartDashState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: error
+      this.parseError(Errors.AbruptClosingOfEmptyComment);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else {
