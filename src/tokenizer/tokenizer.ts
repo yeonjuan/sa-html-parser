@@ -1001,6 +1001,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#script-data-double-escaped-dash-state
+   */
   private [TokenizerState.ScriptDataDoubleEscapedDashState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedDashDashState);
@@ -1011,14 +1014,14 @@ export class Tokenizer {
       );
       this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedState);
       this.appendCharToCurrentCharacterToken(
         AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInScriptHtmlCommentLikeText);
       this.emitEofToken();
     } else {
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedState);
@@ -1026,6 +1029,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#script-data-double-escaped-dash-dash-state
+   */
   private [TokenizerState.ScriptDataDoubleEscapedDashDashState](
     codePoint: number
   ) {
@@ -1037,14 +1043,14 @@ export class Tokenizer {
       );
       this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedState);
       this.appendCharToCurrentCharacterToken(
         AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInScriptHtmlCommentLikeText);
       this.emitEofToken();
     } else {
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedState);
@@ -1052,6 +1058,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#script-data-double-escaped-less-than-sign-state
+   */
   private [TokenizerState.ScriptDataDoubleEscapedLessThanSignState](
     codePoint: number
   ) {
@@ -1064,12 +1073,19 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#script-data-double-escape-end-state
+   */
   private [TokenizerState.ScriptDataDoubleEscapeEndState](codePoint: number) {
     if (
       utils.isWhitespace(codePoint) ||
       codePoint === CODE_POINTS.SOLIDUS ||
       codePoint === CODE_POINTS.GREATER_THAN_SIGN
     ) {
+      // this.state = this._isTempBufferEqualToScriptString()
+      //   ? SCRIPT_DATA_ESCAPED_STATE
+      //   : SCRIPT_DATA_DOUBLE_ESCAPED_STATE;
+
       this.emitCodePoint(codePoint);
     } else if (utils.isAsciiUpperAlpha(codePoint)) {
       this.temporaryBuffer.push(utils.toAsciiLowerCharacter(codePoint));
@@ -1082,6 +1098,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#before-attribute-name-state
+   */
   private [TokenizerState.BeforeAttributeNameState](codePoint: number) {
     if (utils.isWhitespace(codePoint)) {
       return;
@@ -1092,7 +1111,7 @@ export class Tokenizer {
     ) {
       this.reconsumeInState(TokenizerState.AfterAttributeNameState);
     } else if (codePoint === CODE_POINTS.EQUALS_SIGN) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedEqualsSignBeforeAttributeName);
       this.createAttributeToken("=");
       this.switchStateTo(TokenizerState.AttributeNameState);
     } else {
@@ -1101,6 +1120,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#attribute-name-state
+   */
   private [TokenizerState.AttributeNameState](codePoint: number) {
     if (
       utils.isWhitespace(codePoint) ||
@@ -1111,7 +1133,6 @@ export class Tokenizer {
       this.leaveAttributeName(TokenizerState.AfterAttributeNameState);
       this.unconsume();
     } else if (codePoint === CODE_POINTS.EQUALS_SIGN) {
-      // this.switchStateTo(TokenizerState.BeforeAttributeValueState);
       const position = this.posTracker.getStartPosition();
       const index = this.posTracker.getStartRange();
       this.currentAttributeToken!.between = new PunctuatorToken(
@@ -1124,20 +1145,23 @@ export class Tokenizer {
       this.currentAttributeToken!.name!.value +=
         utils.toAsciiLowerCharacter(codePoint);
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedCharacterInAttributeName);
       this.currentAttributeToken!.name!.value += REPLACEMENT_CHARACTER;
     } else if (
       codePoint === CODE_POINTS.QUOTATION_MARK ||
       codePoint === CODE_POINTS.APOSTROPHE ||
       codePoint === CODE_POINTS.LESS_THAN_SIGN
     ) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       this.currentAttributeToken!.name!.value += utils.toCharacter(codePoint);
     } else {
       this.appendCharToCurrentAttributeTokenName(utils.toCharacter(codePoint));
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#after-attribute-name-state
+   */
   private [TokenizerState.AfterAttributeNameState](codePoint: number) {
     if (utils.isWhitespace(codePoint)) {
       return;
@@ -1151,7 +1175,7 @@ export class Tokenizer {
       this.pushToPunctuatorTokens(">");
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInTag);
       this.emitEofToken();
     } else {
       this.createAttributeToken("");
@@ -1159,6 +1183,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#before-attribute-value-state
+   */
   private [TokenizerState.BeforeAttributeValueState](codePoint: number) {
     if (utils.isWhitespace(codePoint)) {
       return;
@@ -1169,7 +1196,7 @@ export class Tokenizer {
       this.appendValueToCurrentAttributeToken("'");
       this.switchStateTo(TokenizerState.AttributeValueSingleQuotedState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: error
+      this.parseError(Errors.MissingAttributeValue);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else {
@@ -1177,6 +1204,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#attribute-value-(double-quoted)-state
+   */
   private [TokenizerState.AttributeValueDoubleQuotedState](codePoint: number) {
     if (codePoint === CODE_POINTS.QUOTATION_MARK) {
       this.appendValueToCurrentAttributeToken('"');
@@ -1195,6 +1225,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#attribute-value-(single-quoted)-state
+   */
   private [TokenizerState.AttributeValueSingleQuotedState](codePoint: number) {
     if (codePoint === CODE_POINTS.APOSTROPHE) {
       this.appendValueToCurrentAttributeToken("'");
@@ -1203,10 +1236,10 @@ export class Tokenizer {
       this.setReturnState(TokenizerState.AttributeValueSingleQuotedState);
       this.switchStateTo(TokenizerState.CharacterReferenceState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       this.appendValueToCurrentAttributeToken(REPLACEMENT_CHARACTER);
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInTag);
       this.emitEofToken();
     } else {
       this.appendValueToCurrentAttributeToken(utils.toCharacter(codePoint));
