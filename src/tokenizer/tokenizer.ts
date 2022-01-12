@@ -1462,6 +1462,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#comment-less-than-sign-bang-state
+   */
   private [TokenizerState.CommentLessThanSignBangState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.switchStateTo(TokenizerState.CommentLessThanSignBangDashDashState);
@@ -1470,6 +1473,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#comment-less-than-sign-bang-dash-state
+   */
   private [TokenizerState.CommentLessThanSignBangDashState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.switchStateTo(TokenizerState.CommentLessThanSignBangDashDashState);
@@ -1478,6 +1484,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#comment-less-than-sign-bang-dash-dash-state
+   */
   private [TokenizerState.CommentLessThanSignBangDashDashState](
     codePoint: number
   ) {
@@ -1487,17 +1496,20 @@ export class Tokenizer {
     ) {
       this.reconsumeInState(TokenizerState.CommentEndState);
     } else {
-      // TODO: error
+      this.parseError(Errors.NestedComment);
       this.reconsumeInState(TokenizerState.CommentEndState);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#comment-end-dash-state
+   */
   private [TokenizerState.CommentEndDashState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.appendToLastPunctuatorTokens("-");
       this.switchStateTo(TokenizerState.CommentEndState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInComment);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
@@ -1506,6 +1518,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#comment-end-state
+   */
   private [TokenizerState.CommentEndState](codePoint: number) {
     if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.appendToLastPunctuatorTokens(">");
@@ -1516,7 +1531,7 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.appendCharToCurrentCommentTokenData("-");
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInComment);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
@@ -1525,17 +1540,20 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#comment-end-bang-state
+   */
   private [TokenizerState.CommentEndBangState](codePoint: number) {
     if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       (this.currentToken as CommentToken).data.value += "--!";
       this.switchStateTo(TokenizerState.CommentEndDashState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: error
+      this.parseError(Errors.IncorrectlyClosedComment);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
       this.emitEofToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: Error
+      this.parseError(Errors.EofInComment);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
@@ -1544,22 +1562,28 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#doctype-state
+   */
   private [TokenizerState.DoctypeState](codePoint: number) {
     if (utils.isWhitespace(codePoint)) {
       this.switchStateTo(TokenizerState.BeforeDoctypeNameState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.reconsumeInState(TokenizerState.BeforeDoctypeNameState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInDoctype);
       this.createDoctypeToken("");
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      // TODO: error
+      this.parseError(Errors.MissingWhitespaceBeforeDoctypeName);
       this.reconsumeInState(TokenizerState.BeforeDoctypeNameState);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#before-doctype-name-state
+   */
   private [TokenizerState.BeforeDoctypeNameState](codePoint: number) {
     if (utils.isWhitespace(codePoint)) {
       return;
@@ -1567,16 +1591,16 @@ export class Tokenizer {
       this.createDoctypeToken(utils.toAsciiLowerCharacter(codePoint));
       this.switchStateTo(TokenizerState.DoctypeNameState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       this.createDoctypeToken(REPLACEMENT_CHARACTER);
       this.switchStateTo(TokenizerState.DoctypeNameState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: error
+      this.parseError(Errors.MissingDoctypeName);
       this.createDoctypeToken("");
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInDoctype);
       this.createDoctypeToken("");
       this.emitCurrentToken();
       this.emitEofToken();
@@ -1586,6 +1610,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#before-doctype-name-state
+   */
   private [TokenizerState.DoctypeNameState](codePoint: number) {
     if (utils.isWhitespace(codePoint)) {
       this.switchStateTo(TokenizerState.AfterDoctypeNameState);
@@ -1596,10 +1623,10 @@ export class Tokenizer {
     } else if (utils.isAsciiUpperAlpha(codePoint)) {
       this.appendCharToDoctypeTokenName(utils.toAsciiLowerCharacter(codePoint));
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       (this.currentToken as DoctypeToken).name.value += REPLACEMENT_CHARACTER;
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInDoctype);
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
@@ -1608,6 +1635,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#after-doctype-name-state
+   */
   private [TokenizerState.AfterDoctypeNameState](codePoint: number) {
     const pos = this.posTracker.getStartPosition();
     const index = this.posTracker.getStartRange();
@@ -1618,8 +1648,8 @@ export class Tokenizer {
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
-      //   this.currentToken.forceQuirks = true;
+      this.parseError(Errors.EofInDoctype);
+      (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
     } else if (
@@ -1657,33 +1687,39 @@ export class Tokenizer {
     ) {
       this.switchStateTo(TokenizerState.AfterDoctypeSystemKeywordState);
     } else {
-      // TODO: error
+      this.parseError(Errors.InvalidCharacterSequenceAfterDoctypeName);
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#after-doctype-public-keyword-state
+   */
   private [TokenizerState.AfterDoctypePublicKeywordState](codePoint: number) {
     if (utils.isWhitespace(codePoint)) {
       this.switchStateTo(TokenizerState.BeforeDoctypePublicIdentifierState);
     } else if (codePoint === CODE_POINTS.QUOTATION_MARK) {
-      // TODO: error
+      this.parseError(Errors.MissingWhitespaceAfterDoctypePublicKeyword);
       this.switchStateTo(
         TokenizerState.DoctypePublicIdentifierDoubleQuotedState
       );
     } else if (codePoint === CODE_POINTS.APOSTROPHE) {
-      // TODO: error;
+      this.parseError(Errors.MissingWhitespaceAfterDoctypePublicKeyword);
       this.switchStateTo(
         TokenizerState.DoctypePublicIdentifierSingleQuotedState
       );
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: error;
+      this.parseError(Errors.MissingDoctypePublicIdentifier);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      // This is an eof-in-doctype parse error. Set the current DOCTYPE token's force-quirks flag to on. Emit the current DOCTYPE token. Emit an end-of-file token.
+      this.parseError(Errors.EofInDoctype);
+      (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
+      this.parseError(Errors.MissingQuoteBeforeDoctypePublicIdentifier);
+      (this.currentToken as DoctypeToken).forceQuirks = true;
       this.reconsumeInState(TokenizerState.BogusCommentState);
     }
   }
