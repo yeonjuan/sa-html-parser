@@ -2,3 +2,4 @@ yarn.lock
 node_modules
 tsconfig.json
 coverage
+*.html
