@@ -74,7 +74,7 @@ export enum TokenizerState {
   NamedCharacterReferenceState,
   AmbiguousAmpersandState,
   NumericCharacterReferenceState,
-  HexaemicalCharacterReferenceStartState,
+  HexademicalCharacterReferenceStartState,
   DecimalCharacterReferenceStartState,
   HexademicalCharacterReferenceState,
   DecimalCharacterReferenceState,

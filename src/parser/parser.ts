@@ -57,10 +57,11 @@ export class Parser {
 
   private popFromOpenStackUntilTagName(tagName: string): any[] {
     let unclosedElements: any[] = [];
-    for (let i = this.openElementStack.stackTop; i > 0; i--) {
+    for (let i = this.openElementStack.stackTop; i >= 0; i--) {
       const element = this.openElementStack.elements[i];
       if (element.tagName === tagName) {
         unclosedElements = this.openElementStack.popUntilElementPopped(element);
+        break;
       }
     }
     return unclosedElements;
@@ -75,24 +76,22 @@ export class Parser {
       this.insertToCurrent(doctypeNode);
     } else if (token.type === HtmlTokenType.StartTag) {
       const tagNode = TagNode.fromToken(token);
-      if (!token.selfClosing) {
-        this.pushToOpenStack(tagNode);
-      } else {
+      if (token.selfClosing) {
+        tagNode.selfClosing = true;
         this.insertToCurrent(tagNode);
+      } else {
+        this.pushToOpenStack(tagNode);
       }
-      tagNode.selfClosing = token.selfClosing;
     } else if (token.type === HtmlTokenType.EndTag) {
       const endTagNode = EndTagNode.fromToken(token);
 
       const poppedElements = this.popFromOpenStackUntilTagName(
         token.tagName.value
       );
-
       const lastElement = utils.last(poppedElements);
       lastElement.endTag = endTagNode;
 
       this.insertToCurrent(lastElement);
-
       if (poppedElements.length) {
         for (let i = poppedElements.length - 2; i >= 0; i--) {
           lastElement.children.push(poppedElements[i]);
