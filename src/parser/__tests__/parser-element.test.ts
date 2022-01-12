@@ -20,11 +20,11 @@ describe("parser: element", () => {
     expect(div.startTag.type).toBe("#StartTag");
     expect(div.endTag?.type).toBe("#EndTag");
     expect(div.start).toBe(0);
-    expect(div.end).toBe(11);
-    expect(div.range).toStrictEqual([0, 11]);
+    expect(div.end).toBe(5);
+    expect(div.range).toStrictEqual([0, 5]);
     expect(div.loc.start.column).toBe(0);
     expect(div.loc.start.line).toBe(1);
-    expect(div.loc.end.column).toBe(11);
+    expect(div.loc.end.column).toBe(5);
     expect(div.loc.end.line).toBe(1);
   });
 
@@ -40,7 +40,7 @@ describe("parser: element", () => {
     expect(div.tagName).toBe("div");
     expect(div.endTag).toBe(null);
     expect(div.start).toBe(0);
-    expect(div.end).toBe(11);
+    expect(div.end).toBe(6);
     expect(div.range).toStrictEqual([0, 6]);
     expect(div.loc.start.column).toBe(0);
     expect(div.loc.start.line).toBe(1);
@@ -59,11 +59,11 @@ describe("parser: element", () => {
     expect(outer.tagName).toBe("div");
     expect(outer.endTag).toBeTruthy();
     expect(outer.start).toBe(0);
-    expect(outer.end).toBe(20);
-    expect(outer.range).toStrictEqual([0, 20]);
+    expect(outer.end).toBe(5);
+    expect(outer.range).toStrictEqual([0, 5]);
     expect(outer.loc.start.column).toBe(0);
-    expect(outer.loc.start.line).toBe(20);
-    expect(outer.loc.end.column).toBe(20);
+    expect(outer.loc.start.line).toBe(1);
+    expect(outer.loc.end.column).toBe(5);
     expect(outer.loc.end.line).toBe(1);
 
     const [inner] = outer.children as TagNode[];
@@ -110,7 +110,7 @@ describe("parser: element", () => {
     expect(span.tagName).toBe("span");
   });
 
-  test.only("nested 2", () => {
+  test("nested 2", () => {
     const result = parser.parse("<div><div></div></div>");
 
     expect(result.children.length).toBe(1);

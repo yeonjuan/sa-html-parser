@@ -1,6 +1,6 @@
 import { Parser } from "../parser";
 
-describe("parse - comment", () => {
+describe("parser: doctype", () => {
   let parser: Parser;
 
   beforeEach(() => {
