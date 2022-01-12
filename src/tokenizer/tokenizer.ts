@@ -1874,98 +1874,114 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#after-doctype-system-keyword-state
+   */
   private [TokenizerState.AfterDoctypeSystemKeywordState](codePoint: number) {
     if (utils.isWhitespace(codePoint)) {
       this.switchStateTo(TokenizerState.BeforeDoctypeSystemIdentifierState);
     } else if (codePoint === CODE_POINTS.QUOTATION_MARK) {
-      // TODO: Error
+      this.parseError(Errors.MissingWhitespaceAfterDoctypeSystemKeyword);
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierDoubleQuotedState
       );
     } else if (codePoint === CODE_POINTS.APOSTROPHE) {
-      // TODO:error
+      this.parseError(Errors.MissingDoctypeSystemIdentifier);
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierSingleQuotedState
       );
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: error
+      this.parseError(Errors.MissingDoctypeSystemIdentifier);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInDoctype);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      // TODO: error
+      this.parseError(Errors.MissingQuoteBeforeDoctypeSystemIdentifier);
+      (this.currentToken as DoctypeToken).forceQuirks = true;
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#before-doctype-system-identifier-state
+   */
   private [TokenizerState.BeforeDoctypeSystemIdentifierState](
     codePoint: number
   ) {
     if (utils.isWhitespace(codePoint)) {
       return;
     } else if (codePoint === CODE_POINTS.QUOTATION_MARK) {
+      this.appendCharToDoctypeSystemId("");
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierDoubleQuotedState
       );
     } else if (codePoint === CODE_POINTS.APOSTROPHE) {
+      this.appendCharToDoctypeSystemId("");
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierSingleQuotedState
       );
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
+      this.parseError(Errors.MissingDoctypeSystemIdentifier);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
+      this.parseError(Errors.EofInDoctype);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      // TODO: error
+      this.parseError(Errors.MissingQuoteBeforeDoctypeSystemIdentifier);
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#doctype-system-identifier-(double-quoted)-state
+   */
   private [TokenizerState.DoctypeSystemIdentifierDoubleQuotedState](
     codePoint: number
   ) {
     if (codePoint === CODE_POINTS.QUOTATION_MARK) {
       this.switchStateTo(TokenizerState.AfterDoctypeSystemIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       (this.currentToken as DoctypeToken).systemId.value +=
         REPLACEMENT_CHARACTER;
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: error
+      this.parseError(Errors.AbruptDoctypeSystemIdentifier);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
-      // This is an abrupt-doctype-system-identifier parse error. Set the current DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit the current DOCTYPE token.
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInDoctype);
+      (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
-      // This is an eof-in-doctype parse error. Set the current DOCTYPE token's force-quirks flag to on. Emit the current DOCTYPE token. Emit an end-of-file token.
     } else {
       this.appendCharToDoctypeSystemId(utils.toCharacter(codePoint));
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#doctype-system-identifier-(single-quoted)-state
+   */
   private [TokenizerState.DoctypeSystemIdentifierSingleQuotedState](
     codePoint: number
   ) {
     if (codePoint === CODE_POINTS.APOSTROPHE) {
       this.switchStateTo(TokenizerState.AfterDoctypeSystemIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
       (this.currentToken as DoctypeToken).systemId.value +=
         REPLACEMENT_CHARACTER;
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: error
-      // TODO:       this.currentToken.forceQuirks = true;
+      this.parseError(Errors.AbruptDoctypeSystemIdentifier);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInDoctype);
+      (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
@@ -1973,54 +1989,68 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#after-doctype-system-identifier-state
+   */
   private [TokenizerState.AfterDoctypeSystemIdentifierState](
     codePoint: number
   ) {
     if (utils.isWhitespace(codePoint)) {
-      // Ignore the character.
+      return;
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.pushToPunctuatorTokens(">");
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
+      this.parseError(Errors.EofInDoctype);
+      (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
-      // This is an eof-in-doctype parse error. Set the current DOCTYPE token's force-quirks flag to on. Emit the current DOCTYPE token. Emit an end-of-file token.
     } else {
+      this.parseError(Errors.UnexpectedCharacterAfterDoctypeSystemIdentifier);
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
-      // This is an unexpected-character-after-doctype-system-identifier parse error. Reconsume in the bogus DOCTYPE state. (This does not set the current DOCTYPE token's force-quirks flag to on.)
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#bogus-doctype-state
+   */
   private [TokenizerState.BogusDoctypeState](codePoint: number) {
     if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.pushToPunctuatorTokens(">");
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.UnexpectedNullCharacter);
     } else if (codePoint === CODE_POINTS.EOF) {
       this.emitCurrentToken();
       this.emitEofToken();
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#cdata-section-state
+   */
   private [TokenizerState.CdataSectionState](codePoint: number) {
     if (codePoint === CODE_POINTS.RIGHT_SQUARE_BRACKET) {
       this.switchStateTo(TokenizerState.CdataSectionBracketState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInCdata);
       this.emitEofToken();
     } else {
       this.emitCodePoint(codePoint);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#cdata-section-bracket-state
+   */
   private [TokenizerState.CdataSectionBracketState](codePoint: number) {
     if (codePoint === CODE_POINTS.RIGHT_SQUARE_BRACKET) {
       this.switchStateTo(TokenizerState.CdataSectionEndState);
     } else {
-      // Emit a U+005D RIGHT SQUARE BRACKET character token. Reconsume in the CDATA section state.
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "]");
+      this.reconsumeInState(TokenizerState.CdataSectionState);
     }
   }
 
