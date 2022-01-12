@@ -2054,17 +2054,23 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#cdata-section-end-state
+   */
   private [TokenizerState.CdataSectionEndState](codePoint: number) {
     if (codePoint === CODE_POINTS.RIGHT_SQUARE_BRACKET) {
       this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "]");
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.switchStateTo(TokenizerState.DataState);
     } else {
-      // TODO: this._emitChars("]]");
+      this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "]]");
       this.reconsumeInState(TokenizerState.CdataSectionState);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#character-reference-state
+   */
   private [TokenizerState.CharacterReferenceState](codePoint: number) {
     this.temporaryBuffer = [CODE_POINTS.AMPERSAND];
 
@@ -2078,6 +2084,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state
+   */
   private [TokenizerState.NamedCharacterReferenceState](codePoint: number) {
     // TODO
     this.charRefCode = 0;
@@ -2086,24 +2095,38 @@ export class Tokenizer {
       codePoint === CODE_POINTS.LATIN_CAPITAL_X
     ) {
       this.temporaryBuffer.push(codePoint);
-      this.switchStateTo(TokenizerState.HexaemicalCharacterReferenceStartState);
+      this.switchStateTo(
+        TokenizerState.HexademicalCharacterReferenceStartState
+      );
     } else {
       this.reconsumeInState(
-        TokenizerState.HexaemicalCharacterReferenceStartState
+        TokenizerState.HexademicalCharacterReferenceStartState
       );
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#numeric-character-reference-state
+   */
   private [TokenizerState.AmbiguousAmpersandState](codePoint: number) {
     if (utils.isAsciiAlphaNumeric(codePoint)) {
+      // TODO
+      // if (this._isCharacterReferenceInAttribute()) {
+      //   this.currentAttr.value += toChar(cp);
+      // } else {
+      //   this._emitCodePoint(cp);
+      // }
     } else {
       if (codePoint === CODE_POINTS.SEMICOLON) {
-        // TODO error
+        this.parseError(Errors.UnknownNamedCharacterReference);
       }
       this.reconsumeInState(this.returnState!);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#numeric-character-reference-state
+   */
   private [TokenizerState.NumericCharacterReferenceState](codePoint: number) {
     this.charRefCode = 0;
     if (
@@ -2111,20 +2134,25 @@ export class Tokenizer {
       codePoint === CODE_POINTS.LATIN_CAPITAL_X
     ) {
       this.temporaryBuffer.push(codePoint);
-      this.switchStateTo(TokenizerState.HexaemicalCharacterReferenceStartState);
+      this.switchStateTo(
+        TokenizerState.HexademicalCharacterReferenceStartState
+      );
     } else {
       this.reconsumeInState(TokenizerState.DecimalCharacterReferenceStartState);
     }
   }
 
-  private [TokenizerState.HexaemicalCharacterReferenceStartState](
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#hexadecimal-character-reference-start-state
+   */
+  private [TokenizerState.HexademicalCharacterReferenceStartState](
     codePoint: number
   ) {
     if (utils.isAsciiDigit(codePoint)) {
       this.reconsumeInState(TokenizerState.DecimalCharacterReferenceState);
     } else {
+      this.parseError(Errors.AbsenceOfDigitsInNumericCharacterReference);
       // TODO
-      // this._err(ERR.absenceOfDigitsInNumericCharacterReference);
       // this._flushCodePointsConsumedAsCharacterReference();
       this.reconsumeInState(this.returnState!);
     }
@@ -2142,10 +2170,12 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#hexadecimal-character-reference-state
+   */
   private [TokenizerState.HexademicalCharacterReferenceState](
     codePoint: number
   ) {
-    // TODO
     if (utils.isAsciiUpperHexDigit(codePoint)) {
       this.charRefCode = this.charRefCode * 16 + codePoint - 0x37;
     } else if (utils.isAsciiLowerHexDigit(codePoint)) {
@@ -2155,18 +2185,21 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.SEMICOLON) {
       this.state = TokenizerState.NumericCharacterReferenceEndState;
     } else {
-      // TODO error
+      this.parseError(Errors.MissingSemicolonAfterCharacterReference);
       this.reconsumeInState(TokenizerState.NumericCharacterReferenceEndState);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#decimal-character-reference-state
+   */
   private [TokenizerState.DecimalCharacterReferenceState](codePoint: number) {
     if (utils.isAsciiDigit(codePoint)) {
       this.charRefCode = this.charRefCode * 10 + codePoint - 0x30;
     } else if (codePoint === CODE_POINTS.SEMICOLON) {
       this.switchStateTo(TokenizerState.NumericCharacterReferenceEndState);
     } else {
-      // TODO: error
+      this.parseError(Errors.MissingSemicolonAfterCharacterReference);
       this.reconsumeInState(TokenizerState.NumericCharacterReferenceEndState);
     }
   }
@@ -2178,19 +2211,19 @@ export class Tokenizer {
     codePoint: number
   ) {
     if (codePoint === CODE_POINTS.NULL) {
-      // TODO: error
+      this.parseError(Errors.NullCharacterReference);
       this.charRefCode = CODE_POINTS.REPLACEMENT_CHARACTER;
     } else if (this.charRefCode > 0x10ffff) {
-      // TODO: error
+      this.parseError(Errors.CharacterReferenceOutsideUnicodeRange);
       this.charRefCode = CODE_POINTS.REPLACEMENT_CHARACTER;
     } else if (utils.isSurrogate(this.charRefCode)) {
-      // TODO: error
+      this.parseError(Errors.SurrogateCharacterReference);
       this.charRefCode = CODE_POINTS.REPLACEMENT_CHARACTER;
     } else if (
       utils.isUndefinedCodePoint(codePoint) ||
       this.charRefCode === CODE_POINTS.CARRIAGE_RETURN
     ) {
-      // TODO error
+      this.parseError(Errors.ControlCharacterReference);
       const replacement = (C1_CONTROLS_REFERENCE_REPLACEMENTS as any)[
         this.charRefCode
       ];
