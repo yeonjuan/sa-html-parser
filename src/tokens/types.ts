@@ -21,8 +21,8 @@ import type {
 
 export enum AtomTokenType {
   TagName = "TagName",
-  AttrName = "AttrName",
-  AttrValue = "AttrValue",
+  AttrName = "AttributeName",
+  AttrValue = "AttributeValue",
   Punctuator = "Punctuator",
   Characters = "Characters",
   WhiteSpaces = "WhiteSpaces",

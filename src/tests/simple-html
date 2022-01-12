@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <!-- foo -->
+    <div>bar</div>
+    <input id="baz" />
+  </body>
+</html>

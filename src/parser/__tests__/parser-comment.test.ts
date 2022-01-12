@@ -15,7 +15,7 @@ describe("parser: comment", () => {
 
       const [comment] = result.comments;
 
-      expect(comment.type).toBe("Block");
+      expect(comment.type).toBe("Comment");
       expect(comment.value).toBe(" comment ");
       expect(comment.start).toBe(0);
       expect(comment.end).toBe(16);
@@ -33,7 +33,7 @@ describe("parser: comment", () => {
 
       const [comment] = result.comments;
 
-      expect(comment.type).toBe("Block");
+      expect(comment.type).toBe("Comment");
       expect(comment.value).toBe("\n comment\n ");
       expect(comment.start).toBe(0);
       expect(comment.end).toBe(18);
@@ -51,7 +51,7 @@ describe("parser: comment", () => {
 
       const [first, second] = result.comments;
 
-      expect(first.type).toBe("Block");
+      expect(first.type).toBe("Comment");
       expect(first.value).toBe(" comment1 ");
       expect(first.start).toBe(0);
       expect(first.end).toBe(17);
@@ -61,7 +61,7 @@ describe("parser: comment", () => {
       expect(first.loc.end.column).toBe(17);
       expect(first.loc.end.line).toBe(1);
 
-      expect(second.type).toBe("Block");
+      expect(second.type).toBe("Comment");
       expect(second.value).toBe(" comment2 ");
       expect(second.start).toBe(17);
       expect(second.end).toBe(34);

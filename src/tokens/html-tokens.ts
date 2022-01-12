@@ -93,7 +93,7 @@ export class StartTagToken extends BaseHtmlToken<HtmlTokenType.StartTag> {
     this.end = this.closing.end;
 
     this.range = [this.opening.range[0], this.closing.range[1]];
-
+    this.attrs.forEach((attr) => attr.buildLocation());
     this.loc = { start: this.opening.loc.start, end: this.closing.loc.end };
   }
 

@@ -3,7 +3,7 @@
 exports[`parses: snapshot basic 1`] = `
 Root {
   "children": Array [
-    TagNode {
+    ElementNode {
       "attrs": Array [
         AttributeNode {
           "end": 33,
@@ -34,7 +34,7 @@ Root {
               11,
             ],
             "start": 6,
-            "type": "AttrName",
+            "type": "AttributeName",
             "value": "class",
           },
           "range": Array [
@@ -42,7 +42,7 @@ Root {
             33,
           ],
           "start": 6,
-          "type": "#Attribute",
+          "type": "Attribute",
           "value": AttrValueToken {
             "end": 33,
             "loc": Object {
@@ -60,7 +60,7 @@ Root {
               33,
             ],
             "start": 12,
-            "type": "AttrValue",
+            "type": "AttributeValue",
             "value": "\\"_1syGnXOL _3di88A4c\\"",
           },
         },
@@ -93,7 +93,7 @@ Root {
               42,
             ],
             "start": 34,
-            "type": "AttrName",
+            "type": "AttributeName",
             "value": "data-clk",
           },
           "range": Array [
@@ -101,7 +101,7 @@ Root {
             57,
           ],
           "start": 34,
-          "type": "#Attribute",
+          "type": "Attribute",
           "value": AttrValueToken {
             "end": 57,
             "loc": Object {
@@ -119,7 +119,7 @@ Root {
               57,
             ],
             "start": 43,
-            "type": "AttrValue",
+            "type": "AttributeValue",
             "value": "\\"dropbanner1b\\"",
           },
         },
@@ -152,7 +152,7 @@ Root {
               63,
             ],
             "start": 58,
-            "type": "AttrName",
+            "type": "AttributeName",
             "value": "style",
           },
           "range": Array [
@@ -160,7 +160,7 @@ Root {
             119,
           ],
           "start": 58,
-          "type": "#Attribute",
+          "type": "Attribute",
           "value": AttrValueToken {
             "end": 119,
             "loc": Object {
@@ -178,13 +178,13 @@ Root {
               119,
             ],
             "start": 64,
-            "type": "AttrValue",
+            "type": "AttributeValue",
             "value": "\\"padding-right: 20px; color: white; padding-left: 20px\\"",
           },
         },
       ],
       "children": Array [
-        TagNode {
+        ElementNode {
           "attrs": Array [],
           "children": Array [
             TextNode {
@@ -204,12 +204,11 @@ Root {
                 128,
               ],
               "start": 126,
-              "type": "#Text",
+              "type": "Text",
               "value": "웨일 사용자 목소리입니다.",
             },
           ],
-          "end": 126,
-          "endTag": EndTagNode {
+          "close": CloseElementNode {
             "end": 147,
             "loc": Object {
               "end": Object {
@@ -226,11 +225,12 @@ Root {
               147,
             ],
             "start": 140,
-            "type": "#EndTag",
+            "type": "CloseElement",
           },
+          "end": 147,
           "loc": Object {
             "end": Object {
-              "column": 126,
+              "column": 147,
               "line": 1,
             },
             "start": Object {
@@ -238,13 +238,7 @@ Root {
               "line": 1,
             },
           },
-          "range": Array [
-            120,
-            126,
-          ],
-          "selfClosing": false,
-          "start": 120,
-          "startTag": StartTagNode {
+          "open": OpenElementNode {
             "end": 126,
             "loc": Object {
               "end": Object {
@@ -261,14 +255,19 @@ Root {
               126,
             ],
             "start": 120,
-            "type": "#StartTag",
+            "type": "OpenElement",
           },
+          "range": Array [
+            120,
+            147,
+          ],
+          "selfClosing": false,
+          "start": 120,
           "tagName": "span",
-          "type": "span",
+          "type": "Element",
         },
       ],
-      "end": 120,
-      "endTag": EndTagNode {
+      "close": CloseElementNode {
         "end": 154,
         "loc": Object {
           "end": Object {
@@ -285,11 +284,12 @@ Root {
           154,
         ],
         "start": 147,
-        "type": "#EndTag",
+        "type": "CloseElement",
       },
+      "end": 154,
       "loc": Object {
         "end": Object {
-          "column": 120,
+          "column": 154,
           "line": 1,
         },
         "start": Object {
@@ -297,13 +297,7 @@ Root {
           "line": 1,
         },
       },
-      "range": Array [
-        0,
-        120,
-      ],
-      "selfClosing": false,
-      "start": 0,
-      "startTag": StartTagNode {
+      "open": OpenElementNode {
         "end": 120,
         "loc": Object {
           "end": Object {
@@ -320,10 +314,16 @@ Root {
           120,
         ],
         "start": 0,
-        "type": "#StartTag",
+        "type": "OpenElement",
       },
+      "range": Array [
+        0,
+        154,
+      ],
+      "selfClosing": false,
+      "start": 0,
       "tagName": "span",
-      "type": "span",
+      "type": "Element",
     },
   ],
   "comments": Array [],
@@ -344,6 +344,6 @@ Root {
   ],
   "start": 0,
   "tokens": Array [],
-  "type": "#Root",
+  "type": "Root",
 }
 `;
