@@ -1,7 +1,7 @@
 import { AtomTokenType } from "../../tokens";
 import { testTokensLocations as t } from "./test-utils";
 
-describe("tokenizer - attr locations", () => {
+describe("tokenizer: attr locations", () => {
   t("basic", [
     `<div name="value">`,
     [

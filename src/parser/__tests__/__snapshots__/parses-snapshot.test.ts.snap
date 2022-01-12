@@ -1,0 +1,328 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`parses: snapshot basic 1`] = `
+Root {
+  "children": Array [
+    TagNode {
+      "attrs": Array [
+        AttributeNode {
+          "end": 33,
+          "loc": Object {
+            "end": Object {
+              "column": 33,
+              "line": 1,
+            },
+            "start": Object {
+              "column": 6,
+              "line": 1,
+            },
+          },
+          "name": AttrNameToken {
+            "end": 11,
+            "loc": Object {
+              "end": Object {
+                "column": 11,
+                "line": 1,
+              },
+              "start": Object {
+                "column": 6,
+                "line": 1,
+              },
+            },
+            "range": Array [
+              6,
+              11,
+            ],
+            "start": 6,
+            "type": "AttrName",
+            "value": "class",
+          },
+          "range": Array [
+            6,
+            33,
+          ],
+          "start": 6,
+          "type": "#Attribute",
+          "value": AttrValueToken {
+            "end": 33,
+            "loc": Object {
+              "end": Object {
+                "column": 33,
+                "line": 1,
+              },
+              "start": Object {
+                "column": 12,
+                "line": 1,
+              },
+            },
+            "range": Array [
+              12,
+              33,
+            ],
+            "start": 12,
+            "type": "AttrValue",
+            "value": "\\"_1syGnXOL _3di88A4c\\"",
+          },
+        },
+        AttributeNode {
+          "end": 57,
+          "loc": Object {
+            "end": Object {
+              "column": 57,
+              "line": 1,
+            },
+            "start": Object {
+              "column": 34,
+              "line": 1,
+            },
+          },
+          "name": AttrNameToken {
+            "end": 42,
+            "loc": Object {
+              "end": Object {
+                "column": 42,
+                "line": 1,
+              },
+              "start": Object {
+                "column": 34,
+                "line": 1,
+              },
+            },
+            "range": Array [
+              34,
+              42,
+            ],
+            "start": 34,
+            "type": "AttrName",
+            "value": "data-clk",
+          },
+          "range": Array [
+            34,
+            57,
+          ],
+          "start": 34,
+          "type": "#Attribute",
+          "value": AttrValueToken {
+            "end": 57,
+            "loc": Object {
+              "end": Object {
+                "column": 57,
+                "line": 1,
+              },
+              "start": Object {
+                "column": 43,
+                "line": 1,
+              },
+            },
+            "range": Array [
+              43,
+              57,
+            ],
+            "start": 43,
+            "type": "AttrValue",
+            "value": "\\"dropbanner1b\\"",
+          },
+        },
+        AttributeNode {
+          "end": 119,
+          "loc": Object {
+            "end": Object {
+              "column": 119,
+              "line": 1,
+            },
+            "start": Object {
+              "column": 58,
+              "line": 1,
+            },
+          },
+          "name": AttrNameToken {
+            "end": 63,
+            "loc": Object {
+              "end": Object {
+                "column": 63,
+                "line": 1,
+              },
+              "start": Object {
+                "column": 58,
+                "line": 1,
+              },
+            },
+            "range": Array [
+              58,
+              63,
+            ],
+            "start": 58,
+            "type": "AttrName",
+            "value": "style",
+          },
+          "range": Array [
+            58,
+            119,
+          ],
+          "start": 58,
+          "type": "#Attribute",
+          "value": AttrValueToken {
+            "end": 119,
+            "loc": Object {
+              "end": Object {
+                "column": 119,
+                "line": 1,
+              },
+              "start": Object {
+                "column": 64,
+                "line": 1,
+              },
+            },
+            "range": Array [
+              64,
+              119,
+            ],
+            "start": 64,
+            "type": "AttrValue",
+            "value": "\\"padding-right: 20px; color: white; padding-left: 20px\\"",
+          },
+        },
+      ],
+      "children": Array [
+        TagNode {
+          "attrs": Array [],
+          "children": Array [],
+          "end": 126,
+          "endTag": EndTagNode {
+            "end": 147,
+            "loc": Object {
+              "end": Object {
+                "column": 147,
+                "line": 1,
+              },
+              "start": Object {
+                "column": 140,
+                "line": 1,
+              },
+            },
+            "range": Array [
+              140,
+              147,
+            ],
+            "start": 140,
+            "type": "#EndTag",
+          },
+          "loc": Object {
+            "end": Object {
+              "column": 126,
+              "line": 1,
+            },
+            "start": Object {
+              "column": 120,
+              "line": 1,
+            },
+          },
+          "range": Array [
+            120,
+            126,
+          ],
+          "selfClosing": false,
+          "start": 120,
+          "startTag": StartTagNode {
+            "end": 126,
+            "loc": Object {
+              "end": Object {
+                "column": 126,
+                "line": 1,
+              },
+              "start": Object {
+                "column": 120,
+                "line": 1,
+              },
+            },
+            "range": Array [
+              120,
+              126,
+            ],
+            "start": 120,
+            "type": "#StartTag",
+          },
+          "tagName": "span",
+          "type": "span",
+        },
+      ],
+      "end": 120,
+      "endTag": EndTagNode {
+        "end": 154,
+        "loc": Object {
+          "end": Object {
+            "column": 154,
+            "line": 1,
+          },
+          "start": Object {
+            "column": 147,
+            "line": 1,
+          },
+        },
+        "range": Array [
+          147,
+          154,
+        ],
+        "start": 147,
+        "type": "#EndTag",
+      },
+      "loc": Object {
+        "end": Object {
+          "column": 120,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        0,
+        120,
+      ],
+      "selfClosing": false,
+      "start": 0,
+      "startTag": StartTagNode {
+        "end": 120,
+        "loc": Object {
+          "end": Object {
+            "column": 120,
+            "line": 1,
+          },
+          "start": Object {
+            "column": 0,
+            "line": 1,
+          },
+        },
+        "range": Array [
+          0,
+          120,
+        ],
+        "start": 0,
+        "type": "#StartTag",
+      },
+      "tagName": "span",
+      "type": "span",
+    },
+  ],
+  "comments": Array [],
+  "end": 0,
+  "loc": Object {
+    "end": Object {
+      "column": 0,
+      "line": 1,
+    },
+    "start": Object {
+      "column": 0,
+      "line": 1,
+    },
+  },
+  "range": Array [
+    0,
+    0,
+  ],
+  "start": 0,
+  "tokens": Array [],
+  "type": "#Root",
+}
+`;

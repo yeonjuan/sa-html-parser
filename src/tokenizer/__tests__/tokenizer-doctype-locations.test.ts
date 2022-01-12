@@ -1,7 +1,7 @@
 import { AtomTokenType } from "../../tokens";
 import { testTokensLocations as t } from "./test-utils";
 
-describe("tokenizer - doctype locations", () => {
+describe("tokenizer: doctype locations", () => {
   t("basic", [
     "<!DOCTYPE html>",
     [

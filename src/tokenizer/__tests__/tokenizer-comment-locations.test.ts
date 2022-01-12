@@ -1,7 +1,7 @@
 import { AtomTokenType } from "../../tokens";
 import { testTokensLocations as t } from "./test-utils";
 
-describe("tokenizer - comment locations", () => {
+describe("tokenizer:comment locations", () => {
   t("basic", [
     "<!-- comment -->",
     [
