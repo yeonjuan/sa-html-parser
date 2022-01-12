@@ -165,4 +165,16 @@ describe("parser: element", () => {
     const input = div.children[0] as TagNode;
     expect(input.type).toBe("input");
   });
+
+  test("content", () => {
+    const result = parser.parse("<div>text</div>");
+
+    expect(result.children.length).toBe(1);
+
+    const div = result.children[0] as TagNode;
+    expect(div.type).toBe("div");
+
+    const [text] = div.children;
+    expect(text.type).toBe("#Text");
+  });
 });

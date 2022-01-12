@@ -5,9 +5,10 @@ import {
   Root,
   AnyNode,
   EndTagNode,
+  TextNode,
 } from "../nodes";
 import { Tokenizer } from "../tokenizer/tokenizer";
-import { AnyHtmlToken, HtmlTokenType } from "../tokens";
+import { AnyHtmlToken, CharacterLikeToken, HtmlTokenType } from "../tokens";
 import { OpenElementStack } from "./open-element-stack";
 import * as utils from "../common/utils";
 
@@ -50,6 +51,20 @@ export class Parser {
     this.openElementStack.top.children.push(node);
   }
 
+  private insertTextToCurrent(charToken: CharacterLikeToken) {
+    if (this.openElementStack.top.children?.length) {
+      const lastChild: any = utils.last(this.openElementStack.top.children);
+      if (lastChild.type === "#Text") {
+        const textNode = lastChild as TextNode;
+        textNode.value += charToken.value.value;
+        textNode.end = charToken.end;
+        textNode.loc.end = charToken.value.loc.end;
+        return;
+      }
+    }
+    this.insertToCurrent(TextNode.fromToken(charToken));
+  }
+
   private pushToOpenStack(node: any) {
     debugger;
     this.openElementStack.push(node);
@@ -82,6 +97,8 @@ export class Parser {
       } else {
         this.pushToOpenStack(tagNode);
       }
+    } else if (token.type === HtmlTokenType.CharacterLike) {
+      this.insertTextToCurrent(token);
     } else if (token.type === HtmlTokenType.EndTag) {
       const endTagNode = EndTagNode.fromToken(token);
 

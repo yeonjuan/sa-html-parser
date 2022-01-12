@@ -186,7 +186,28 @@ Root {
       "children": Array [
         TagNode {
           "attrs": Array [],
-          "children": Array [],
+          "children": Array [
+            TextNode {
+              "end": 140,
+              "loc": Object {
+                "end": Object {
+                  "column": 140,
+                  "line": 1,
+                },
+                "start": Object {
+                  "column": 126,
+                  "line": 1,
+                },
+              },
+              "range": Array [
+                126,
+                128,
+              ],
+              "start": 126,
+              "type": "#Text",
+              "value": "웨일 사용자 목소리입니다.",
+            },
+          ],
           "end": 126,
           "endTag": EndTagNode {
             "end": 147,

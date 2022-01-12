@@ -5,7 +5,7 @@ import * as path from "path";
 describe("large", () => {
   let parser: Parser;
   const largeHTML = fs.readFileSync(
-    path.join(__dirname, "large.html"),
+    path.join(__dirname, "large-html"),
     "utf-8"
   );
 

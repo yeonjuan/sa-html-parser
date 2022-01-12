@@ -6,6 +6,7 @@ import {
   AttributeToken,
   AttrNameToken,
   AttrValueToken,
+  CharacterLikeToken,
   CommentToken,
   DoctypeToken,
   EndTagToken,
@@ -61,6 +62,21 @@ export class EndTagNode extends BaseNode<"#EndTag"> {
   }
   static fromToken(token: EndTagToken) {
     return new EndTagNode(token.start, token.end, token.loc);
+  }
+}
+
+export class TextNode extends BaseNode<"#Text"> {
+  private constructor(
+    public value: string,
+    public start: number,
+    public end: number,
+    public loc: SourceCodeLocation
+  ) {
+    super("#Text", start, end, loc);
+  }
+
+  static fromToken(token: CharacterLikeToken) {
+    return new TextNode(token.value.value, token.start, token.end, token.loc);
   }
 }
 
@@ -128,16 +144,6 @@ export class CommentNode extends BaseNode<"Block"> {
         end: token.closing.loc.end,
       }
     );
-  }
-}
-
-export class TextNode extends BaseNode<"#Text"> {
-  constructor(
-    public start: number,
-    public end: number,
-    public loc: SourceCodeLocation
-  ) {
-    super("#Text", start, end, loc);
   }
 }
 
