@@ -1724,6 +1724,9 @@ export class Tokenizer {
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#before-doctype-public-identifier-state
+   */
   private [TokenizerState.BeforeDoctypePublicIdentifierState](
     codePoint: number
   ) {
@@ -1738,60 +1741,73 @@ export class Tokenizer {
         TokenizerState.DoctypePublicIdentifierSingleQuotedState
       );
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: error
+      this.parseError(Errors.MissingDoctypePublicIdentifier);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: Error
+      this.parseError(Errors.EofInDoctype);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      // TODO: error
+      this.parseError(Errors.MissingQuoteBeforeDoctypePublicIdentifier);
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#doctype-public-identifier-(double-quoted)-state
+   */
   private [TokenizerState.DoctypePublicIdentifierDoubleQuotedState](
     codePoint: number
   ) {
     if (codePoint === CODE_POINTS.QUOTATION_MARK) {
       this.switchStateTo(TokenizerState.AfterDoctypePublicIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      // This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's public identifier.
+      this.parseError(Errors.UnexpectedNullCharacter);
+      this.appendCharToDoctypePublicId(REPLACEMENT_CHARACTER);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
+      this.parseError(Errors.AbruptDoctypePublicIdentifier);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
-      // This is an abrupt-doctype-public-identifier parse error. Set the current DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit the current DOCTYPE token.
+      (this.currentToken as DoctypeToken).forceQuirks = true;
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInDoctype);
+      (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
-      // This is an eof-in-doctype parse error. Set the current DOCTYPE token's force-quirks flag to on. Emit the current DOCTYPE token. Emit an end-of-file token.
     } else {
       this.appendCharToDoctypePublicId(utils.toCharacter(codePoint));
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#doctype-public-identifier-(single-quoted)-state
+   */
   private [TokenizerState.DoctypePublicIdentifierSingleQuotedState](
     codePoint: number
   ) {
     if (codePoint === CODE_POINTS.APOSTROPHE) {
       this.switchStateTo(TokenizerState.AfterDoctypePublicIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      // This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's public identifier.
+      this.parseError(Errors.UnexpectedNullCharacter);
+      this.appendCharToDoctypePublicId(REPLACEMENT_CHARACTER);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      // TODO: error
+      this.parseError(Errors.AbruptDoctypePublicIdentifier);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
+      this.parseError(Errors.EofInDoctype);
+      (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
-      // This is an eof-in-doctype parse error. Set the current DOCTYPE token's force-quirks flag to on. Emit the current DOCTYPE token. Emit an end-of-file token.
     } else {
       this.appendCharToDoctypePublicId(utils.toCharacter(codePoint));
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#after-doctype-public-identifier-state
+   */
   private [TokenizerState.AfterDoctypePublicIdentifierState](
     codePoint: number
   ) {
@@ -1802,29 +1818,34 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.QUOTATION_MARK) {
-      // TODO: error;
+      this.parseError(
+        Errors.MissingWhitespaceBetweenDoctypePublicAndSystemIdentifiers
+      );
       (this.currentToken as DoctypeToken).systemId.value = "";
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierDoubleQuotedState
       );
     } else if (codePoint === CODE_POINTS.APOSTROPHE) {
-      // TODO: error
+      this.parseError(
+        Errors.MissingWhitespaceBetweenDoctypePublicAndSystemIdentifiers
+      );
       (this.currentToken as DoctypeToken).systemId.value = "";
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierSingleQuotedState
       );
-      // This is a missing-whitespace-between-doctype-public-and-system-identifiers parse error. Set the current DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (single-quoted) state.
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInDoctype);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      // TODO: error
+      this.parseError(Errors.MissingQuoteBeforeDoctypeSystemIdentifier);
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
-      // This is a missing-quote-before-doctype-system-identifier parse error. Set the current DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
     }
   }
 
+  /**
+   * @see https://html.spec.whatwg.org/multipage/parsing.html#between-doctype-public-and-system-identifiers-state
+   */
   private [TokenizerState.BetweenDoctypePublicAndSystemIdentifiersState](
     codePoint: number
   ) {
@@ -1833,25 +1854,23 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.QUOTATION_MARK) {
-      // Set the current DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (double-quoted) state.
-      // TODO: error
+      this.appendCharToDoctypeSystemId("");
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierDoubleQuotedState
       );
     } else if (codePoint === CODE_POINTS.APOSTROPHE) {
-      // TODO: error
+      this.appendCharToDoctypeSystemId("");
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierSingleQuotedState
       );
-      // Set the current DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (single-quoted) state.
     } else if (codePoint === CODE_POINTS.EOF) {
-      // TODO: error
+      this.parseError(Errors.EofInDoctype);
       this.emitCurrentToken();
       this.emitEofToken();
-      // This is an eof-in-doctype parse error. Set the current DOCTYPE token's force-quirks flag to on. Emit the current DOCTYPE token. Emit an end-of-file token.
     } else {
+      this.parseError(Errors.MissingQuoteBeforeDoctypeSystemIdentifier);
+      (this.currentToken as DoctypeToken).forceQuirks = true;
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
-      // This is a missing-quote-before-doctype-system-identifier parse error. Set the current DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
     }
   }
 
