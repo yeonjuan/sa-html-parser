@@ -29,6 +29,7 @@ import {
   AtomTokenType,
   WhiteSpacesToken,
 } from "../tokens";
+import { Position } from "../common/types";
 
 export class Tokenizer {
   private posTracker = new PositionTracker();
@@ -136,11 +137,20 @@ export class Tokenizer {
     this.currentToken.opening = opening;
   }
 
-  private createCommentToken() {
-    const position = this.posTracker.getStartPosition();
-    const index = this.posTracker.getStartRange();
+  private createCommentToken(start?: {
+    value: string;
+    pos: Position;
+    index: number;
+  }) {
+    const position = start?.pos ?? this.posTracker.getStartPosition();
+    const index = start?.index ?? this.posTracker.getStartRange();
     this.currentToken = new CommentToken();
-    this.currentToken.data = new CharactersToken("", index, position);
+    this.currentToken.data = new CharactersToken(
+      start?.value ?? "",
+      index,
+      position
+    );
+
     const opening = this.punctuatorTokens.pop();
     if (!opening) {
       throw new Error("TODO");
@@ -289,7 +299,9 @@ export class Tokenizer {
   }
 
   private appendCharToCurrentCommentTokenData(char: string) {
+    // console.log(TokenizerState[this.state], `"${char}"`);
     const commentToken = this.currentToken as CommentToken;
+
     if (!commentToken.data.value.length) {
       commentToken.data.loc = this.posTracker.getLocation();
       const range = this.posTracker.getRange();
@@ -398,7 +410,7 @@ export class Tokenizer {
     pattern: number[],
     startCodePoint: number,
     caseSensitive: boolean,
-    onMatch: (pattern: number[]) => void
+    onMatch?: (pattern: number[], loc: { pos: Position; index: number }) => void
   ) {
     let consumedCount = 0;
     let isMatch = true;
@@ -407,6 +419,8 @@ export class Tokenizer {
     let cp = startCodePoint;
     let patternCp: number | string;
 
+    const pos = this.posTracker.getStartPosition();
+    const index = this.posTracker.getStartRange();
     for (; patternPos < patternLength; patternPos++) {
       if (patternPos > 0) {
         cp = this.consume();
@@ -434,7 +448,7 @@ export class Tokenizer {
       }
     }
     if (isMatch && onMatch) {
-      onMatch(pattern);
+      onMatch(pattern, { pos, index });
     }
 
     return isMatch;
@@ -1324,6 +1338,7 @@ export class Tokenizer {
    */
   private [TokenizerState.BogusCommentState](codePoint: number) {
     if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
+      this.appendToLastPunctuatorTokens(">");
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
@@ -1373,15 +1388,11 @@ export class Tokenizer {
         CODE_POINT_SEQUENCES.CDATA_START_STRING,
         codePoint,
         true,
-        (pattern) => {
-          this.appendToLastPunctuatorTokens(
-            pattern.map((p) => utils.toCharacter(p)).join("")
-          );
+        (_, { pos, index }) => {
+          this.createCommentToken({ pos, index, value: "[CDATA[" });
         }
       )
     ) {
-      // this._createCommentToken();
-      // this.currentToken.data = "[CDATA[";
       this.switchStateTo(TokenizerState.BogusCommentState);
     } else {
       this.switchStateTo(TokenizerState.BogusCommentState);
