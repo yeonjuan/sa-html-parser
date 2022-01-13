@@ -1,0 +1,584 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`large simple.html 1`] = `
+Root {
+  "children": Array [
+    DoctypeNode {
+      "end": 15,
+      "loc": Object {
+        "end": Object {
+          "column": 15,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        0,
+        15,
+      ],
+      "start": 0,
+      "type": "DocumentType",
+    },
+    TextNode {
+      "end": 16,
+      "loc": Object {
+        "end": Object {
+          "column": 16,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 15,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        15,
+        16,
+      ],
+      "start": 15,
+      "type": "Text",
+      "value": "
+",
+    },
+    ElementNode {
+      "attrs": Array [],
+      "children": Array [
+        TextNode {
+          "end": 25,
+          "loc": Object {
+            "end": Object {
+              "column": 2,
+              "line": 3,
+            },
+            "start": Object {
+              "column": 6,
+              "line": 2,
+            },
+          },
+          "range": Array [
+            22,
+            25,
+          ],
+          "start": 22,
+          "type": "Text",
+          "value": "
+  ",
+        },
+        ElementNode {
+          "attrs": Array [],
+          "children": Array [
+            TextNode {
+              "end": 36,
+              "loc": Object {
+                "end": Object {
+                  "column": 4,
+                  "line": 4,
+                },
+                "start": Object {
+                  "column": 8,
+                  "line": 3,
+                },
+              },
+              "range": Array [
+                31,
+                36,
+              ],
+              "start": 31,
+              "type": "Text",
+              "value": "
+    ",
+            },
+            CommentNode {
+              "end": 48,
+              "loc": Object {
+                "end": Object {
+                  "column": 16,
+                  "line": 4,
+                },
+                "start": Object {
+                  "column": 4,
+                  "line": 4,
+                },
+              },
+              "range": Array [
+                36,
+                48,
+              ],
+              "start": 36,
+              "type": "Comment",
+              "value": " foo ",
+            },
+            CommentNode {
+              "end": 48,
+              "loc": Object {
+                "end": Object {
+                  "column": 16,
+                  "line": 4,
+                },
+                "start": Object {
+                  "column": 4,
+                  "line": 4,
+                },
+              },
+              "range": Array [
+                36,
+                48,
+              ],
+              "start": 36,
+              "type": "Comment",
+              "value": " foo ",
+            },
+            TextNode {
+              "end": 53,
+              "loc": Object {
+                "end": Object {
+                  "column": 4,
+                  "line": 5,
+                },
+                "start": Object {
+                  "column": 16,
+                  "line": 4,
+                },
+              },
+              "range": Array [
+                48,
+                53,
+              ],
+              "start": 48,
+              "type": "Text",
+              "value": "
+    ",
+            },
+            ElementNode {
+              "attrs": Array [],
+              "children": Array [
+                TextNode {
+                  "end": 61,
+                  "loc": Object {
+                    "end": Object {
+                      "column": 12,
+                      "line": 5,
+                    },
+                    "start": Object {
+                      "column": 9,
+                      "line": 5,
+                    },
+                  },
+                  "range": Array [
+                    58,
+                    61,
+                  ],
+                  "start": 58,
+                  "type": "Text",
+                  "value": "bar",
+                },
+              ],
+              "close": CloseElementNode {
+                "end": 67,
+                "loc": Object {
+                  "end": Object {
+                    "column": 18,
+                    "line": 5,
+                  },
+                  "start": Object {
+                    "column": 12,
+                    "line": 5,
+                  },
+                },
+                "range": Array [
+                  61,
+                  67,
+                ],
+                "start": 61,
+                "type": "CloseElement",
+              },
+              "end": 67,
+              "loc": Object {
+                "end": Object {
+                  "column": 18,
+                  "line": 5,
+                },
+                "start": Object {
+                  "column": 4,
+                  "line": 5,
+                },
+              },
+              "open": OpenElementNode {
+                "end": 58,
+                "loc": Object {
+                  "end": Object {
+                    "column": 9,
+                    "line": 5,
+                  },
+                  "start": Object {
+                    "column": 4,
+                    "line": 5,
+                  },
+                },
+                "range": Array [
+                  53,
+                  58,
+                ],
+                "start": 53,
+                "type": "OpenElement",
+              },
+              "range": Array [
+                53,
+                67,
+              ],
+              "selfClosing": false,
+              "start": 53,
+              "tagName": "div",
+              "type": "Element",
+            },
+            TextNode {
+              "end": 72,
+              "loc": Object {
+                "end": Object {
+                  "column": 4,
+                  "line": 6,
+                },
+                "start": Object {
+                  "column": 18,
+                  "line": 5,
+                },
+              },
+              "range": Array [
+                67,
+                72,
+              ],
+              "start": 67,
+              "type": "Text",
+              "value": "
+    ",
+            },
+            ElementNode {
+              "attrs": Array [
+                AttributeNode {
+                  "end": 87,
+                  "loc": Object {
+                    "end": Object {
+                      "column": 19,
+                      "line": 6,
+                    },
+                    "start": Object {
+                      "column": 11,
+                      "line": 6,
+                    },
+                  },
+                  "name": AttrNameToken {
+                    "end": 81,
+                    "loc": Object {
+                      "end": Object {
+                        "column": 13,
+                        "line": 6,
+                      },
+                      "start": Object {
+                        "column": 11,
+                        "line": 6,
+                      },
+                    },
+                    "range": Array [
+                      79,
+                      81,
+                    ],
+                    "start": 79,
+                    "type": "AttributeName",
+                    "value": "id",
+                  },
+                  "range": Array [
+                    79,
+                    87,
+                  ],
+                  "start": 79,
+                  "type": "Attribute",
+                  "value": AttrValueToken {
+                    "end": 87,
+                    "loc": Object {
+                      "end": Object {
+                        "column": 19,
+                        "line": 6,
+                      },
+                      "start": Object {
+                        "column": 14,
+                        "line": 6,
+                      },
+                    },
+                    "range": Array [
+                      82,
+                      87,
+                    ],
+                    "start": 82,
+                    "type": "AttributeValue",
+                    "value": "\\"baz\\"",
+                  },
+                },
+              ],
+              "children": Array [],
+              "close": null,
+              "end": 90,
+              "loc": Object {
+                "end": Object {
+                  "column": 22,
+                  "line": 6,
+                },
+                "start": Object {
+                  "column": 4,
+                  "line": 6,
+                },
+              },
+              "open": OpenElementNode {
+                "end": 90,
+                "loc": Object {
+                  "end": Object {
+                    "column": 22,
+                    "line": 6,
+                  },
+                  "start": Object {
+                    "column": 4,
+                    "line": 6,
+                  },
+                },
+                "range": Array [
+                  72,
+                  90,
+                ],
+                "start": 72,
+                "type": "OpenElement",
+              },
+              "range": Array [
+                72,
+                90,
+              ],
+              "selfClosing": true,
+              "start": 72,
+              "tagName": "input",
+              "type": "Element",
+            },
+            TextNode {
+              "end": 93,
+              "loc": Object {
+                "end": Object {
+                  "column": 2,
+                  "line": 7,
+                },
+                "start": Object {
+                  "column": 22,
+                  "line": 6,
+                },
+              },
+              "range": Array [
+                90,
+                93,
+              ],
+              "start": 90,
+              "type": "Text",
+              "value": "
+  ",
+            },
+          ],
+          "close": CloseElementNode {
+            "end": 100,
+            "loc": Object {
+              "end": Object {
+                "column": 9,
+                "line": 7,
+              },
+              "start": Object {
+                "column": 2,
+                "line": 7,
+              },
+            },
+            "range": Array [
+              93,
+              100,
+            ],
+            "start": 93,
+            "type": "CloseElement",
+          },
+          "end": 100,
+          "loc": Object {
+            "end": Object {
+              "column": 9,
+              "line": 7,
+            },
+            "start": Object {
+              "column": 2,
+              "line": 3,
+            },
+          },
+          "open": OpenElementNode {
+            "end": 31,
+            "loc": Object {
+              "end": Object {
+                "column": 8,
+                "line": 3,
+              },
+              "start": Object {
+                "column": 2,
+                "line": 3,
+              },
+            },
+            "range": Array [
+              25,
+              31,
+            ],
+            "start": 25,
+            "type": "OpenElement",
+          },
+          "range": Array [
+            25,
+            100,
+          ],
+          "selfClosing": false,
+          "start": 25,
+          "tagName": "body",
+          "type": "Element",
+        },
+        TextNode {
+          "end": 101,
+          "loc": Object {
+            "end": Object {
+              "column": 10,
+              "line": 7,
+            },
+            "start": Object {
+              "column": 9,
+              "line": 7,
+            },
+          },
+          "range": Array [
+            100,
+            101,
+          ],
+          "start": 100,
+          "type": "Text",
+          "value": "
+",
+        },
+      ],
+      "close": CloseElementNode {
+        "end": 108,
+        "loc": Object {
+          "end": Object {
+            "column": 7,
+            "line": 8,
+          },
+          "start": Object {
+            "column": 0,
+            "line": 8,
+          },
+        },
+        "range": Array [
+          101,
+          108,
+        ],
+        "start": 101,
+        "type": "CloseElement",
+      },
+      "end": 108,
+      "loc": Object {
+        "end": Object {
+          "column": 7,
+          "line": 8,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 2,
+        },
+      },
+      "open": OpenElementNode {
+        "end": 22,
+        "loc": Object {
+          "end": Object {
+            "column": 6,
+            "line": 2,
+          },
+          "start": Object {
+            "column": 0,
+            "line": 2,
+          },
+        },
+        "range": Array [
+          16,
+          22,
+        ],
+        "start": 16,
+        "type": "OpenElement",
+      },
+      "range": Array [
+        16,
+        108,
+      ],
+      "selfClosing": false,
+      "start": 16,
+      "tagName": "html",
+      "type": "Element",
+    },
+    TextNode {
+      "end": 109,
+      "loc": Object {
+        "end": Object {
+          "column": 8,
+          "line": 8,
+        },
+        "start": Object {
+          "column": 7,
+          "line": 8,
+        },
+      },
+      "range": Array [
+        108,
+        109,
+      ],
+      "start": 108,
+      "type": "Text",
+      "value": "
+",
+    },
+  ],
+  "comments": Array [
+    CommentNode {
+      "end": 48,
+      "loc": Object {
+        "end": Object {
+          "column": 16,
+          "line": 4,
+        },
+        "start": Object {
+          "column": 4,
+          "line": 4,
+        },
+      },
+      "range": Array [
+        36,
+        48,
+      ],
+      "start": 36,
+      "type": "Comment",
+      "value": " foo ",
+    },
+  ],
+  "end": 0,
+  "loc": Object {
+    "end": Object {
+      "column": 0,
+      "line": 1,
+    },
+    "start": Object {
+      "column": 0,
+      "line": 1,
+    },
+  },
+  "range": Array [
+    0,
+    0,
+  ],
+  "start": 0,
+  "tokens": Array [],
+  "type": "Root",
+}
+`;

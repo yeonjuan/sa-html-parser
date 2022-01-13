@@ -1,3 +1,4 @@
+import { AnyNode } from "../nodes";
 import { CODE_POINTS } from "./constants";
 
 const UNDEFINED_CODE_POINTS = [
@@ -147,3 +148,17 @@ export const isAsciiLowerHexDigit = (codePoint: number): boolean =>
   codePoint <= CODE_POINTS.LATIN_SMALL_F;
 
 export const last = <T>(arr: T[]): T | undefined => arr[arr.length - 1];
+
+export const getChildrenRecursively = (node: AnyNode) => {
+  const children: any[] = [];
+  if (node.type === "Element") {
+    if (node.close) {
+      return children;
+    }
+    node.children.forEach((child: any) => {
+      children.push(child);
+      children.push(...getChildrenRecursively(child));
+    });
+  }
+  return children;
+};

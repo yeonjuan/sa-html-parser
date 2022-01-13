@@ -1,14 +1,25 @@
 import {
   CommentNode,
   DoctypeNode,
-  TagNode,
   Root,
   AnyNode,
-  EndTagNode,
+  ElementNode,
+  CloseElementNode,
   TextNode,
 } from "../nodes";
 import { Tokenizer } from "../tokenizer/tokenizer";
-import { AnyHtmlToken, CharacterLikeToken, HtmlTokenType } from "../tokens";
+import {
+  AnyHtmlToken,
+  AttributeToken,
+  CharacterLikeToken,
+  CommentToken,
+  DoctypeToken,
+  EndTagToken,
+  EofToken,
+  HtmlTokenType,
+  NullToken,
+  StartTagToken,
+} from "../tokens";
 import { OpenElementStack } from "./open-element-stack";
 import * as utils from "../common/utils";
 
@@ -51,27 +62,12 @@ export class Parser {
     this.openElementStack.top.children.push(node);
   }
 
-  private insertTextToCurrent(charToken: CharacterLikeToken) {
-    if (this.openElementStack.top.children?.length) {
-      const lastChild: any = utils.last(this.openElementStack.top.children);
-      if (lastChild.type === "#Text") {
-        const textNode = lastChild as TextNode;
-        textNode.value += charToken.value.value;
-        textNode.end = charToken.end;
-        textNode.loc.end = charToken.value.loc.end;
-        return;
-      }
-    }
-    this.insertToCurrent(TextNode.fromToken(charToken));
-  }
-
   private pushToOpenStack(node: any) {
-    debugger;
     this.openElementStack.push(node);
   }
 
-  private popFromOpenStackUntilTagName(tagName: string): any[] {
-    let unclosedElements: any[] = [];
+  private popFromOpenStackUntilTagName(tagName: string): null | any[] {
+    let unclosedElements: null | any[] = null;
     for (let i = this.openElementStack.stackTop; i >= 0; i--) {
       const element = this.openElementStack.elements[i];
       if (element.tagName === tagName) {
@@ -83,47 +79,74 @@ export class Parser {
   }
 
   private process(token: AnyHtmlToken) {
-    if (token.type === HtmlTokenType.Comment) {
-      const commentNode = CommentNode.fromToken(token);
-      this.insertCommentNodeToRoot(commentNode);
-    } else if (token.type === HtmlTokenType.Doctype) {
-      const doctypeNode = DoctypeNode.fromToken(token);
-      this.insertToCurrent(doctypeNode);
-    } else if (token.type === HtmlTokenType.StartTag) {
-      const tagNode = TagNode.fromToken(token);
-      if (token.selfClosing) {
-        tagNode.selfClosing = true;
-        this.insertToCurrent(tagNode);
-      } else {
-        this.pushToOpenStack(tagNode);
-      }
-    } else if (token.type === HtmlTokenType.CharacterLike) {
-      this.insertTextToCurrent(token);
-    } else if (token.type === HtmlTokenType.EndTag) {
-      const endTagNode = EndTagNode.fromToken(token);
+    this[token.type]?.(token as any);
+  }
 
-      const poppedElements = this.popFromOpenStackUntilTagName(
-        token.tagName.value
-      );
-      const lastElement = utils.last(poppedElements);
-      lastElement.endTag = endTagNode;
+  private [HtmlTokenType.Comment](token: CommentToken) {
+    const comment = CommentNode.fromToken(token);
+    this.insertToCurrent(comment);
+    this.insertCommentNodeToRoot(comment);
+  }
 
-      this.insertToCurrent(lastElement);
-      if (poppedElements.length) {
-        for (let i = poppedElements.length - 2; i >= 0; i--) {
-          lastElement.children.push(poppedElements[i]);
-        }
-      }
-    } else if (token.type === HtmlTokenType.EOF) {
-      const poppedElements = this.openElementStack.popUntilBeforeElementPopped(
-        this.root
-      );
-      if (poppedElements.length) {
-        for (let i = poppedElements.length - 1; i >= 0; i--) {
-          this.root.children.push(poppedElements[i]);
-        }
-      }
-      this.running = false;
+  private [HtmlTokenType.Doctype](token: DoctypeToken) {
+    this.insertToCurrent(DoctypeNode.fromToken(token));
+  }
+
+  private [HtmlTokenType.StartTag](token: StartTagToken) {
+    const tagNode = ElementNode.fromToken(token);
+    this.insertToCurrent(tagNode);
+    if (token.selfClosing) {
+      tagNode.selfClosing = true;
+    } else {
+      this.pushToOpenStack(tagNode);
     }
   }
+
+  private [HtmlTokenType.EndTag](token: EndTagToken) {
+    const close = CloseElementNode.fromToken(token);
+    const poppedElements = this.popFromOpenStackUntilTagName(
+      token.tagName.value
+    );
+    if (!poppedElements) {
+      throw new Error();
+    }
+    const element = utils.last(poppedElements)!;
+    element.children = utils.getChildrenRecursively(element);
+    element.close = close;
+    element.end = close.end;
+    element.loc.end = close.loc.end;
+    element.range[1] = close.range[1];
+  }
+
+  private [HtmlTokenType.CharacterLike](token: CharacterLikeToken) {
+    if (this.openElementStack.top.children?.length) {
+      const lastChild: any = utils.last(this.openElementStack.top.children);
+      if (lastChild.type === "Text") {
+        const textNode = lastChild as TextNode;
+        textNode.value += token.value.value;
+        textNode.end = token.end;
+        textNode.loc.end = token.value.loc.end;
+        return;
+      }
+    }
+    this.insertToCurrent(TextNode.fromToken(token));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private [HtmlTokenType.EOF](token: EofToken) {
+    const poppedElements = this.openElementStack.popUntilBeforeElementPopped(
+      this.root
+    );
+    if (poppedElements.length) {
+      for (let i = poppedElements.length - 2; i >= 0; i--) {
+        this.root.children.push(poppedElements[i]);
+      }
+    }
+    this.running = false;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private [HtmlTokenType.Null](token: NullToken) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private [HtmlTokenType.Attribute](token: AttributeToken) {}
 }

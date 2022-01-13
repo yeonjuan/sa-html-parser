@@ -12,7 +12,7 @@ describe("parser: doctype", () => {
     expect(result.children.length).toBe(1);
 
     const [doctype] = result.children;
-    expect(doctype.type).toBe("#DocumentType");
+    expect(doctype.type).toBe("DocumentType");
     expect(doctype.start).toBe(0);
     expect(doctype.end).toBe(15);
 

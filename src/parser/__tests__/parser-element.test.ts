@@ -1,4 +1,4 @@
-import { TagNode } from "../../nodes";
+import { ElementNode } from "../../nodes";
 import { Parser } from "../parser";
 
 describe("parser: element", () => {
@@ -13,18 +13,18 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const [div] = result.children as TagNode[];
+    const [div] = result.children as ElementNode[];
 
     expect(div.selfClosing).toBe(false);
-    expect(div.type).toBe("div");
-    expect(div.startTag.type).toBe("#StartTag");
-    expect(div.endTag?.type).toBe("#EndTag");
+    expect(div.type).toBe("Element");
+    expect(div.open.type).toBe("OpenElement");
+    expect(div.close?.type).toBe("CloseElement");
     expect(div.start).toBe(0);
-    expect(div.end).toBe(5);
-    expect(div.range).toStrictEqual([0, 5]);
+    expect(div.end).toBe(11);
+    expect(div.range).toStrictEqual([0, 11]);
     expect(div.loc.start.column).toBe(0);
     expect(div.loc.start.line).toBe(1);
-    expect(div.loc.end.column).toBe(5);
+    expect(div.loc.end.column).toBe(11);
     expect(div.loc.end.line).toBe(1);
   });
 
@@ -33,12 +33,12 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const [div] = result.children as TagNode[];
+    const [div] = result.children as ElementNode[];
 
     expect(div.selfClosing).toBe(true);
-    expect(div.type).toBe("div");
+    expect(div.type).toBe("Element");
     expect(div.tagName).toBe("div");
-    expect(div.endTag).toBe(null);
+    expect(div.close).toBe(null);
     expect(div.start).toBe(0);
     expect(div.end).toBe(6);
     expect(div.range).toStrictEqual([0, 6]);
@@ -53,22 +53,22 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const [outer] = result.children as TagNode[];
+    const [outer] = result.children as ElementNode[];
 
-    expect(outer.type).toBe("div");
+    expect(outer.type).toBe("Element");
     expect(outer.tagName).toBe("div");
-    expect(outer.endTag).toBeTruthy();
+    expect(outer.close).toBeTruthy();
     expect(outer.start).toBe(0);
-    expect(outer.end).toBe(5);
-    expect(outer.range).toStrictEqual([0, 5]);
+    expect(outer.end).toBe(20);
+    expect(outer.range).toStrictEqual([0, 20]);
     expect(outer.loc.start.column).toBe(0);
     expect(outer.loc.start.line).toBe(1);
-    expect(outer.loc.end.column).toBe(5);
+    expect(outer.loc.end.column).toBe(20);
     expect(outer.loc.end.line).toBe(1);
 
-    const [inner] = outer.children as TagNode[];
+    const [inner] = outer.children as ElementNode[];
 
-    expect(inner.type).toBe("input");
+    expect(inner.type).toBe("Element");
     expect(inner.tagName).toBe("input");
     expect(inner.selfClosing).toBe(true);
     expect(inner.start).toBe(5);
@@ -85,12 +85,12 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(2);
 
-    const [first, second] = result.children as TagNode[];
+    const [first, second] = result.children as ElementNode[];
 
-    expect(first.type).toBe("div");
+    expect(first.type).toBe("Element");
     expect(first.tagName).toBe("div");
 
-    expect(second.type).toBe("span");
+    expect(second.type).toBe("Element");
     expect(second.tagName).toBe("span");
   });
 
@@ -99,14 +99,14 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const [div] = result.children as TagNode[];
+    const [div] = result.children as ElementNode[];
 
-    expect(div.type).toBe("div");
+    expect(div.type).toBe("Element");
     expect(div.tagName).toBe("div");
 
-    const [span] = div.children as TagNode[];
+    const [span] = div.children as ElementNode[];
 
-    expect(span.type).toBe("span");
+    expect(span.type).toBe("Element");
     expect(span.tagName).toBe("span");
   });
 
@@ -115,43 +115,41 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const [outDiv] = result.children as TagNode[];
+    const [outDiv] = result.children as ElementNode[];
 
-    expect(outDiv.type).toBe("div");
+    expect(outDiv.type).toBe("Element");
     expect(outDiv.tagName).toBe("div");
 
-    const [innerDic] = outDiv.children as TagNode[];
+    const [innerDic] = outDiv.children as ElementNode[];
 
-    expect(innerDic.type).toBe("div");
+    expect(innerDic.type).toBe("Element");
     expect(innerDic.tagName).toBe("div");
   });
 
   test("unclosed", () => {
     const result = parser.parse("<div>");
-
     expect(result.children.length).toBe(1);
 
-    const [div] = result.children as TagNode[];
+    const [div] = result.children as ElementNode[];
 
-    expect(div.type).toBe("div");
+    expect(div.type).toBe("Element");
     expect(div.tagName).toBe("div");
-    expect(div.endTag).toBeFalsy();
+    expect(div.close).toBeFalsy();
   });
 
   test("unclosed - multiple", () => {
     const result = parser.parse("<div><span>");
 
     expect(result.children.length).toBe(2);
+    const [first, second] = result.children as ElementNode[];
 
-    const [first, second] = result.children as TagNode[];
-
-    expect(first.type).toBe("div");
+    expect(first.type).toBe("Element");
     expect(first.tagName).toBe("div");
-    expect(first.endTag).toBeFalsy();
+    expect(first.close).toBeFalsy();
 
-    expect(second.type).toBe("span");
+    expect(second.type).toBe("Element");
     expect(second.tagName).toBe("span");
-    expect(second.endTag).toBeFalsy();
+    expect(second.close).toBeFalsy();
   });
 
   test("unclosed - nested", () => {
@@ -159,11 +157,13 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const div = result.children[0] as TagNode;
-    expect(div.type).toBe("div");
+    const div = result.children[0] as ElementNode;
+    expect(div.type).toBe("Element");
+    expect(div.tagName).toBe("div");
 
-    const input = div.children[0] as TagNode;
-    expect(input.type).toBe("input");
+    const input = div.children[0] as ElementNode;
+    expect(input.type).toBe("Element");
+    expect(input.tagName).toBe("input");
   });
 
   test("content", () => {
@@ -171,10 +171,35 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const div = result.children[0] as TagNode;
-    expect(div.type).toBe("div");
+    const div = result.children[0] as ElementNode;
+    expect(div.type).toBe("Element");
 
     const [text] = div.children;
-    expect(text.type).toBe("#Text");
+    expect(text.type).toBe("Text");
+  });
+
+  test("attrs", () => {
+    const result = parser.parse(`<div foo="foo" bar='bar'>text</div>`);
+
+    expect(result.children.length).toBe(1);
+
+    const div = result.children[0] as ElementNode;
+    expect(div.type).toBe("Element");
+    expect(div.tagName).toBe("div");
+    expect(div.attrs.length).toBe(2);
+    expect(div.attrs[0].type).toBe("Attribute");
+    expect(div.attrs[0].name.type).toBe("AttributeName");
+    expect(div.attrs[0].name.value).toBe(`foo`);
+    expect(div.attrs[0].type).toBe("Attribute");
+    expect(div.attrs[0].value?.type).toBe("AttributeValue");
+    expect(div.attrs[0].value?.value).toBe(`"foo"`);
+    expect(div.attrs[1].type).toBe("Attribute");
+    expect(div.attrs[1].name.type).toBe("AttributeName");
+    expect(div.attrs[1].name.value).toBe(`bar`);
+    expect(div.attrs[1].type).toBe("Attribute");
+    expect(div.attrs[1].value?.type).toBe("AttributeValue");
+    expect(div.attrs[1].value?.value).toBe(`'bar'`);
+    expect(div.children[0].type).toBe("Text");
+    expect((div.children[0] as any).value).toBe("text");
   });
 });
