@@ -1,7 +1,7 @@
 import {
   CommentNode,
   DoctypeNode,
-  Root,
+  RootNode,
   AnyNode,
   ElementNode,
   ClosingElementNode,
@@ -24,7 +24,7 @@ import { OpenElementStack } from "./open-element-stack";
 import * as utils from "../common/utils";
 
 export class Parser {
-  private root!: Root;
+  private root!: RootNode;
   private html!: string;
   private tokenizer!: Tokenizer;
   private openElementStack = new OpenElementStack();
@@ -32,7 +32,7 @@ export class Parser {
 
   constructor() {}
 
-  public parse(html: string): Root {
+  public parse(html: string): RootNode {
     this.html = html;
     this.tokenizer = Tokenizer.create(this.html);
     this.createRoot();
@@ -49,7 +49,7 @@ export class Parser {
   }
 
   private createRoot() {
-    this.root = new Root();
+    this.root = new RootNode();
     this.openElementStack.push(this.root);
   }
 

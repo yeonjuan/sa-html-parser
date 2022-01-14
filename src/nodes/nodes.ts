@@ -153,7 +153,7 @@ export class ElementNode extends BaseNode<"Element"> {
   }
 }
 
-export class Root extends BaseNode<"Root"> {
+export class RootNode extends BaseNode<"Root"> {
   comments: CommentNode[] = [];
   children: AnyNode[] = [];
   tokens: AnyAtomToken[] = [];

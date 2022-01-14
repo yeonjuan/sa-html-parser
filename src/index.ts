@@ -5,7 +5,7 @@ export type {
   ClosingElementNode,
   TextNode,
   ElementNode,
-  Root,
+  RootNode,
   DoctypeNode,
   CommentNode,
   AttributeNameNode,
