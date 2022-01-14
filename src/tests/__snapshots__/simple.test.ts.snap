@@ -562,11 +562,11 @@ RootNode {
       "value": " foo ",
     },
   ],
-  "end": 0,
+  "end": 109,
   "loc": Object {
     "end": Object {
-      "column": 0,
-      "line": 1,
+      "column": 8,
+      "line": 8,
     },
     "start": Object {
       "column": 0,
@@ -575,7 +575,7 @@ RootNode {
   },
   "range": Array [
     0,
-    0,
+    109,
   ],
   "start": 0,
   "tokens": Array [],

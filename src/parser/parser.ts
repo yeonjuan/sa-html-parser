@@ -143,6 +143,13 @@ export class Parser {
       }
     }
     this.running = false;
+    const lastChild = utils.last<AnyNode>(this.root.children);
+    this.root.range[1] = lastChild?.range[1] || 0;
+    this.root.end = lastChild?.range[1] || 0;
+    this.root.loc.end = lastChild?.loc.end || {
+      column: 0,
+      line: 1,
+    };
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

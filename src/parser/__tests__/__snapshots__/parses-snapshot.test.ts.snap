@@ -327,10 +327,10 @@ RootNode {
     },
   ],
   "comments": Array [],
-  "end": 0,
+  "end": 154,
   "loc": Object {
     "end": Object {
-      "column": 0,
+      "column": 154,
       "line": 1,
     },
     "start": Object {
@@ -340,7 +340,7 @@ RootNode {
   },
   "range": Array [
     0,
-    0,
+    154,
   ],
   "start": 0,
   "tokens": Array [],

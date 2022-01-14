@@ -10,7 +10,7 @@ describe("parser: comment", () => {
   describe("basic", () => {
     test("one line", () => {
       const result = parser.parse("<!-- comment -->");
-
+      expect(result.end).toBe(16);
       expect(result.comments.length).toBe(1);
 
       const [comment] = result.comments;
