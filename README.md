@@ -1,55 +1,40 @@
-# es-html-parser
+# sa-html-parser
 
-HTML parser is a HTML parser for static analitics perpose
+`sa-html-parser` is a parser designed for HTML code static analysis.
 
 ## Install
 
-```
-yarn add es-html-parser
-```
+- npm
 
-or
+  ```
+  yarn add sa-html-parser
+  ```
 
-```
-npm install es-html-parser
-```
+- yarn
+
+  ```
+  npm install sa-html-parser
+  ```
 
 ## Usage
 
 ```js
-import { parse } from "es-html-parser";
+import { Parser } from "es-html-parser";
 
-const root = parse("");
+const parser = new Parser();
+const root = parser.parse("<html><body><div id='foo'></div></bod></html>");
+
+root;
+// {
+//    type: "Root",
+//    children: [ ... ],
+//    start: 0,
+//    end: 45,
+//    ...
+// }
+//
 ```
 
-## Development
+## License
 
-**Clone repository**
-
-```
-$ git clone
-```
-
-**Install dependencies**
-
-```
-$ yarn
-```
-
-**Run tests**
-
-```
-$ yarn test
-```
-
-**Run lint**
-
-```
-$ yarn lint
-```
-
-**Format codes**
-
-```
-$ yarn format
-```
+- [MIT](./LICENSE)
