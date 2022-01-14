@@ -13,9 +13,49 @@ import {
   StartTagToken,
 } from "../tokens";
 
+export class AttributeNameNode extends BaseNode<"AttributeName"> {
+  private constructor(
+    public value: string,
+    public start: number,
+    public end: number,
+    public loc: SourceCodeLocation
+  ) {
+    super("AttributeName", start, end, loc);
+  }
+
+  static fromToken(token: AttrNameToken) {
+    return new AttributeNameNode(
+      token.value,
+      token.start,
+      token.end,
+      token.loc
+    );
+  }
+}
+
+export class AttributeValueNode extends BaseNode<"AttributeValue"> {
+  private constructor(
+    public value: string,
+    public start: number,
+    public end: number,
+    public loc: SourceCodeLocation
+  ) {
+    super("AttributeValue", start, end, loc);
+  }
+
+  static fromToken(token: AttrValueToken) {
+    return new AttributeValueNode(
+      token.value,
+      token.start,
+      token.end,
+      token.loc
+    );
+  }
+}
+
 export class AttributeNode extends BaseNode<"Attribute"> {
-  public name!: AttrNameToken;
-  public value?: AttrValueToken;
+  public name!: AttributeNameNode;
+  public value?: AttributeValueNode;
 
   private constructor(
     public start: number,
@@ -30,36 +70,41 @@ export class AttributeNode extends BaseNode<"Attribute"> {
       start: token.loc.start,
       end: token.loc.end,
     });
-    node.name = token.name;
-    node.value = token.value;
+    node.name = AttributeNameNode.fromToken(token.name);
+    if (token.value) {
+      node.value = AttributeValueNode.fromToken(token.value);
+    }
     return node;
   }
 }
 
-export class OpenElementNode extends BaseNode<"OpenElement"> {
+export class OpeningElementNode extends BaseNode<"OpeningElement"> {
+  public attributes: AttributeNode[] = [];
   private constructor(
     public start: number,
     public end: number,
     public loc: SourceCodeLocation
   ) {
-    super("OpenElement", start, end, loc);
+    super("OpeningElement", start, end, loc);
   }
 
   static fromToken(token: StartTagToken) {
-    return new OpenElementNode(token.start, token.end, token.loc);
+    const element = new OpeningElementNode(token.start, token.end, token.loc);
+    element.attributes = token.attrs.map((tkn) => AttributeNode.fromToken(tkn));
+    return element;
   }
 }
 
-export class CloseElementNode extends BaseNode<"CloseElement"> {
+export class ClosingElementNode extends BaseNode<"ClosingElement"> {
   private constructor(
     public start: number,
     public end: number,
     public loc: SourceCodeLocation
   ) {
-    super("CloseElement", start, end, loc);
+    super("ClosingElement", start, end, loc);
   }
   static fromToken(token: EndTagToken) {
-    return new CloseElementNode(token.start, token.end, token.loc);
+    return new ClosingElementNode(token.start, token.end, token.loc);
   }
 }
 
@@ -80,9 +125,8 @@ export class TextNode extends BaseNode<"Text"> {
 
 export class ElementNode extends BaseNode<"Element"> {
   public children: (TextNode | ElementNode)[] = [];
-  public open!: OpenElementNode;
-  public close: CloseElementNode | null = null;
-  public attrs: AttributeNode[] = [];
+  public openingElement!: OpeningElementNode;
+  public closingElement: ClosingElementNode | null = null;
   public selfClosing: boolean = false;
   private constructor(
     type: string,
@@ -104,8 +148,7 @@ export class ElementNode extends BaseNode<"Element"> {
       },
       token.tagName.value
     );
-    element.open = OpenElementNode.fromToken(token);
-    element.attrs = token.attrs.map((tkn) => AttributeNode.fromToken(tkn));
+    element.openingElement = OpeningElementNode.fromToken(token);
     return element;
   }
 }

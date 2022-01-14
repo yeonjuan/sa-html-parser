@@ -4,7 +4,7 @@ import {
   Root,
   AnyNode,
   ElementNode,
-  CloseElementNode,
+  ClosingElementNode,
   TextNode,
 } from "../nodes";
 import { Tokenizer } from "../tokenizer/tokenizer";
@@ -103,19 +103,19 @@ export class Parser {
   }
 
   private [HtmlTokenType.EndTag](token: EndTagToken) {
-    const close = CloseElementNode.fromToken(token);
+    const closing = ClosingElementNode.fromToken(token);
     const poppedElements = this.popFromOpenStackUntilTagName(
       token.tagName.value
     );
     if (!poppedElements) {
       throw new Error();
     }
-    const element = utils.last(poppedElements)!;
+    const element = utils.last<ElementNode>(poppedElements)!;
     element.children = utils.getChildrenRecursively(element);
-    element.close = close;
-    element.end = close.end;
-    element.loc.end = close.loc.end;
-    element.range[1] = close.range[1];
+    element.closingElement = closing;
+    element.end = closing.end;
+    element.loc.end = closing.loc.end;
+    element.range[1] = closing.range[1];
   }
 
   private [HtmlTokenType.CharacterLike](token: CharacterLikeToken) {

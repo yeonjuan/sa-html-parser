@@ -17,8 +17,8 @@ describe("parser: element", () => {
 
     expect(div.selfClosing).toBe(false);
     expect(div.type).toBe("Element");
-    expect(div.open.type).toBe("OpenElement");
-    expect(div.close?.type).toBe("CloseElement");
+    expect(div.openingElement.type).toBe("OpeningElement");
+    expect(div.closingElement?.type).toBe("ClosingElement");
     expect(div.start).toBe(0);
     expect(div.end).toBe(11);
     expect(div.range).toStrictEqual([0, 11]);
@@ -38,7 +38,7 @@ describe("parser: element", () => {
     expect(div.selfClosing).toBe(true);
     expect(div.type).toBe("Element");
     expect(div.tagName).toBe("div");
-    expect(div.close).toBe(null);
+    expect(div.closingElement).toBe(null);
     expect(div.start).toBe(0);
     expect(div.end).toBe(6);
     expect(div.range).toStrictEqual([0, 6]);
@@ -57,7 +57,7 @@ describe("parser: element", () => {
 
     expect(outer.type).toBe("Element");
     expect(outer.tagName).toBe("div");
-    expect(outer.close).toBeTruthy();
+    expect(outer.closingElement).toBeTruthy();
     expect(outer.start).toBe(0);
     expect(outer.end).toBe(20);
     expect(outer.range).toStrictEqual([0, 20]);
@@ -134,7 +134,7 @@ describe("parser: element", () => {
 
     expect(div.type).toBe("Element");
     expect(div.tagName).toBe("div");
-    expect(div.close).toBeFalsy();
+    expect(div.closingElement).toBeFalsy();
   });
 
   test("unclosed - multiple", () => {
@@ -145,11 +145,11 @@ describe("parser: element", () => {
 
     expect(first.type).toBe("Element");
     expect(first.tagName).toBe("div");
-    expect(first.close).toBeFalsy();
+    expect(first.closingElement).toBeFalsy();
 
     expect(second.type).toBe("Element");
     expect(second.tagName).toBe("span");
-    expect(second.close).toBeFalsy();
+    expect(second.closingElement).toBeFalsy();
   });
 
   test("unclosed - nested", () => {
@@ -186,19 +186,19 @@ describe("parser: element", () => {
     const div = result.children[0] as ElementNode;
     expect(div.type).toBe("Element");
     expect(div.tagName).toBe("div");
-    expect(div.attrs.length).toBe(2);
-    expect(div.attrs[0].type).toBe("Attribute");
-    expect(div.attrs[0].name.type).toBe("AttributeName");
-    expect(div.attrs[0].name.value).toBe(`foo`);
-    expect(div.attrs[0].type).toBe("Attribute");
-    expect(div.attrs[0].value?.type).toBe("AttributeValue");
-    expect(div.attrs[0].value?.value).toBe(`"foo"`);
-    expect(div.attrs[1].type).toBe("Attribute");
-    expect(div.attrs[1].name.type).toBe("AttributeName");
-    expect(div.attrs[1].name.value).toBe(`bar`);
-    expect(div.attrs[1].type).toBe("Attribute");
-    expect(div.attrs[1].value?.type).toBe("AttributeValue");
-    expect(div.attrs[1].value?.value).toBe(`'bar'`);
+    expect(div.openingElement.attributes.length).toBe(2);
+    expect(div.openingElement.attributes[0].type).toBe("Attribute");
+    expect(div.openingElement.attributes[0].name.type).toBe("AttributeName");
+    expect(div.openingElement.attributes[0].name.value).toBe(`foo`);
+    expect(div.openingElement.attributes[0].type).toBe("Attribute");
+    expect(div.openingElement.attributes[0].value?.type).toBe("AttributeValue");
+    expect(div.openingElement.attributes[0].value?.value).toBe(`"foo"`);
+    expect(div.openingElement.attributes[1].type).toBe("Attribute");
+    expect(div.openingElement.attributes[1].name.type).toBe("AttributeName");
+    expect(div.openingElement.attributes[1].name.value).toBe(`bar`);
+    expect(div.openingElement.attributes[1].type).toBe("Attribute");
+    expect(div.openingElement.attributes[1].value?.type).toBe("AttributeValue");
+    expect(div.openingElement.attributes[1].value?.value).toBe(`'bar'`);
     expect(div.children[0].type).toBe("Text");
     expect((div.children[0] as any).value).toBe("text");
   });

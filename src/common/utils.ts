@@ -152,7 +152,7 @@ export const last = <T>(arr: T[]): T | undefined => arr[arr.length - 1];
 export const getChildrenRecursively = (node: AnyNode) => {
   const children: any[] = [];
   if (node.type === "Element") {
-    if (node.close) {
+    if (node.closingElement) {
       return children;
     }
     node.children.forEach((child: any) => {

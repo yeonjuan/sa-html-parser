@@ -44,7 +44,6 @@ Root {
 ",
     },
     ElementNode {
-      "attrs": Array [],
       "children": Array [
         TextNode {
           "end": 25,
@@ -68,7 +67,6 @@ Root {
   ",
         },
         ElementNode {
-          "attrs": Array [],
           "children": Array [
             TextNode {
               "end": 36,
@@ -153,7 +151,6 @@ Root {
     ",
             },
             ElementNode {
-              "attrs": Array [],
               "children": Array [
                 TextNode {
                   "end": 61,
@@ -176,7 +173,7 @@ Root {
                   "value": "bar",
                 },
               ],
-              "close": CloseElementNode {
+              "closingElement": ClosingElementNode {
                 "end": 67,
                 "loc": Object {
                   "end": Object {
@@ -193,7 +190,7 @@ Root {
                   67,
                 ],
                 "start": 61,
-                "type": "CloseElement",
+                "type": "ClosingElement",
               },
               "end": 67,
               "loc": Object {
@@ -206,7 +203,8 @@ Root {
                   "line": 5,
                 },
               },
-              "open": OpenElementNode {
+              "openingElement": OpeningElementNode {
+                "attributes": Array [],
                 "end": 58,
                 "loc": Object {
                   "end": Object {
@@ -223,7 +221,7 @@ Root {
                   58,
                 ],
                 "start": 53,
-                "type": "OpenElement",
+                "type": "OpeningElement",
               },
               "range": Array [
                 53,
@@ -256,69 +254,8 @@ Root {
     ",
             },
             ElementNode {
-              "attrs": Array [
-                AttributeNode {
-                  "end": 87,
-                  "loc": Object {
-                    "end": Object {
-                      "column": 19,
-                      "line": 6,
-                    },
-                    "start": Object {
-                      "column": 11,
-                      "line": 6,
-                    },
-                  },
-                  "name": AttrNameToken {
-                    "end": 81,
-                    "loc": Object {
-                      "end": Object {
-                        "column": 13,
-                        "line": 6,
-                      },
-                      "start": Object {
-                        "column": 11,
-                        "line": 6,
-                      },
-                    },
-                    "range": Array [
-                      79,
-                      81,
-                    ],
-                    "start": 79,
-                    "type": "AttributeName",
-                    "value": "id",
-                  },
-                  "range": Array [
-                    79,
-                    87,
-                  ],
-                  "start": 79,
-                  "type": "Attribute",
-                  "value": AttrValueToken {
-                    "end": 87,
-                    "loc": Object {
-                      "end": Object {
-                        "column": 19,
-                        "line": 6,
-                      },
-                      "start": Object {
-                        "column": 14,
-                        "line": 6,
-                      },
-                    },
-                    "range": Array [
-                      82,
-                      87,
-                    ],
-                    "start": 82,
-                    "type": "AttributeValue",
-                    "value": "\\"baz\\"",
-                  },
-                },
-              ],
               "children": Array [],
-              "close": null,
+              "closingElement": null,
               "end": 90,
               "loc": Object {
                 "end": Object {
@@ -330,7 +267,68 @@ Root {
                   "line": 6,
                 },
               },
-              "open": OpenElementNode {
+              "openingElement": OpeningElementNode {
+                "attributes": Array [
+                  AttributeNode {
+                    "end": 87,
+                    "loc": Object {
+                      "end": Object {
+                        "column": 19,
+                        "line": 6,
+                      },
+                      "start": Object {
+                        "column": 11,
+                        "line": 6,
+                      },
+                    },
+                    "name": AttributeNameNode {
+                      "end": 81,
+                      "loc": Object {
+                        "end": Object {
+                          "column": 13,
+                          "line": 6,
+                        },
+                        "start": Object {
+                          "column": 11,
+                          "line": 6,
+                        },
+                      },
+                      "range": Array [
+                        79,
+                        81,
+                      ],
+                      "start": 79,
+                      "type": "AttributeName",
+                      "value": "id",
+                    },
+                    "range": Array [
+                      79,
+                      87,
+                    ],
+                    "start": 79,
+                    "type": "Attribute",
+                    "value": AttributeValueNode {
+                      "end": 87,
+                      "loc": Object {
+                        "end": Object {
+                          "column": 19,
+                          "line": 6,
+                        },
+                        "start": Object {
+                          "column": 14,
+                          "line": 6,
+                        },
+                      },
+                      "range": Array [
+                        82,
+                        87,
+                      ],
+                      "start": 82,
+                      "type": "AttributeValue",
+                      "value": "\\"baz\\"",
+                    },
+                  },
+                ],
                 "end": 90,
                 "loc": Object {
                   "end": Object {
@@ -347,7 +345,7 @@ Root {
                   90,
                 ],
                 "start": 72,
-                "type": "OpenElement",
+                "type": "OpeningElement",
               },
               "range": Array [
                 72,
@@ -380,7 +378,7 @@ Root {
   ",
             },
           ],
-          "close": CloseElementNode {
+          "closingElement": ClosingElementNode {
             "end": 100,
             "loc": Object {
               "end": Object {
@@ -397,7 +395,7 @@ Root {
               100,
             ],
             "start": 93,
-            "type": "CloseElement",
+            "type": "ClosingElement",
           },
           "end": 100,
           "loc": Object {
@@ -410,7 +408,8 @@ Root {
               "line": 3,
             },
           },
-          "open": OpenElementNode {
+          "openingElement": OpeningElementNode {
+            "attributes": Array [],
             "end": 31,
             "loc": Object {
               "end": Object {
@@ -427,7 +426,7 @@ Root {
               31,
             ],
             "start": 25,
-            "type": "OpenElement",
+            "type": "OpeningElement",
           },
           "range": Array [
             25,
@@ -460,7 +459,7 @@ Root {
 ",
         },
       ],
-      "close": CloseElementNode {
+      "closingElement": ClosingElementNode {
         "end": 108,
         "loc": Object {
           "end": Object {
@@ -477,7 +476,7 @@ Root {
           108,
         ],
         "start": 101,
-        "type": "CloseElement",
+        "type": "ClosingElement",
       },
       "end": 108,
       "loc": Object {
@@ -490,7 +489,8 @@ Root {
           "line": 2,
         },
       },
-      "open": OpenElementNode {
+      "openingElement": OpeningElementNode {
+        "attributes": Array [],
         "end": 22,
         "loc": Object {
           "end": Object {
@@ -507,7 +507,7 @@ Root {
           22,
         ],
         "start": 16,
-        "type": "OpenElement",
+        "type": "OpeningElement",
       },
       "range": Array [
         16,
