@@ -1,15 +1,9 @@
 import { ElementNode } from "../../nodes";
-import { Parser } from "../parser";
+import { parse } from "../parser";
 
 describe("parser: element", () => {
-  let parser: Parser;
-
-  beforeEach(() => {
-    parser = new Parser();
-  });
-
   test("basic", () => {
-    const result = parser.parse("<div></div>");
+    const result = parse("<div></div>");
 
     expect(result.children.length).toBe(1);
 
@@ -29,7 +23,7 @@ describe("parser: element", () => {
   });
 
   test("self-closing", () => {
-    const result = parser.parse("<div/>");
+    const result = parse("<div/>");
 
     expect(result.children.length).toBe(1);
 
@@ -49,7 +43,7 @@ describe("parser: element", () => {
   });
 
   test("self-closing - nested", () => {
-    const result = parser.parse("<div><input /></div>");
+    const result = parse("<div><input /></div>");
 
     expect(result.children.length).toBe(1);
 
@@ -81,7 +75,7 @@ describe("parser: element", () => {
   });
 
   test("multiples", () => {
-    const result = parser.parse("<div></div><span></span>");
+    const result = parse("<div></div><span></span>");
 
     expect(result.children.length).toBe(2);
 
@@ -95,7 +89,7 @@ describe("parser: element", () => {
   });
 
   test("nested 1", () => {
-    const result = parser.parse("<div><span></span></div>");
+    const result = parse("<div><span></span></div>");
 
     expect(result.children.length).toBe(1);
 
@@ -111,7 +105,7 @@ describe("parser: element", () => {
   });
 
   test("nested 2", () => {
-    const result = parser.parse("<div><div></div></div>");
+    const result = parse("<div><div></div></div>");
 
     expect(result.children.length).toBe(1);
 
@@ -127,7 +121,7 @@ describe("parser: element", () => {
   });
 
   test("unclosed", () => {
-    const result = parser.parse("<div>");
+    const result = parse("<div>");
     expect(result.children.length).toBe(1);
 
     const [div] = result.children as ElementNode[];
@@ -138,7 +132,7 @@ describe("parser: element", () => {
   });
 
   test("unclosed - multiple", () => {
-    const result = parser.parse("<div><span>");
+    const result = parse("<div><span>");
 
     expect(result.children.length).toBe(2);
     const [first, second] = result.children as ElementNode[];
@@ -153,7 +147,7 @@ describe("parser: element", () => {
   });
 
   test("unclosed - nested", () => {
-    const result = parser.parse("<div><input></div>");
+    const result = parse("<div><input></div>");
 
     expect(result.children.length).toBe(1);
 
@@ -167,7 +161,7 @@ describe("parser: element", () => {
   });
 
   test("content", () => {
-    const result = parser.parse("<div>text</div>");
+    const result = parse("<div>text</div>");
 
     expect(result.children.length).toBe(1);
 
@@ -179,7 +173,7 @@ describe("parser: element", () => {
   });
 
   test("attrs", () => {
-    const result = parser.parse(`<div foo="foo" bar='bar'>text</div>`);
+    const result = parse(`<div foo="foo" bar='bar'>text</div>`);
 
     expect(result.children.length).toBe(1);
 

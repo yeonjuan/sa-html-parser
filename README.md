@@ -19,10 +19,9 @@
 ## Usage
 
 ```js
-import { Parser } from "es-html-parser";
+import { parse } from "sa-html-parser";
 
-const parser = new Parser();
-const root = parser.parse("<html><body><div id='foo'></div></bod></html>");
+const root = parse("<html><body><div id='foo'></div></bod></html>");
 
 root;
 // {

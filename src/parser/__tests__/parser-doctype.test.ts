@@ -1,14 +1,8 @@
-import { Parser } from "../parser";
+import { parse } from "../parser";
 
 describe("parser: doctype", () => {
-  let parser: Parser;
-
-  beforeEach(() => {
-    parser = new Parser();
-  });
-
   test("basic", () => {
-    const result = parser.parse("<!DOCTYPE html>");
+    const result = parse("<!DOCTYPE html>");
     expect(result.children.length).toBe(1);
 
     const [doctype] = result.children;

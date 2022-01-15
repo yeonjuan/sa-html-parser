@@ -1,15 +1,9 @@
-import { Parser } from "../parser";
+import { parse } from "../parser";
 
 describe("parser: comment", () => {
-  let parser: Parser;
-
-  beforeEach(() => {
-    parser = new Parser();
-  });
-
   describe("basic", () => {
     test("one line", () => {
-      const result = parser.parse("<!-- comment -->");
+      const result = parse("<!-- comment -->");
       expect(result.end).toBe(16);
       expect(result.comments.length).toBe(1);
 
@@ -27,7 +21,7 @@ describe("parser: comment", () => {
     });
 
     test("multiple lines", () => {
-      const result = parser.parse("<!--\n comment\n -->");
+      const result = parse("<!--\n comment\n -->");
 
       expect(result.comments.length).toBe(1);
 
@@ -45,7 +39,7 @@ describe("parser: comment", () => {
     });
 
     test("multiple comments", () => {
-      const result = parser.parse("<!-- comment1 --><!-- comment2 -->");
+      const result = parse("<!-- comment1 --><!-- comment2 -->");
 
       expect(result.comments.length).toBe(2);
 

@@ -1,17 +1,11 @@
 import { ElementNode } from "../../nodes";
-import { Parser } from "../parser";
+import { parse } from "../parser";
 
 const onlyElement = (e: any): e is ElementNode => e.type === "Element";
 
 describe("parser: void element", () => {
-  let parser: Parser;
-
-  beforeEach(() => {
-    parser = new Parser();
-  });
-
   test("basic", () => {
-    const result = parser.parse(`<div>
+    const result = parse(`<div>
       <area>
       <base>
       <section>
@@ -38,7 +32,7 @@ describe("parser: void element", () => {
   });
 
   test("basic 2", () => {
-    const result = parser.parse(`<div>
+    const result = parse(`<div>
       <area>
       <base>
       <section>

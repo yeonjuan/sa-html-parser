@@ -23,16 +23,19 @@ import {
 import { OpenElementStack } from "./open-element-stack";
 import * as utils from "../common/utils";
 
-export class Parser {
+class Parser {
   private root!: RootNode;
   private html!: string;
   private tokenizer!: Tokenizer;
   private openElementStack = new OpenElementStack();
   private running = true;
 
-  constructor() {}
+  public static parse(html: string) {
+    const parser = new Parser();
+    return parser.parseHTML(html);
+  }
 
-  public parse(html: string): RootNode {
+  private parseHTML(html: string): RootNode {
     this.html = html;
     this.tokenizer = Tokenizer.create(this.html);
     this.createRoot();
@@ -157,3 +160,5 @@ export class Parser {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private [HtmlTokenType.Attribute](token: AttributeToken) {}
 }
+
+export const parse = Parser.parse;

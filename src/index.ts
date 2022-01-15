@@ -1,4 +1,4 @@
-export { Parser } from "./parser";
+export { parse } from "./parser";
 export type {
   AttributeNode,
   OpeningElementNode,
