@@ -1,6 +1,6 @@
 {
   "name": "sa-html-parser",
-  "version": "0.0.2",
+  "version": "0.0.3-beta.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/yeonjuan/es-html-parser.git",
@@ -14,7 +14,8 @@
     "check:all": "yarn check:ts && yarn lint && yarn check:format && yarn test",
     "check:ts": "tsc --noEmit",
     "check:format": "prettier --check .",
-    "build": "rimraf build && tsc"
+    "build": "rimraf build && tsc",
+    "prepublishOnly": "yarn check:all && yarn build"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
