@@ -31,13 +31,13 @@ export class DoctypeToken extends BaseHtmlToken<HtmlTokenType.Doctype> {
   }
   buildLocation() {
     this.start = this.opening.start;
-    this.end = this.closing.end;
+    this.end = this.closing?.end;
 
-    this.range = [this.opening.range[0], this.closing.range[1]];
+    this.range = [this.opening?.range[0], this.closing?.range[1]];
 
     this.loc = {
       start: this.opening.loc.start,
-      end: this.closing.loc.end,
+      end: this.closing?.loc.end,
     };
   }
   tokenize() {

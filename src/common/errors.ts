@@ -84,9 +84,10 @@ export const ParsingErrors = {
 };
 
 export class ParsingError {
-  constructor(
-    public pos: Position,
-    public index: number,
-    public error: string
-  ) {}
+  public line: number;
+  public column: number;
+  constructor(pos: Position, public index: number, public error: string) {
+    this.line = pos.line;
+    this.column = pos.column;
+  }
 }

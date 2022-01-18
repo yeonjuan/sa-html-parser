@@ -133,10 +133,10 @@ export class Tokenizer {
     this.currentToken.tagName = new TagNameToken("", index, position);
 
     const opening = this.punctuatorTokens.pop();
-    if (!opening) {
-      throw new Error("TODO");
-    }
-    this.currentToken.opening = opening;
+    // if (!opening) {
+    //   throw new Error("TODO");
+    // }
+    this.currentToken.opening = opening!;
   }
 
   private createEndTagToken() {
@@ -145,10 +145,10 @@ export class Tokenizer {
     this.currentToken = new EndTagToken();
     this.currentToken.tagName = new TagNameToken("", index, position);
     const opening = this.punctuatorTokens.pop();
-    if (!opening) {
-      throw new Error("TODO :" + this.state);
-    }
-    this.currentToken.opening = opening;
+    // if (!opening) {
+    //   throw new Error("TODO :" + this.state);
+    // }
+    this.currentToken.opening = opening!;
   }
 
   private createCommentToken(start?: {
@@ -166,10 +166,10 @@ export class Tokenizer {
     );
 
     const opening = this.punctuatorTokens.pop();
-    if (!opening) {
-      throw new Error("TODO");
-    }
-    this.currentToken.opening = opening;
+    // if (!opening) {
+    //   throw new Error("TODO");
+    // }
+    this.currentToken.opening = opening!;
   }
 
   private createDoctypeToken(value: string = "") {
@@ -178,10 +178,10 @@ export class Tokenizer {
     this.currentToken = new DoctypeToken();
     this.currentToken.name = new CharactersToken(value, range[0], loc);
     const opening = this.punctuatorTokens.pop();
-    if (!opening) {
-      throw new Error("TODO");
-    }
-    this.currentToken.opening = opening;
+    // if (!opening) {
+    //   throw new Error("TODO");
+    // }
+    this.currentToken.opening = opening!;
   }
 
   private createAttributeToken(nameValue: string) {
@@ -208,10 +208,10 @@ export class Tokenizer {
       token?.type === HtmlTokenType.Comment
     ) {
       const closing = this.punctuatorTokens.pop();
-      if (!closing) {
-        throw new Error("TODO:" + this.state);
-      }
-      token.closing = closing;
+      // if (!closing) {
+      //   throw new Error("TODO:" + this.state);
+      // }
+      token.closing = closing!;
     }
     this.currentToken = null;
     this.tokens.push(token!);
