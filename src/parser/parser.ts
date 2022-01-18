@@ -22,6 +22,8 @@ import {
 } from "../tokens";
 import { OpenElementStack } from "./open-element-stack";
 import * as utils from "../common/utils";
+import { ParsingError, ParsingErrors } from "../common/errors";
+import { Position } from "../common/types";
 
 class Parser {
   private root!: RootNode;
@@ -44,6 +46,9 @@ class Parser {
       const token = this.tokenizer.getNextToken();
       if (!token) {
         break;
+      }
+      if (this.tokenizer.hasError()) {
+        this.root.errors.push(...this.tokenizer.flushErrors());
       }
       this.process(token);
     }
@@ -85,6 +90,10 @@ class Parser {
     this[token.type]?.(token as any);
   }
 
+  private parseError(error: string, pos: Position, index: number) {
+    this.root.errors.push(new ParsingError(pos, index, error));
+  }
+
   private [HtmlTokenType.Comment](token: CommentToken) {
     const comment = CommentNode.fromToken(token);
     this.insertToCurrent(comment);
@@ -111,7 +120,12 @@ class Parser {
       token.tagName.value
     );
     if (!poppedElements) {
-      throw new Error();
+      this.parseError(
+        ParsingErrors.MissingStartElement,
+        token.loc.start,
+        token.start
+      );
+      return;
     }
     const element = utils.last<ElementNode>(poppedElements)!;
     element.children = utils.getChildrenRecursively(element);

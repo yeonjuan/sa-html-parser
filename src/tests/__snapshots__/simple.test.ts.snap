@@ -639,6 +639,7 @@ RootNode {
     },
   ],
   "end": 109,
+  "errors": Array [],
   "loc": Object {
     "end": Object {
       "column": 8,

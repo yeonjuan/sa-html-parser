@@ -1,4 +1,6 @@
-export const Errors = {
+import { Position } from "./types";
+
+export const TokenizingErrors = {
   ControlCharacterInInputStream: "control-character-in-input-stream",
   NonCharacterInInputStream: "noncharacter-in-input-stream",
   SurrogateInInputStream: "surrogate-in-input-stream",
@@ -76,3 +78,15 @@ export const Errors = {
   EofInElementThatCanContainOnlyText:
     "eof-in-element-that-can-contain-only-text",
 };
+
+export const ParsingErrors = {
+  MissingStartElement: "missing-start-element",
+};
+
+export class ParsingError {
+  constructor(
+    public pos: Position,
+    public index: number,
+    public error: string
+  ) {}
+}

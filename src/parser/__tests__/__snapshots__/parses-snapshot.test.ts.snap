@@ -366,6 +366,7 @@ RootNode {
   ],
   "comments": Array [],
   "end": 154,
+  "errors": Array [],
   "loc": Object {
     "end": Object {
       "column": 154,

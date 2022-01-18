@@ -13,6 +13,7 @@ import {
   StartTagToken,
   TagNameToken,
 } from "../tokens";
+import { ParsingError } from "../common/errors";
 
 export class AttributeNameNode extends BaseNode<"AttributeName"> {
   private constructor(
@@ -173,6 +174,7 @@ export class RootNode extends BaseNode<"Root"> {
   comments: CommentNode[] = [];
   children: AnyNode[] = [];
   tokens: AnyAtomToken[] = [];
+  errors: ParsingError[] = [];
   constructor() {
     super("Root", 0, 0, {
       start: { column: 0, line: 1 },

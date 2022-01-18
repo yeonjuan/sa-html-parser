@@ -7,7 +7,7 @@ import {
 import { TokenizerState } from "./tokenizer-state";
 import { PositionTracker } from "./position-tracker";
 import * as utils from "../common/utils";
-import { Errors } from "../common/errors";
+import { ParsingError, TokenizingErrors } from "../common/errors";
 import {
   AttributeToken,
   CommentToken,
@@ -47,7 +47,7 @@ export class Tokenizer {
   private charRefCode: number = 0;
 
   private constructor(private input: string) {}
-  private errors: any[] = [];
+  public errors: ParsingError[] = [];
 
   private lastStartTagName = "";
 
@@ -58,6 +58,16 @@ export class Tokenizer {
    */
   public static create(input: string) {
     return new Tokenizer(input);
+  }
+
+  public hasError(): boolean {
+    return this.errors.length > 0;
+  }
+
+  public flushErrors(): ParsingError[] {
+    const errors = this.errors;
+    this.errors = [];
+    return errors;
   }
 
   private switchStateTo(state: TokenizerState) {
@@ -104,8 +114,12 @@ export class Tokenizer {
     this.state = state;
   }
 
-  private parseError(error: typeof Errors[keyof typeof Errors]) {
-    this.errors.push(error);
+  private parseError(
+    error: typeof TokenizingErrors[keyof typeof TokenizingErrors]
+  ) {
+    const index = this.posTracker.getStartRange();
+    const pos = this.posTracker.getStartPosition();
+    this.errors.push(new ParsingError(pos, index, error));
   }
 
   // ===================================================================
@@ -465,7 +479,7 @@ export class Tokenizer {
       this.pushToPunctuatorTokens("<");
       this.switchStateTo(TokenizerState.TagOpenState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.emitCodePoint(codePoint);
     } else if (codePoint === CODE_POINTS.EOF) {
       this.emitEofToken();
@@ -484,7 +498,7 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.switchStateTo(TokenizerState.RCDATALessThanSignState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.emitReplacementCharacter();
     } else if (codePoint === CODE_POINTS.EOF) {
       this.emitEofToken();
@@ -500,7 +514,7 @@ export class Tokenizer {
     if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.switchStateTo(TokenizerState.RawTextLessThanSignState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.emitReplacementCharacter();
     } else if (codePoint === CODE_POINTS.EOF) {
       this.emitEofToken();
@@ -516,7 +530,7 @@ export class Tokenizer {
     if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.switchStateTo(TokenizerState.ScriptDataLessThanSignState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.emitReplacementCharacter();
     } else if (codePoint === CODE_POINTS.EOF) {
       this.emitEofToken();
@@ -552,14 +566,14 @@ export class Tokenizer {
       this.createStartTagToken();
       this.reconsumeInState(TokenizerState.TagNameState);
     } else if (codePoint === CODE_POINTS.QUESTION_MARK) {
-      this.parseError(Errors.UnexpectedQuestionMarkInsteadOfTagName);
+      this.parseError(TokenizingErrors.UnexpectedQuestionMarkInsteadOfTagName);
       this.createCommentToken();
       this.reconsumeInState(TokenizerState.BogusCommentState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofBeforeTagName);
+      this.parseError(TokenizingErrors.EofBeforeTagName);
       this.emitEofToken();
     } else {
-      this.parseError(Errors.InvalidFirstCharacterOfTagName);
+      this.parseError(TokenizingErrors.InvalidFirstCharacterOfTagName);
       this.reconsumeInState(TokenizerState.DataState);
     }
   }
@@ -572,10 +586,10 @@ export class Tokenizer {
       this.createEndTagToken();
       this.reconsumeInState(TokenizerState.TagNameState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.MissingEndTagName);
+      this.parseError(TokenizingErrors.MissingEndTagName);
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofBeforeTagName);
+      this.parseError(TokenizingErrors.EofBeforeTagName);
       this.emitEofToken();
     } else {
       this.createCommentToken();
@@ -601,11 +615,11 @@ export class Tokenizer {
         utils.toAsciiLowerCharacter(codePoint)
       );
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       (this.currentToken as StartTagToken).tagName.value +=
         REPLACEMENT_CHARACTER;
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInTag);
+      this.parseError(TokenizingErrors.EofInTag);
       this.emitEofToken();
     } else {
       this.appendCharToCurrentTagTokenName(utils.toCharacter(codePoint));
@@ -833,13 +847,13 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.switchStateTo(TokenizerState.ScriptDataEscapedLessThanSignState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.appendCharToCurrentCharacterToken(
         AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInScriptHtmlCommentLikeText);
+      this.parseError(TokenizingErrors.EofInScriptHtmlCommentLikeText);
       this.emitEofToken();
     } else {
       this.emitCodePoint(codePoint);
@@ -856,13 +870,13 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.LESS_THAN_SIGN) {
       this.switchStateTo(TokenizerState.ScriptDataEscapedLessThanSignState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.appendCharToCurrentCharacterToken(
         AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInScriptHtmlCommentLikeText);
+      this.parseError(TokenizingErrors.EofInScriptHtmlCommentLikeText);
       this.emitEofToken();
     } else {
       this.switchStateTo(TokenizerState.ScriptDataEscapedState);
@@ -882,14 +896,14 @@ export class Tokenizer {
       this.switchStateTo(TokenizerState.ScriptDataState);
       this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, ">");
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.switchStateTo(TokenizerState.ScriptDataEscapedState);
       this.appendCharToCurrentCharacterToken(
         AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInScriptHtmlCommentLikeText);
+      this.parseError(TokenizingErrors.EofInScriptHtmlCommentLikeText);
       this.emitEofToken();
     } else {
       this.switchStateTo(TokenizerState.ScriptDataEscapedState);
@@ -1002,13 +1016,13 @@ export class Tokenizer {
       );
       this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.appendCharToCurrentCharacterToken(
         AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInScriptHtmlCommentLikeText);
+      this.parseError(TokenizingErrors.EofInScriptHtmlCommentLikeText);
       this.emitEofToken();
     } else {
       this.emitCodePoint(codePoint);
@@ -1028,14 +1042,14 @@ export class Tokenizer {
       );
       this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedState);
       this.appendCharToCurrentCharacterToken(
         AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInScriptHtmlCommentLikeText);
+      this.parseError(TokenizingErrors.EofInScriptHtmlCommentLikeText);
       this.emitEofToken();
     } else {
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedState);
@@ -1057,14 +1071,14 @@ export class Tokenizer {
       );
       this.appendCharToCurrentCharacterToken(AtomTokenType.Characters, "<");
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedState);
       this.appendCharToCurrentCharacterToken(
         AtomTokenType.Characters,
         REPLACEMENT_CHARACTER
       );
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInScriptHtmlCommentLikeText);
+      this.parseError(TokenizingErrors.EofInScriptHtmlCommentLikeText);
       this.emitEofToken();
     } else {
       this.switchStateTo(TokenizerState.ScriptDataDoubleEscapedState);
@@ -1125,7 +1139,7 @@ export class Tokenizer {
     ) {
       this.reconsumeInState(TokenizerState.AfterAttributeNameState);
     } else if (codePoint === CODE_POINTS.EQUALS_SIGN) {
-      this.parseError(Errors.UnexpectedEqualsSignBeforeAttributeName);
+      this.parseError(TokenizingErrors.UnexpectedEqualsSignBeforeAttributeName);
       this.createAttributeToken("=");
       this.switchStateTo(TokenizerState.AttributeNameState);
     } else {
@@ -1159,14 +1173,14 @@ export class Tokenizer {
       this.currentAttributeToken!.name!.value +=
         utils.toAsciiLowerCharacter(codePoint);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedCharacterInAttributeName);
+      this.parseError(TokenizingErrors.UnexpectedCharacterInAttributeName);
       this.currentAttributeToken!.name!.value += REPLACEMENT_CHARACTER;
     } else if (
       codePoint === CODE_POINTS.QUOTATION_MARK ||
       codePoint === CODE_POINTS.APOSTROPHE ||
       codePoint === CODE_POINTS.LESS_THAN_SIGN
     ) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.currentAttributeToken!.name!.value += utils.toCharacter(codePoint);
     } else {
       this.appendCharToCurrentAttributeTokenName(utils.toCharacter(codePoint));
@@ -1189,7 +1203,7 @@ export class Tokenizer {
       this.pushToPunctuatorTokens(">");
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInTag);
+      this.parseError(TokenizingErrors.EofInTag);
       this.emitEofToken();
     } else {
       this.createAttributeToken("");
@@ -1210,7 +1224,7 @@ export class Tokenizer {
       this.appendValueToCurrentAttributeToken("'");
       this.switchStateTo(TokenizerState.AttributeValueSingleQuotedState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.MissingAttributeValue);
+      this.parseError(TokenizingErrors.MissingAttributeValue);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else {
@@ -1250,10 +1264,10 @@ export class Tokenizer {
       this.setReturnState(TokenizerState.AttributeValueSingleQuotedState);
       this.switchStateTo(TokenizerState.CharacterReferenceState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.appendValueToCurrentAttributeToken(REPLACEMENT_CHARACTER);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInTag);
+      this.parseError(TokenizingErrors.EofInTag);
       this.emitEofToken();
     } else {
       this.appendValueToCurrentAttributeToken(utils.toCharacter(codePoint));
@@ -1274,7 +1288,7 @@ export class Tokenizer {
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.appendValueToCurrentAttributeToken(REPLACEMENT_CHARACTER);
     } else if (
       codePoint === CODE_POINTS.QUOTATION_MARK ||
@@ -1283,10 +1297,12 @@ export class Tokenizer {
       codePoint === CODE_POINTS.EQUALS_SIGN ||
       codePoint === CODE_POINTS.GRAVE_ACCENT
     ) {
-      this.parseError(Errors.UnexpectedCharacterInUnquotedAttributeValue);
+      this.parseError(
+        TokenizingErrors.UnexpectedCharacterInUnquotedAttributeValue
+      );
       this.appendValueToCurrentAttributeToken(utils.toCharacter(codePoint));
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInTag);
+      this.parseError(TokenizingErrors.EofInTag);
       this.emitEofToken();
     } else {
       this.appendValueToCurrentAttributeToken(utils.toCharacter(codePoint));
@@ -1307,10 +1323,10 @@ export class Tokenizer {
       this.pushToPunctuatorTokens(">");
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInTag);
+      this.parseError(TokenizingErrors.EofInTag);
       this.emitEofToken();
     } else {
-      this.parseError(Errors.MissingWhitespaceBetweenAttributes);
+      this.parseError(TokenizingErrors.MissingWhitespaceBetweenAttributes);
       this.reconsumeInState(TokenizerState.BeforeAttributeNameState);
     }
   }
@@ -1325,10 +1341,10 @@ export class Tokenizer {
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInTag);
+      this.parseError(TokenizingErrors.EofInTag);
       this.emitEofToken();
     } else {
-      this.parseError(Errors.UnexpectedSolidusInTag);
+      this.parseError(TokenizingErrors.UnexpectedSolidusInTag);
       this.reconsumeInState(TokenizerState.BeforeAttributeNameState);
     }
   }
@@ -1345,7 +1361,7 @@ export class Tokenizer {
       this.emitCurrentToken();
       this.emitEofToken();
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.appendCharToCurrentCommentTokenData(REPLACEMENT_CHARACTER);
     } else {
       this.appendCharToCurrentCommentTokenData(utils.toCharacter(codePoint));
@@ -1407,7 +1423,7 @@ export class Tokenizer {
       this.pushToPunctuatorTokens("-");
       this.switchStateTo(TokenizerState.CommentStartDashState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.AbruptClosingOfEmptyComment);
+      this.parseError(TokenizingErrors.AbruptClosingOfEmptyComment);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else {
@@ -1423,11 +1439,11 @@ export class Tokenizer {
       this.appendToLastPunctuatorTokens("-");
       this.switchStateTo(TokenizerState.CommentEndState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.AbruptClosingOfEmptyComment);
+      this.parseError(TokenizingErrors.AbruptClosingOfEmptyComment);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInComment);
+      this.parseError(TokenizingErrors.EofInComment);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
@@ -1447,11 +1463,11 @@ export class Tokenizer {
       this.pushToPunctuatorTokens("-");
       this.switchStateTo(TokenizerState.CommentEndDashState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       (this.currentToken as CommentToken).data.value +=
         CODE_POINTS.REPLACEMENT_CHARACTER;
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInComment);
+      this.parseError(TokenizingErrors.EofInComment);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
@@ -1507,7 +1523,7 @@ export class Tokenizer {
     ) {
       this.reconsumeInState(TokenizerState.CommentEndState);
     } else {
-      this.parseError(Errors.NestedComment);
+      this.parseError(TokenizingErrors.NestedComment);
       this.reconsumeInState(TokenizerState.CommentEndState);
     }
   }
@@ -1520,7 +1536,7 @@ export class Tokenizer {
       this.appendToLastPunctuatorTokens("-");
       this.switchStateTo(TokenizerState.CommentEndState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInComment);
+      this.parseError(TokenizingErrors.EofInComment);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
@@ -1542,7 +1558,7 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.HYPHEN_MINUS) {
       this.appendCharToCurrentCommentTokenData("-");
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInComment);
+      this.parseError(TokenizingErrors.EofInComment);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
@@ -1559,12 +1575,12 @@ export class Tokenizer {
       (this.currentToken as CommentToken).data.value += "--!";
       this.switchStateTo(TokenizerState.CommentEndDashState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.IncorrectlyClosedComment);
+      this.parseError(TokenizingErrors.IncorrectlyClosedComment);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
       this.emitEofToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInComment);
+      this.parseError(TokenizingErrors.EofInComment);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
@@ -1582,12 +1598,12 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.reconsumeInState(TokenizerState.BeforeDoctypeNameState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       this.createDoctypeToken("");
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      this.parseError(Errors.MissingWhitespaceBeforeDoctypeName);
+      this.parseError(TokenizingErrors.MissingWhitespaceBeforeDoctypeName);
       this.reconsumeInState(TokenizerState.BeforeDoctypeNameState);
     }
   }
@@ -1602,16 +1618,16 @@ export class Tokenizer {
       this.createDoctypeToken(utils.toAsciiLowerCharacter(codePoint));
       this.switchStateTo(TokenizerState.DoctypeNameState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.createDoctypeToken(REPLACEMENT_CHARACTER);
       this.switchStateTo(TokenizerState.DoctypeNameState);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.MissingDoctypeName);
+      this.parseError(TokenizingErrors.MissingDoctypeName);
       this.createDoctypeToken("");
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       this.createDoctypeToken("");
       this.emitCurrentToken();
       this.emitEofToken();
@@ -1634,10 +1650,10 @@ export class Tokenizer {
     } else if (utils.isAsciiUpperAlpha(codePoint)) {
       this.appendCharToDoctypeTokenName(utils.toAsciiLowerCharacter(codePoint));
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       (this.currentToken as DoctypeToken).name.value += REPLACEMENT_CHARACTER;
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
@@ -1659,7 +1675,7 @@ export class Tokenizer {
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
@@ -1698,7 +1714,9 @@ export class Tokenizer {
     ) {
       this.switchStateTo(TokenizerState.AfterDoctypeSystemKeywordState);
     } else {
-      this.parseError(Errors.InvalidCharacterSequenceAfterDoctypeName);
+      this.parseError(
+        TokenizingErrors.InvalidCharacterSequenceAfterDoctypeName
+      );
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
     }
   }
@@ -1710,26 +1728,32 @@ export class Tokenizer {
     if (utils.isWhitespace(codePoint)) {
       this.switchStateTo(TokenizerState.BeforeDoctypePublicIdentifierState);
     } else if (codePoint === CODE_POINTS.QUOTATION_MARK) {
-      this.parseError(Errors.MissingWhitespaceAfterDoctypePublicKeyword);
+      this.parseError(
+        TokenizingErrors.MissingWhitespaceAfterDoctypePublicKeyword
+      );
       this.switchStateTo(
         TokenizerState.DoctypePublicIdentifierDoubleQuotedState
       );
     } else if (codePoint === CODE_POINTS.APOSTROPHE) {
-      this.parseError(Errors.MissingWhitespaceAfterDoctypePublicKeyword);
+      this.parseError(
+        TokenizingErrors.MissingWhitespaceAfterDoctypePublicKeyword
+      );
       this.switchStateTo(
         TokenizerState.DoctypePublicIdentifierSingleQuotedState
       );
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.MissingDoctypePublicIdentifier);
+      this.parseError(TokenizingErrors.MissingDoctypePublicIdentifier);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      this.parseError(Errors.MissingQuoteBeforeDoctypePublicIdentifier);
+      this.parseError(
+        TokenizingErrors.MissingQuoteBeforeDoctypePublicIdentifier
+      );
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.reconsumeInState(TokenizerState.BogusCommentState);
     }
@@ -1752,15 +1776,17 @@ export class Tokenizer {
         TokenizerState.DoctypePublicIdentifierSingleQuotedState
       );
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.MissingDoctypePublicIdentifier);
+      this.parseError(TokenizingErrors.MissingDoctypePublicIdentifier);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      this.parseError(Errors.MissingQuoteBeforeDoctypePublicIdentifier);
+      this.parseError(
+        TokenizingErrors.MissingQuoteBeforeDoctypePublicIdentifier
+      );
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
     }
   }
@@ -1774,15 +1800,15 @@ export class Tokenizer {
     if (codePoint === CODE_POINTS.QUOTATION_MARK) {
       this.switchStateTo(TokenizerState.AfterDoctypePublicIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.appendCharToDoctypePublicId(REPLACEMENT_CHARACTER);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.AbruptDoctypePublicIdentifier);
+      this.parseError(TokenizingErrors.AbruptDoctypePublicIdentifier);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
       (this.currentToken as DoctypeToken).forceQuirks = true;
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
@@ -1800,14 +1826,14 @@ export class Tokenizer {
     if (codePoint === CODE_POINTS.APOSTROPHE) {
       this.switchStateTo(TokenizerState.AfterDoctypePublicIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       this.appendCharToDoctypePublicId(REPLACEMENT_CHARACTER);
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.AbruptDoctypePublicIdentifier);
+      this.parseError(TokenizingErrors.AbruptDoctypePublicIdentifier);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
@@ -1830,7 +1856,7 @@ export class Tokenizer {
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.QUOTATION_MARK) {
       this.parseError(
-        Errors.MissingWhitespaceBetweenDoctypePublicAndSystemIdentifiers
+        TokenizingErrors.MissingWhitespaceBetweenDoctypePublicAndSystemIdentifiers
       );
       (this.currentToken as DoctypeToken).systemId.value = "";
       this.switchStateTo(
@@ -1838,18 +1864,20 @@ export class Tokenizer {
       );
     } else if (codePoint === CODE_POINTS.APOSTROPHE) {
       this.parseError(
-        Errors.MissingWhitespaceBetweenDoctypePublicAndSystemIdentifiers
+        TokenizingErrors.MissingWhitespaceBetweenDoctypePublicAndSystemIdentifiers
       );
       (this.currentToken as DoctypeToken).systemId.value = "";
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierSingleQuotedState
       );
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      this.parseError(Errors.MissingQuoteBeforeDoctypeSystemIdentifier);
+      this.parseError(
+        TokenizingErrors.MissingQuoteBeforeDoctypeSystemIdentifier
+      );
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
     }
   }
@@ -1875,11 +1903,13 @@ export class Tokenizer {
         TokenizerState.DoctypeSystemIdentifierSingleQuotedState
       );
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      this.parseError(Errors.MissingQuoteBeforeDoctypeSystemIdentifier);
+      this.parseError(
+        TokenizingErrors.MissingQuoteBeforeDoctypeSystemIdentifier
+      );
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
     }
@@ -1892,25 +1922,29 @@ export class Tokenizer {
     if (utils.isWhitespace(codePoint)) {
       this.switchStateTo(TokenizerState.BeforeDoctypeSystemIdentifierState);
     } else if (codePoint === CODE_POINTS.QUOTATION_MARK) {
-      this.parseError(Errors.MissingWhitespaceAfterDoctypeSystemKeyword);
+      this.parseError(
+        TokenizingErrors.MissingWhitespaceAfterDoctypeSystemKeyword
+      );
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierDoubleQuotedState
       );
     } else if (codePoint === CODE_POINTS.APOSTROPHE) {
-      this.parseError(Errors.MissingDoctypeSystemIdentifier);
+      this.parseError(TokenizingErrors.MissingDoctypeSystemIdentifier);
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierSingleQuotedState
       );
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.MissingDoctypeSystemIdentifier);
+      this.parseError(TokenizingErrors.MissingDoctypeSystemIdentifier);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      this.parseError(Errors.MissingQuoteBeforeDoctypeSystemIdentifier);
+      this.parseError(
+        TokenizingErrors.MissingQuoteBeforeDoctypeSystemIdentifier
+      );
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
     }
@@ -1935,15 +1969,17 @@ export class Tokenizer {
         TokenizerState.DoctypeSystemIdentifierSingleQuotedState
       );
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.MissingDoctypeSystemIdentifier);
+      this.parseError(TokenizingErrors.MissingDoctypeSystemIdentifier);
       this.switchStateTo(TokenizerState.DataState);
       this.emitCurrentToken();
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      this.parseError(Errors.MissingQuoteBeforeDoctypeSystemIdentifier);
+      this.parseError(
+        TokenizingErrors.MissingQuoteBeforeDoctypeSystemIdentifier
+      );
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
     }
   }
@@ -1957,15 +1993,15 @@ export class Tokenizer {
     if (codePoint === CODE_POINTS.QUOTATION_MARK) {
       this.switchStateTo(TokenizerState.AfterDoctypeSystemIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       (this.currentToken as DoctypeToken).systemId.value +=
         REPLACEMENT_CHARACTER;
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.AbruptDoctypeSystemIdentifier);
+      this.parseError(TokenizingErrors.AbruptDoctypeSystemIdentifier);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
@@ -1983,15 +2019,15 @@ export class Tokenizer {
     if (codePoint === CODE_POINTS.APOSTROPHE) {
       this.switchStateTo(TokenizerState.AfterDoctypeSystemIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
       (this.currentToken as DoctypeToken).systemId.value +=
         REPLACEMENT_CHARACTER;
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
-      this.parseError(Errors.AbruptDoctypeSystemIdentifier);
+      this.parseError(TokenizingErrors.AbruptDoctypeSystemIdentifier);
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
@@ -2013,12 +2049,14 @@ export class Tokenizer {
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInDoctype);
+      this.parseError(TokenizingErrors.EofInDoctype);
       (this.currentToken as DoctypeToken).forceQuirks = true;
       this.emitCurrentToken();
       this.emitEofToken();
     } else {
-      this.parseError(Errors.UnexpectedCharacterAfterDoctypeSystemIdentifier);
+      this.parseError(
+        TokenizingErrors.UnexpectedCharacterAfterDoctypeSystemIdentifier
+      );
       this.reconsumeInState(TokenizerState.BogusDoctypeState);
     }
   }
@@ -2032,7 +2070,7 @@ export class Tokenizer {
       this.emitCurrentToken();
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.UnexpectedNullCharacter);
+      this.parseError(TokenizingErrors.UnexpectedNullCharacter);
     } else if (codePoint === CODE_POINTS.EOF) {
       this.emitCurrentToken();
       this.emitEofToken();
@@ -2046,7 +2084,7 @@ export class Tokenizer {
     if (codePoint === CODE_POINTS.RIGHT_SQUARE_BRACKET) {
       this.switchStateTo(TokenizerState.CdataSectionBracketState);
     } else if (codePoint === CODE_POINTS.EOF) {
-      this.parseError(Errors.EofInCdata);
+      this.parseError(TokenizingErrors.EofInCdata);
       this.emitEofToken();
     } else {
       this.emitCodePoint(codePoint);
@@ -2129,7 +2167,7 @@ export class Tokenizer {
       // }
     } else {
       if (codePoint === CODE_POINTS.SEMICOLON) {
-        this.parseError(Errors.UnknownNamedCharacterReference);
+        this.parseError(TokenizingErrors.UnknownNamedCharacterReference);
       }
       this.reconsumeInState(this.returnState!);
     }
@@ -2162,7 +2200,9 @@ export class Tokenizer {
     if (utils.isAsciiDigit(codePoint)) {
       this.reconsumeInState(TokenizerState.DecimalCharacterReferenceState);
     } else {
-      this.parseError(Errors.AbsenceOfDigitsInNumericCharacterReference);
+      this.parseError(
+        TokenizingErrors.AbsenceOfDigitsInNumericCharacterReference
+      );
       // TODO
       // this._flushCodePointsConsumedAsCharacterReference();
       this.reconsumeInState(this.returnState!);
@@ -2196,7 +2236,7 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.SEMICOLON) {
       this.state = TokenizerState.NumericCharacterReferenceEndState;
     } else {
-      this.parseError(Errors.MissingSemicolonAfterCharacterReference);
+      this.parseError(TokenizingErrors.MissingSemicolonAfterCharacterReference);
       this.reconsumeInState(TokenizerState.NumericCharacterReferenceEndState);
     }
   }
@@ -2210,7 +2250,7 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.SEMICOLON) {
       this.switchStateTo(TokenizerState.NumericCharacterReferenceEndState);
     } else {
-      this.parseError(Errors.MissingSemicolonAfterCharacterReference);
+      this.parseError(TokenizingErrors.MissingSemicolonAfterCharacterReference);
       this.reconsumeInState(TokenizerState.NumericCharacterReferenceEndState);
     }
   }
@@ -2222,19 +2262,19 @@ export class Tokenizer {
     codePoint: number
   ) {
     if (codePoint === CODE_POINTS.NULL) {
-      this.parseError(Errors.NullCharacterReference);
+      this.parseError(TokenizingErrors.NullCharacterReference);
       this.charRefCode = CODE_POINTS.REPLACEMENT_CHARACTER;
     } else if (this.charRefCode > 0x10ffff) {
-      this.parseError(Errors.CharacterReferenceOutsideUnicodeRange);
+      this.parseError(TokenizingErrors.CharacterReferenceOutsideUnicodeRange);
       this.charRefCode = CODE_POINTS.REPLACEMENT_CHARACTER;
     } else if (utils.isSurrogate(this.charRefCode)) {
-      this.parseError(Errors.SurrogateCharacterReference);
+      this.parseError(TokenizingErrors.SurrogateCharacterReference);
       this.charRefCode = CODE_POINTS.REPLACEMENT_CHARACTER;
     } else if (
       utils.isUndefinedCodePoint(codePoint) ||
       this.charRefCode === CODE_POINTS.CARRIAGE_RETURN
     ) {
-      this.parseError(Errors.ControlCharacterReference);
+      this.parseError(TokenizingErrors.ControlCharacterReference);
       const replacement = (C1_CONTROLS_REFERENCE_REPLACEMENTS as any)[
         this.charRefCode
       ];
