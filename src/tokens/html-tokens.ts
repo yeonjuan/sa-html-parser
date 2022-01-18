@@ -9,6 +9,7 @@ import {
 } from "./atom-tokens";
 import { HtmlTokenType, AnyAtomToken } from "./types";
 import { BaseHtmlToken } from "./base-tokens";
+import { Position } from "../common/types";
 
 export class EofToken extends BaseHtmlToken<HtmlTokenType.EOF> {
   constructor() {
@@ -29,15 +30,31 @@ export class DoctypeToken extends BaseHtmlToken<HtmlTokenType.Doctype> {
   constructor() {
     super(HtmlTokenType.Doctype);
   }
+
+  private getEndIndexAndPos(): { index: number; pos: Position } {
+    const last = [
+      this.closing,
+      this.publicId,
+      this.systemId,
+      this.publicKeyword,
+      this.publicId,
+      this.name,
+      this.opening,
+    ].find((token) => !!token)!;
+    return {
+      index: last.end,
+      pos: last.loc.end,
+    };
+  }
   buildLocation() {
     this.start = this.opening.start;
-    this.end = this.closing?.end;
-
-    this.range = [this.opening?.range[0], this.closing?.range[1]];
+    const { pos, index } = this.getEndIndexAndPos();
+    this.end = index;
+    this.range = [this.opening?.range[0], index];
 
     this.loc = {
       start: this.opening.loc.start,
-      end: this.closing?.loc.end,
+      end: pos,
     };
   }
   tokenize() {
@@ -59,13 +76,23 @@ export class CommentToken extends BaseHtmlToken<HtmlTokenType.Comment> {
   constructor() {
     super(HtmlTokenType.Comment);
   }
+  private getEndIndexAndPos(): { index: number; pos: Position } {
+    const last = [this.closing, this.data, this.opening].find(
+      (token) => !!token
+    )!;
+    return {
+      index: last.end,
+      pos: last.loc.end,
+    };
+  }
   buildLocation() {
     this.start = this.opening.start;
-    this.end = this.closing.end;
+    const { pos, index } = this.getEndIndexAndPos();
+    this.end = index;
 
-    this.range = [this.opening.range[0], this.closing.range[1]];
+    this.range = [this.opening.range[0], index];
 
-    this.loc = { start: this.opening.loc.start, end: this.closing.loc.end };
+    this.loc = { start: this.opening.loc.start, end: pos };
   }
   tokenize() {
     return [this.opening, this.data, this.closing];
@@ -119,13 +146,13 @@ export class EndTagToken extends BaseHtmlToken<HtmlTokenType.EndTag> {
   }
   buildLocation() {
     this.start = this.opening.start;
-    this.end = this.closing.end;
+    this.end = this.closing?.end;
 
-    this.range = [this.opening.range[0], this.closing.range[1]];
+    this.range = [this.opening.range[0], this.closing?.range[1]];
 
     this.loc = {
       start: this.opening.loc.start,
-      end: this.closing.loc.end,
+      end: this.closing?.loc.end,
     };
   }
 

@@ -194,15 +194,10 @@ export class CommentNode extends BaseNode<"Comment"> {
   }
 
   static fromToken(token: CommentToken) {
-    return new CommentNode(
-      token.data.value,
-      token.opening.start,
-      token.closing.end,
-      {
-        start: token.opening.loc.start,
-        end: token.closing.loc.end,
-      }
-    );
+    return new CommentNode(token.data.value, token.start, token.end, {
+      start: token.loc.start,
+      end: token.loc.end,
+    });
   }
 }
 
@@ -215,9 +210,9 @@ export class DoctypeNode extends BaseNode<"DocumentType"> {
     super("DocumentType", start, end, loc);
   }
   static fromToken(token: DoctypeToken) {
-    return new DoctypeNode(token.opening.start, token.closing.end, {
-      start: token.opening.loc.start,
-      end: token.closing.loc.end,
+    return new DoctypeNode(token.start, token.end, {
+      start: token.loc.start,
+      end: token.loc.end,
     });
   }
 }

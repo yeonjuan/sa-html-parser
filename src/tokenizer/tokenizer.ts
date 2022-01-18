@@ -314,8 +314,10 @@ export class Tokenizer {
 
   private appendCharToCurrentCommentTokenData(char: string) {
     // console.log(TokenizerState[this.state], `"${char}"`);
+    if (!this.currentToken) {
+      this.createCommentToken();
+    }
     const commentToken = this.currentToken as CommentToken;
-
     if (!commentToken.data.value.length) {
       commentToken.data.loc = this.posTracker.getLocation();
       const range = this.posTracker.getRange();

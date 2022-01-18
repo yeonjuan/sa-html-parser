@@ -2,7 +2,7 @@ import { TokenizingErrors } from "../../common/errors";
 import { HtmlTokenType } from "../../tokens";
 import { testHtmlTokenizer as t } from "./test-utils";
 
-const { Doctype } = HtmlTokenType;
+const { Doctype, Comment } = HtmlTokenType;
 const { EofInDoctype, MissingDoctypeName, MissingWhitespaceBeforeDoctypeName } =
   TokenizingErrors;
 
@@ -10,7 +10,7 @@ describe("tokenizer: doctype tokens", () => {
   t("Doctype lower case", ["<!DOCTYPE html>", [Doctype]]);
   t("Doctype upper case", ["<!DOCTYPE HTML>", [Doctype]]);
   t("Doctype mixed case", ["<!DOCTYPE HTML>", [Doctype]]);
-  t("Doctype EOF", [
+  t("Doctype EOF 1", [
     "<!DOCTYPE HTML",
     [Doctype],
     [
@@ -22,6 +22,7 @@ describe("tokenizer: doctype tokens", () => {
       },
     ],
   ]);
+  t("Doctype EOF 2", ["<!DOC", [Comment]]);
   t("Doctype without name", [
     "<!DOCTYPE>",
     [Doctype],
