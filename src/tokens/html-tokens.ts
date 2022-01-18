@@ -9,7 +9,6 @@ import {
 } from "./atom-tokens";
 import { HtmlTokenType, AnyAtomToken } from "./types";
 import { BaseHtmlToken } from "./base-tokens";
-import { Position } from "../common/types";
 
 export class EofToken extends BaseHtmlToken<HtmlTokenType.EOF> {
   constructor() {
@@ -31,7 +30,7 @@ export class DoctypeToken extends BaseHtmlToken<HtmlTokenType.Doctype> {
     super(HtmlTokenType.Doctype);
   }
 
-  private getEndIndexAndPos(): { index: number; pos: Position } {
+  private getLastToken(): AnyAtomToken {
     const last = [
       this.closing,
       this.publicId,
@@ -41,20 +40,17 @@ export class DoctypeToken extends BaseHtmlToken<HtmlTokenType.Doctype> {
       this.name,
       this.opening,
     ].find((token) => !!token)!;
-    return {
-      index: last.end,
-      pos: last.loc.end,
-    };
+    return last;
   }
   buildLocation() {
+    const tkn = this.getLastToken();
     this.start = this.opening.start;
-    const { pos, index } = this.getEndIndexAndPos();
-    this.end = index;
-    this.range = [this.opening?.range[0], index];
+    this.end = tkn.end;
+    this.range = [this.opening?.range[0], tkn.range[1]];
 
     this.loc = {
       start: this.opening.loc.start,
-      end: pos,
+      end: tkn.loc.end,
     };
   }
   tokenize() {
@@ -76,23 +72,21 @@ export class CommentToken extends BaseHtmlToken<HtmlTokenType.Comment> {
   constructor() {
     super(HtmlTokenType.Comment);
   }
-  private getEndIndexAndPos(): { index: number; pos: Position } {
-    const last = [this.closing, this.data, this.opening].find(
-      (token) => !!token
-    )!;
-    return {
-      index: last.end,
-      pos: last.loc.end,
-    };
+  private getLastToken(): AnyAtomToken {
+    if (this.closing) {
+      return this.closing;
+    } else if (this.data) {
+      return this.data;
+    } else {
+      return this.opening;
+    }
   }
   buildLocation() {
+    const tkn = this.getLastToken();
     this.start = this.opening.start;
-    const { pos, index } = this.getEndIndexAndPos();
-    this.end = index;
-
-    this.range = [this.opening.range[0], index];
-
-    this.loc = { start: this.opening.loc.start, end: pos };
+    this.end = tkn.end;
+    this.range = [this.opening.range[0], tkn.range[1]];
+    this.loc = { start: this.opening.loc.start, end: tkn.loc.end };
   }
   tokenize() {
     return [this.opening, this.data, this.closing];
@@ -115,13 +109,30 @@ export class StartTagToken extends BaseHtmlToken<HtmlTokenType.StartTag> {
   constructor() {
     super(HtmlTokenType.StartTag);
   }
-  buildLocation() {
-    this.start = this.opening.start;
-    this.end = this.closing.end;
 
-    this.range = [this.opening.range[0], this.closing.range[1]];
+  private getLastToken(): AnyAtomToken {
+    let last: AnyAtomToken;
+    if (this.closing) {
+      last = this.closing;
+    } else if (this.attrs.length) {
+      const lastAttr = this.attrs[this.attrs.length - 1];
+      last = lastAttr?.value ?? lastAttr.name;
+    } else if (this.tagName) {
+      last = this.tagName;
+    } else {
+      last = this.opening;
+    }
+    return last;
+  }
+
+  buildLocation() {
+    const tkn = this.getLastToken();
+    this.start = this.opening.start;
+    this.end = tkn.end;
+
+    this.range = [this.opening.range[0], tkn.range[1]];
     this.attrs.forEach((attr) => attr.buildLocation());
-    this.loc = { start: this.opening.loc.start, end: this.closing.loc.end };
+    this.loc = { start: this.opening.loc.start, end: tkn.loc.end };
   }
 
   tokenize(): AnyAtomToken[] {
@@ -144,6 +155,7 @@ export class EndTagToken extends BaseHtmlToken<HtmlTokenType.EndTag> {
   constructor() {
     super(HtmlTokenType.EndTag);
   }
+
   buildLocation() {
     this.start = this.opening.start;
     this.end = this.closing?.end;
@@ -168,16 +180,25 @@ export class AttributeToken extends BaseHtmlToken<HtmlTokenType.Attribute> {
   constructor() {
     super(HtmlTokenType.Attribute);
   }
+
+  private getLastToken(): AnyAtomToken {
+    if (this.value) {
+      return this.value;
+    } else if (this.between) {
+      return this.between;
+    } else {
+      return this.name;
+    }
+  }
+
   buildLocation() {
-    const valueIfExists = this.value || this.name;
+    const tkn = this.getLastToken();
     this.start = this.name.start;
-    this.end = valueIfExists.end;
-
-    this.range = [this.name.range[0], valueIfExists.range[1]];
-
+    this.end = tkn.end;
+    this.range = [this.name.range[0], tkn.range[1]];
     this.loc = {
       start: this.name.loc.start,
-      end: valueIfExists.loc.end,
+      end: tkn.loc.end,
     };
   }
 
