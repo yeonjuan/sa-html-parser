@@ -11,6 +11,7 @@ import {
   DoctypeToken,
   EndTagToken,
   StartTagToken,
+  TagNameToken,
 } from "../tokens";
 
 export class AttributeNameNode extends BaseNode<"AttributeName"> {
@@ -78,8 +79,24 @@ export class AttributeNode extends BaseNode<"Attribute"> {
   }
 }
 
+export class ElementNameNode extends BaseNode<"ElementName"> {
+  private constructor(
+    public start: number,
+    public end: number,
+    public loc: SourceCodeLocation,
+    public value: string
+  ) {
+    super("ElementName", start, end, loc);
+  }
+
+  static fromToken(token: TagNameToken) {
+    return new ElementNameNode(token.start, token.end, token.loc, token.value);
+  }
+}
+
 export class OpeningElementNode extends BaseNode<"OpeningElement"> {
   public attributes: AttributeNode[] = [];
+  public name!: ElementNameNode;
   private constructor(
     public start: number,
     public end: number,
@@ -90,6 +107,7 @@ export class OpeningElementNode extends BaseNode<"OpeningElement"> {
 
   static fromToken(token: StartTagToken) {
     const element = new OpeningElementNode(token.start, token.end, token.loc);
+    element.name = ElementNameNode.fromToken(token.tagName);
     element.attributes = token.attrs.map((tkn) => AttributeNode.fromToken(tkn));
     return element;
   }
@@ -132,8 +150,7 @@ export class ElementNode extends BaseNode<"Element"> {
     type: string,
     public start: number,
     public end: number,
-    public loc: SourceCodeLocation,
-    public tagName: string
+    public loc: SourceCodeLocation
   ) {
     super("Element", start, end, loc);
   }
@@ -145,8 +162,7 @@ export class ElementNode extends BaseNode<"Element"> {
       {
         start: token.opening.loc.start,
         end: token.closing.loc.end,
-      },
-      token.tagName.value
+      }
     );
     element.openingElement = OpeningElementNode.fromToken(token);
     return element;

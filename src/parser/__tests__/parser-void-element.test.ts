@@ -17,18 +17,18 @@ describe("parser: void element", () => {
 
     const [div] = result.children.filter(onlyElement);
     expect(div.type).toBe("Element");
-    expect(div.tagName).toBe("div");
+    expect(div.openingElement.name.value).toBe("div");
 
     const [area, base, section] = div.children.filter(onlyElement);
     expect(area.type).toBe("Element");
-    expect(area.tagName).toBe("area");
+    expect(area.openingElement.name.value).toBe("area");
 
     expect(base.type).toBe("Element");
-    expect(base.tagName).toBe("base");
+    expect(base.openingElement.name.value).toBe("base");
     const [img] = section.children.filter(onlyElement);
 
     expect(img.type).toBe("Element");
-    expect(img.tagName).toBe("img");
+    expect(img.openingElement.name.value).toBe("img");
   });
 
   test("basic 2", () => {
@@ -52,32 +52,32 @@ describe("parser: void element", () => {
     // 1 depth
     const [div] = result.children.filter(onlyElement);
     expect(div.type).toBe("Element");
-    expect(div.tagName).toBe("div");
+    expect(div.openingElement.name.value).toBe("div");
 
     const [area, base, section, div2] = div.children.filter(onlyElement);
     expect(area.type).toBe("Element");
-    expect(area.tagName).toBe("area");
+    expect(area.openingElement.name.value).toBe("area");
     expect(base.type).toBe("Element");
-    expect(base.tagName).toBe("base");
+    expect(base.openingElement.name.value).toBe("base");
 
     // 2 depth
     const [img] = section.children.filter(onlyElement);
 
     expect(img.type).toBe("Element");
-    expect(img.tagName).toBe("img");
+    expect(img.openingElement.name.value).toBe("img");
 
     // 2 depth
     const [div3, img2] = div2.children.filter(onlyElement);
 
     expect(div3.type).toBe("Element");
-    expect(div3.tagName).toBe("div");
+    expect(div3.openingElement.name.value).toBe("div");
 
     expect(img2.type).toBe("Element");
-    expect(img2.tagName).toBe("img");
+    expect(img2.openingElement.name.value).toBe("img");
 
     const [base2] = div3.children.filter(onlyElement);
 
     expect(base2.type).toBe("Element");
-    expect(base2.tagName).toBe("base");
+    expect(base2.openingElement.name.value).toBe("base");
   });
 });

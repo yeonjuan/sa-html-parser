@@ -71,6 +71,26 @@ RootNode {
                 "line": 1,
               },
             },
+            "name": ElementNameNode {
+              "end": 125,
+              "loc": Object {
+                "end": Object {
+                  "column": 125,
+                  "line": 1,
+                },
+                "start": Object {
+                  "column": 121,
+                  "line": 1,
+                },
+              },
+              "range": Array [
+                121,
+                125,
+              ],
+              "start": 121,
+              "type": "ElementName",
+              "value": "span",
+            },
             "range": Array [
               120,
               126,
@@ -84,7 +104,6 @@ RootNode {
           ],
           "selfClosing": false,
           "start": 120,
-          "tagName": "span",
           "type": "Element",
         },
       ],
@@ -309,6 +328,26 @@ RootNode {
             "line": 1,
           },
         },
+        "name": ElementNameNode {
+          "end": 5,
+          "loc": Object {
+            "end": Object {
+              "column": 5,
+              "line": 1,
+            },
+            "start": Object {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "range": Array [
+            1,
+            5,
+          ],
+          "start": 1,
+          "type": "ElementName",
+          "value": "span",
+        },
         "range": Array [
           0,
           120,
@@ -322,7 +361,6 @@ RootNode {
       ],
       "selfClosing": false,
       "start": 0,
-      "tagName": "span",
       "type": "Element",
     },
   ],

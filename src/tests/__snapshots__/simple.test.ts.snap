@@ -216,6 +216,26 @@ RootNode {
                     "line": 5,
                   },
                 },
+                "name": ElementNameNode {
+                  "end": 57,
+                  "loc": Object {
+                    "end": Object {
+                      "column": 8,
+                      "line": 5,
+                    },
+                    "start": Object {
+                      "column": 5,
+                      "line": 5,
+                    },
+                  },
+                  "range": Array [
+                    54,
+                    57,
+                  ],
+                  "start": 54,
+                  "type": "ElementName",
+                  "value": "div",
+                },
                 "range": Array [
                   53,
                   58,
@@ -229,7 +249,6 @@ RootNode {
               ],
               "selfClosing": false,
               "start": 53,
-              "tagName": "div",
               "type": "Element",
             },
             TextNode {
@@ -340,6 +359,26 @@ RootNode {
                     "line": 6,
                   },
                 },
+                "name": ElementNameNode {
+                  "end": 78,
+                  "loc": Object {
+                    "end": Object {
+                      "column": 10,
+                      "line": 6,
+                    },
+                    "start": Object {
+                      "column": 5,
+                      "line": 6,
+                    },
+                  },
+                  "range": Array [
+                    73,
+                    78,
+                  ],
+                  "start": 73,
+                  "type": "ElementName",
+                  "value": "input",
+                },
                 "range": Array [
                   72,
                   90,
@@ -353,7 +392,6 @@ RootNode {
               ],
               "selfClosing": true,
               "start": 72,
-              "tagName": "input",
               "type": "Element",
             },
             TextNode {
@@ -421,6 +459,26 @@ RootNode {
                 "line": 3,
               },
             },
+            "name": ElementNameNode {
+              "end": 30,
+              "loc": Object {
+                "end": Object {
+                  "column": 7,
+                  "line": 3,
+                },
+                "start": Object {
+                  "column": 3,
+                  "line": 3,
+                },
+              },
+              "range": Array [
+                26,
+                30,
+              ],
+              "start": 26,
+              "type": "ElementName",
+              "value": "body",
+            },
             "range": Array [
               25,
               31,
@@ -434,7 +492,6 @@ RootNode {
           ],
           "selfClosing": false,
           "start": 25,
-          "tagName": "body",
           "type": "Element",
         },
         TextNode {
@@ -502,6 +559,26 @@ RootNode {
             "line": 2,
           },
         },
+        "name": ElementNameNode {
+          "end": 21,
+          "loc": Object {
+            "end": Object {
+              "column": 5,
+              "line": 2,
+            },
+            "start": Object {
+              "column": 1,
+              "line": 2,
+            },
+          },
+          "range": Array [
+            17,
+            21,
+          ],
+          "start": 17,
+          "type": "ElementName",
+          "value": "html",
+        },
         "range": Array [
           16,
           22,
@@ -515,7 +592,6 @@ RootNode {
       ],
       "selfClosing": false,
       "start": 16,
-      "tagName": "html",
       "type": "Element",
     },
     TextNode {

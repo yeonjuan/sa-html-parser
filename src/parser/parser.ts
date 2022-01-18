@@ -72,8 +72,8 @@ class Parser {
   private popFromOpenStackUntilTagName(tagName: string): null | any[] {
     let unclosedElements: null | any[] = null;
     for (let i = this.openElementStack.stackTop; i >= 0; i--) {
-      const element = this.openElementStack.elements[i];
-      if (element.tagName === tagName) {
+      const element: ElementNode = this.openElementStack.elements[i];
+      if (element.openingElement?.name.value === tagName) {
         unclosedElements = this.openElementStack.popUntilElementPopped(element);
         break;
       }
