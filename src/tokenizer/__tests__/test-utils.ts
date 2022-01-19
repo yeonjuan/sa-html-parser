@@ -5,14 +5,19 @@ import { Position } from "../../common/types";
 
 export const testHtmlTokenizer = (
   description: string,
-  testCase: [string, HtmlTokenType[]]
+  testCase: [
+    string,
+    HtmlTokenType[],
+    { line: number; column: number; error: string; index: number }[]?
+  ]
 ) => {
-  const [input, types] = testCase;
+  const [input, types, errors = []] = testCase;
   test(description, () => {
     const tokenizer = Tokenizer.create(input);
     types.forEach((type) => {
       const token = tokenizer.getNextToken();
       expect(token?.type).toBe(type);
+      expect(tokenizer.errors).toMatchObject(errors);
     });
   });
 };

@@ -107,7 +107,9 @@ export class OpeningElementNode extends BaseNode<"OpeningElement"> {
   }
 
   static fromToken(token: StartTagToken) {
-    const element = new OpeningElementNode(token.start, token.end, token.loc);
+    const element = new OpeningElementNode(token.start, token.end, {
+      ...token.loc,
+    });
     element.name = ElementNameNode.fromToken(token.tagName);
     element.attributes = token.attrs.map((tkn) => AttributeNode.fromToken(tkn));
     return element;
@@ -158,12 +160,9 @@ export class ElementNode extends BaseNode<"Element"> {
   static fromToken(token: StartTagToken): ElementNode {
     const element = new ElementNode(
       token.tagName.value,
-      token.opening.start,
-      token.closing.end,
-      {
-        start: token.opening.loc.start,
-        end: token.closing.loc.end,
-      }
+      token.start,
+      token.end,
+      token.loc
     );
     element.openingElement = OpeningElementNode.fromToken(token);
     return element;
@@ -194,15 +193,7 @@ export class CommentNode extends BaseNode<"Comment"> {
   }
 
   static fromToken(token: CommentToken) {
-    return new CommentNode(
-      token.data.value,
-      token.opening.start,
-      token.closing.end,
-      {
-        start: token.opening.loc.start,
-        end: token.closing.loc.end,
-      }
-    );
+    return new CommentNode(token.data.value, token.start, token.end, token.loc);
   }
 }
 
@@ -215,9 +206,6 @@ export class DoctypeNode extends BaseNode<"DocumentType"> {
     super("DocumentType", start, end, loc);
   }
   static fromToken(token: DoctypeToken) {
-    return new DoctypeNode(token.opening.start, token.closing.end, {
-      start: token.opening.loc.start,
-      end: token.closing.loc.end,
-    });
+    return new DoctypeNode(token.start, token.end, token.loc);
   }
 }
