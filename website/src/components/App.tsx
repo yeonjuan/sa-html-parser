@@ -21,13 +21,16 @@ const DEFAULT_VALUE = `
 const App = () => {
   const [html, setHtml] = useState(DEFAULT_VALUE);
   const ast = parse(html);
+  const parseResult = {
+    ast,
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Header />
       <SplitPanel>
         <Editor value={html} onChange={setHtml} />
-        <Ast value={ast} />
+        <Ast parseResult={parseResult} />
       </SplitPanel>
       <Footer />
     </div>

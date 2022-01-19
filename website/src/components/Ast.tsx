@@ -1,20 +1,49 @@
-import React, { FC } from "react";
-import ReactJsonView from "react-json-view";
+import React from "react";
+import Tree from "./Tree";
 
-const Ast: FC<{ value: any }> = (props) => {
+function formatTime(time) {
+  if (!time) {
+    return null;
+  }
+  if (time < 1000) {
+    return `${time}ms`;
+  }
+  return `${(time / 1000).toFixed(2)}s`;
+}
+
+export default function ASTOutput({ parseResult = {}, position = null }: any) {
+  const { ast = null } = parseResult;
+  let output;
+
+  if (parseResult.error) {
+    output = (
+      <div
+        style={{
+          padding: 20,
+          whiteSpace: "pre-wrap",
+          fontFamily: "monospace",
+        }}
+      >
+        {parseResult.error.message}
+      </div>
+    );
+  } else if (ast) {
+    output = (
+      <>
+        {React.createElement(Tree, {
+          parseResult,
+          position,
+        })}
+      </>
+    );
+  }
+
   return (
-    <ReactJsonView
-      src={props.value}
-      name={null}
-      displayDataTypes={false}
-      displayObjectSize={false}
-      enableClipboard={false}
-      // @ts-ignore
-      displayArrayKey={false}
-      theme="rjv-default"
-      style={{ width: "100%", overflow: "auto" }}
-    />
+    <div className="output highlight">
+      <div className="toolbar">
+        <span className="time">{formatTime(parseResult.time)}</span>
+      </div>
+      {output}
+    </div>
   );
-};
-
-export default Ast;
+}
