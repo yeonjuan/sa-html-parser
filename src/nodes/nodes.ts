@@ -107,9 +107,6 @@ export class OpeningElementNode extends BaseNode<"OpeningElement"> {
   }
 
   static fromToken(token: StartTagToken) {
-    if (token.tagName.value === "div") {
-      console.log("Opening", token.loc);
-    }
     const element = new OpeningElementNode(token.start, token.end, {
       ...token.loc,
     });

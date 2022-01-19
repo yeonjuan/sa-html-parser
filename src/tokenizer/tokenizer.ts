@@ -313,7 +313,6 @@ export class Tokenizer {
   }
 
   private appendCharToCurrentCommentTokenData(char: string) {
-    // console.log(TokenizerState[this.state], `"${char}"`);
     if (!this.currentToken) {
       this.createCommentToken();
     }
