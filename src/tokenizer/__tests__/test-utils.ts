@@ -17,8 +17,10 @@ export const testHtmlTokenizer = (
     types.forEach((type) => {
       const token = tokenizer.getNextToken();
       expect(token?.type).toBe(type);
-      expect(tokenizer.errors).toMatchObject(errors);
     });
+    if (errors?.length) {
+      expect(tokenizer.errors).toMatchObject(errors);
+    }
   });
 };
 

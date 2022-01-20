@@ -1,0 +1,443 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`contents contents.html 1`] = `
+RootNode {
+  "children": Array [
+    DoctypeNode {
+      "end": 15,
+      "loc": Object {
+        "end": Object {
+          "column": 15,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        0,
+        15,
+      ],
+      "start": 0,
+      "type": "DocumentType",
+    },
+    TextNode {
+      "end": 16,
+      "loc": Object {
+        "end": Object {
+          "column": 16,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 15,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        15,
+        16,
+      ],
+      "start": 15,
+      "type": "Text",
+      "value": "
+",
+    },
+    ElementNode {
+      "children": Array [
+        TextNode {
+          "end": 25,
+          "loc": Object {
+            "end": Object {
+              "column": 2,
+              "line": 3,
+            },
+            "start": Object {
+              "column": 6,
+              "line": 2,
+            },
+          },
+          "range": Array [
+            22,
+            25,
+          ],
+          "start": 22,
+          "type": "Text",
+          "value": "
+  ",
+        },
+        ElementNode {
+          "children": Array [
+            TextNode {
+              "end": 36,
+              "loc": Object {
+                "end": Object {
+                  "column": 4,
+                  "line": 4,
+                },
+                "start": Object {
+                  "column": 8,
+                  "line": 3,
+                },
+              },
+              "range": Array [
+                31,
+                36,
+              ],
+              "start": 31,
+              "type": "Text",
+              "value": "
+    ",
+            },
+            ElementNode {
+              "children": Array [
+                TextNode {
+                  "end": 44,
+                  "loc": Object {
+                    "end": Object {
+                      "column": 12,
+                      "line": 4,
+                    },
+                    "start": Object {
+                      "column": 9,
+                      "line": 4,
+                    },
+                  },
+                  "range": Array [
+                    41,
+                    44,
+                  ],
+                  "start": 41,
+                  "type": "Text",
+                  "value": "1<2",
+                },
+              ],
+              "closingElement": ClosingElementNode {
+                "end": 50,
+                "loc": Object {
+                  "end": Object {
+                    "column": 18,
+                    "line": 4,
+                  },
+                  "start": Object {
+                    "column": 12,
+                    "line": 4,
+                  },
+                },
+                "range": Array [
+                  44,
+                  50,
+                ],
+                "start": 44,
+                "type": "ClosingElement",
+              },
+              "end": 50,
+              "loc": Object {
+                "end": Object {
+                  "column": 18,
+                  "line": 4,
+                },
+                "start": Object {
+                  "column": 4,
+                  "line": 4,
+                },
+              },
+              "openingElement": OpeningElementNode {
+                "attributes": Array [],
+                "end": 41,
+                "loc": Object {
+                  "end": Object {
+                    "column": 9,
+                    "line": 4,
+                  },
+                  "start": Object {
+                    "column": 4,
+                    "line": 4,
+                  },
+                },
+                "name": ElementNameNode {
+                  "end": 40,
+                  "loc": Object {
+                    "end": Object {
+                      "column": 8,
+                      "line": 4,
+                    },
+                    "start": Object {
+                      "column": 5,
+                      "line": 4,
+                    },
+                  },
+                  "range": Array [
+                    37,
+                    40,
+                  ],
+                  "start": 37,
+                  "type": "ElementName",
+                  "value": "div",
+                },
+                "range": Array [
+                  36,
+                  41,
+                ],
+                "start": 36,
+                "type": "OpeningElement",
+              },
+              "range": Array [
+                36,
+                50,
+              ],
+              "selfClosing": false,
+              "start": 36,
+              "type": "Element",
+            },
+            TextNode {
+              "end": 53,
+              "loc": Object {
+                "end": Object {
+                  "column": 2,
+                  "line": 5,
+                },
+                "start": Object {
+                  "column": 18,
+                  "line": 4,
+                },
+              },
+              "range": Array [
+                50,
+                53,
+              ],
+              "start": 50,
+              "type": "Text",
+              "value": "
+  ",
+            },
+          ],
+          "closingElement": ClosingElementNode {
+            "end": 60,
+            "loc": Object {
+              "end": Object {
+                "column": 9,
+                "line": 5,
+              },
+              "start": Object {
+                "column": 2,
+                "line": 5,
+              },
+            },
+            "range": Array [
+              53,
+              60,
+            ],
+            "start": 53,
+            "type": "ClosingElement",
+          },
+          "end": 60,
+          "loc": Object {
+            "end": Object {
+              "column": 9,
+              "line": 5,
+            },
+            "start": Object {
+              "column": 2,
+              "line": 3,
+            },
+          },
+          "openingElement": OpeningElementNode {
+            "attributes": Array [],
+            "end": 31,
+            "loc": Object {
+              "end": Object {
+                "column": 8,
+                "line": 3,
+              },
+              "start": Object {
+                "column": 2,
+                "line": 3,
+              },
+            },
+            "name": ElementNameNode {
+              "end": 30,
+              "loc": Object {
+                "end": Object {
+                  "column": 7,
+                  "line": 3,
+                },
+                "start": Object {
+                  "column": 3,
+                  "line": 3,
+                },
+              },
+              "range": Array [
+                26,
+                30,
+              ],
+              "start": 26,
+              "type": "ElementName",
+              "value": "body",
+            },
+            "range": Array [
+              25,
+              31,
+            ],
+            "start": 25,
+            "type": "OpeningElement",
+          },
+          "range": Array [
+            25,
+            60,
+          ],
+          "selfClosing": false,
+          "start": 25,
+          "type": "Element",
+        },
+        TextNode {
+          "end": 61,
+          "loc": Object {
+            "end": Object {
+              "column": 10,
+              "line": 5,
+            },
+            "start": Object {
+              "column": 9,
+              "line": 5,
+            },
+          },
+          "range": Array [
+            60,
+            61,
+          ],
+          "start": 60,
+          "type": "Text",
+          "value": "
+",
+        },
+      ],
+      "closingElement": ClosingElementNode {
+        "end": 68,
+        "loc": Object {
+          "end": Object {
+            "column": 7,
+            "line": 6,
+          },
+          "start": Object {
+            "column": 0,
+            "line": 6,
+          },
+        },
+        "range": Array [
+          61,
+          68,
+        ],
+        "start": 61,
+        "type": "ClosingElement",
+      },
+      "end": 68,
+      "loc": Object {
+        "end": Object {
+          "column": 7,
+          "line": 6,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 2,
+        },
+      },
+      "openingElement": OpeningElementNode {
+        "attributes": Array [],
+        "end": 22,
+        "loc": Object {
+          "end": Object {
+            "column": 6,
+            "line": 2,
+          },
+          "start": Object {
+            "column": 0,
+            "line": 2,
+          },
+        },
+        "name": ElementNameNode {
+          "end": 21,
+          "loc": Object {
+            "end": Object {
+              "column": 5,
+              "line": 2,
+            },
+            "start": Object {
+              "column": 1,
+              "line": 2,
+            },
+          },
+          "range": Array [
+            17,
+            21,
+          ],
+          "start": 17,
+          "type": "ElementName",
+          "value": "html",
+        },
+        "range": Array [
+          16,
+          22,
+        ],
+        "start": 16,
+        "type": "OpeningElement",
+      },
+      "range": Array [
+        16,
+        68,
+      ],
+      "selfClosing": false,
+      "start": 16,
+      "type": "Element",
+    },
+    TextNode {
+      "end": 69,
+      "loc": Object {
+        "end": Object {
+          "column": 8,
+          "line": 6,
+        },
+        "start": Object {
+          "column": 7,
+          "line": 6,
+        },
+      },
+      "range": Array [
+        68,
+        69,
+      ],
+      "start": 68,
+      "type": "Text",
+      "value": "
+",
+    },
+  ],
+  "comments": Array [],
+  "end": 69,
+  "errors": Array [
+    ParsingError {
+      "column": 11,
+      "error": "invalid-first-character-of-tag-name",
+      "index": 43,
+      "line": 4,
+    },
+  ],
+  "loc": Object {
+    "end": Object {
+      "column": 8,
+      "line": 6,
+    },
+    "start": Object {
+      "column": 0,
+      "line": 1,
+    },
+  },
+  "range": Array [
+    0,
+    69,
+  ],
+  "start": 0,
+  "tokens": Array [],
+  "type": "Root",
+}
+`;

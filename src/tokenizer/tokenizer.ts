@@ -574,6 +574,13 @@ export class Tokenizer {
       this.parseError(TokenizingErrors.EofBeforeTagName);
       this.emitEofToken();
     } else {
+      const token = this.punctuatorTokens.pop();
+      if (token) {
+        this.appendCharToCurrentCharacterToken(
+          AtomTokenType.Characters,
+          token.value
+        );
+      }
       this.parseError(TokenizingErrors.InvalidFirstCharacterOfTagName);
       this.reconsumeInState(TokenizerState.DataState);
     }
