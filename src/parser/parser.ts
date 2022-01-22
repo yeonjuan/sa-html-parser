@@ -62,7 +62,6 @@ class Parser {
   }
 
   private insertCommentNodeToRoot(node: CommentNode) {
-    this.insertToCurrent(node);
     this.root.comments.push(node);
   }
 
