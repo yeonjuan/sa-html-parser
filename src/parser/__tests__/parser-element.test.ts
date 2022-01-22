@@ -9,7 +9,7 @@ describe("parser: element", () => {
 
     const [div] = result.children as ElementNode[];
 
-    expect(div.selfClosing).toBe(false);
+    expect(div.openingElement.selfClosing).toBe(false);
     expect(div.type).toBe("Element");
     expect(div.openingElement.type).toBe("OpeningElement");
     expect(div.closingElement?.type).toBe("ClosingElement");
@@ -29,7 +29,7 @@ describe("parser: element", () => {
 
     const [div] = result.children as ElementNode[];
 
-    expect(div.selfClosing).toBe(false);
+    expect(div.openingElement.selfClosing).toBe(false);
     expect(div.type).toBe("Element");
     expect(div.openingElement.name.value).toBe("div");
     expect(div.openingElement.type).toBe("OpeningElement");
@@ -50,7 +50,7 @@ describe("parser: element", () => {
 
     const [div] = result.children as ElementNode[];
 
-    expect(div.selfClosing).toBe(true);
+    expect(div.openingElement.selfClosing).toBe(true);
     expect(div.type).toBe("Element");
     expect(div.openingElement.name.value).toBe("div");
     expect(div.closingElement).toBe(null);
@@ -85,7 +85,7 @@ describe("parser: element", () => {
 
     expect(inner.type).toBe("Element");
     expect(inner.openingElement.name.value).toBe("input");
-    expect(inner.selfClosing).toBe(true);
+    expect(inner.openingElement.selfClosing).toBe(true);
     expect(inner.start).toBe(5);
     expect(inner.end).toBe(14);
     expect(inner.range).toStrictEqual([5, 14]);

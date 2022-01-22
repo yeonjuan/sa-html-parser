@@ -97,6 +97,7 @@ export class ElementNameNode extends BaseNode<"ElementName"> {
 export class OpeningElementNode extends BaseNode<"OpeningElement"> {
   public attributes: AttributeNode[] = [];
   public name!: ElementNameNode;
+  public selfClosing: boolean = false;
   private constructor(
     public start: number,
     public end: number,
@@ -125,7 +126,11 @@ export class ClosingElementNode extends BaseNode<"ClosingElement"> {
     super("ClosingElement", start, end, loc);
   }
   static fromToken(token: EndTagToken) {
-    return new ClosingElementNode(token.start, token.end, token.loc);
+    const element = new ClosingElementNode(token.start, token.end, {
+      ...token.loc,
+    });
+    element.name = ElementNameNode.fromToken(token.tagName);
+    return element;
   }
 }
 
@@ -148,7 +153,6 @@ export class ElementNode extends BaseNode<"Element"> {
   public children: (TextNode | ElementNode)[] = [];
   public openingElement!: OpeningElementNode;
   public closingElement: ClosingElementNode | null = null;
-  public selfClosing: boolean = false;
   private constructor(
     type: string,
     public start: number,

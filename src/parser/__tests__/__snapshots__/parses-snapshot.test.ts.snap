@@ -40,6 +40,26 @@ RootNode {
                 "line": 1,
               },
             },
+            "name": ElementNameNode {
+              "end": 146,
+              "loc": Object {
+                "end": Object {
+                  "column": 146,
+                  "line": 1,
+                },
+                "start": Object {
+                  "column": 142,
+                  "line": 1,
+                },
+              },
+              "range": Array [
+                142,
+                146,
+              ],
+              "start": 142,
+              "type": "ElementName",
+              "value": "span",
+            },
             "range": Array [
               140,
               147,
@@ -95,6 +115,7 @@ RootNode {
               120,
               126,
             ],
+            "selfClosing": false,
             "start": 120,
             "type": "OpeningElement",
           },
@@ -102,7 +123,6 @@ RootNode {
             120,
             147,
           ],
-          "selfClosing": false,
           "start": 120,
           "type": "Element",
         },
@@ -118,6 +138,26 @@ RootNode {
             "column": 147,
             "line": 1,
           },
+        },
+        "name": ElementNameNode {
+          "end": 153,
+          "loc": Object {
+            "end": Object {
+              "column": 153,
+              "line": 1,
+            },
+            "start": Object {
+              "column": 149,
+              "line": 1,
+            },
+          },
+          "range": Array [
+            149,
+            153,
+          ],
+          "start": 149,
+          "type": "ElementName",
+          "value": "span",
         },
         "range": Array [
           147,
@@ -352,6 +392,7 @@ RootNode {
           0,
           120,
         ],
+        "selfClosing": false,
         "start": 0,
         "type": "OpeningElement",
       },
@@ -359,7 +400,6 @@ RootNode {
         0,
         154,
       ],
-      "selfClosing": false,
       "start": 0,
       "type": "Element",
     },

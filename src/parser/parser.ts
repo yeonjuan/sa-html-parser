@@ -108,7 +108,7 @@ class Parser {
     const tagNode = ElementNode.fromToken(token);
     this.insertToCurrent(tagNode);
     if (token.selfClosing) {
-      tagNode.selfClosing = true;
+      tagNode.openingElement.selfClosing = true;
     } else {
       this.pushToOpenStack(tagNode);
     }

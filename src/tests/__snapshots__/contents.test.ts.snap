@@ -124,6 +124,26 @@ RootNode {
                     "line": 4,
                   },
                 },
+                "name": ElementNameNode {
+                  "end": 49,
+                  "loc": Object {
+                    "end": Object {
+                      "column": 17,
+                      "line": 4,
+                    },
+                    "start": Object {
+                      "column": 14,
+                      "line": 4,
+                    },
+                  },
+                  "range": Array [
+                    46,
+                    49,
+                  ],
+                  "start": 46,
+                  "type": "ElementName",
+                  "value": "div",
+                },
                 "range": Array [
                   44,
                   50,
@@ -179,6 +199,7 @@ RootNode {
                   36,
                   41,
                 ],
+                "selfClosing": false,
                 "start": 36,
                 "type": "OpeningElement",
               },
@@ -186,7 +207,6 @@ RootNode {
                 36,
                 50,
               ],
-              "selfClosing": false,
               "start": 36,
               "type": "Element",
             },
@@ -223,6 +243,26 @@ RootNode {
                 "column": 2,
                 "line": 5,
               },
+            },
+            "name": ElementNameNode {
+              "end": 59,
+              "loc": Object {
+                "end": Object {
+                  "column": 8,
+                  "line": 5,
+                },
+                "start": Object {
+                  "column": 4,
+                  "line": 5,
+                },
+              },
+              "range": Array [
+                55,
+                59,
+              ],
+              "start": 55,
+              "type": "ElementName",
+              "value": "body",
             },
             "range": Array [
               53,
@@ -279,6 +319,7 @@ RootNode {
               25,
               31,
             ],
+            "selfClosing": false,
             "start": 25,
             "type": "OpeningElement",
           },
@@ -286,7 +327,6 @@ RootNode {
             25,
             60,
           ],
-          "selfClosing": false,
           "start": 25,
           "type": "Element",
         },
@@ -323,6 +363,26 @@ RootNode {
             "column": 0,
             "line": 6,
           },
+        },
+        "name": ElementNameNode {
+          "end": 67,
+          "loc": Object {
+            "end": Object {
+              "column": 6,
+              "line": 6,
+            },
+            "start": Object {
+              "column": 2,
+              "line": 6,
+            },
+          },
+          "range": Array [
+            63,
+            67,
+          ],
+          "start": 63,
+          "type": "ElementName",
+          "value": "html",
         },
         "range": Array [
           61,
@@ -379,6 +439,7 @@ RootNode {
           16,
           22,
         ],
+        "selfClosing": false,
         "start": 16,
         "type": "OpeningElement",
       },
@@ -386,7 +447,6 @@ RootNode {
         16,
         68,
       ],
-      "selfClosing": false,
       "start": 16,
       "type": "Element",
     },
