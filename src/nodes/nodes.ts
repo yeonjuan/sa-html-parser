@@ -1,5 +1,4 @@
 import type { SourceCodeLocation } from "../common/types";
-import type { AnyNode } from "./types";
 import { BaseNode } from "./base";
 import {
   AnyAtomToken,
@@ -117,6 +116,7 @@ export class OpeningElementNode extends BaseNode<"OpeningElement"> {
 }
 
 export class ClosingElementNode extends BaseNode<"ClosingElement"> {
+  public name!: ElementNameNode;
   private constructor(
     public start: number,
     public end: number,
@@ -171,7 +171,7 @@ export class ElementNode extends BaseNode<"Element"> {
 
 export class RootNode extends BaseNode<"Root"> {
   comments: CommentNode[] = [];
-  children: AnyNode[] = [];
+  children: (ElementNode | TextNode | CommentNode | DoctypeNode)[] = [];
   tokens: AnyAtomToken[] = [];
   errors: ParsingError[] = [];
   constructor() {
