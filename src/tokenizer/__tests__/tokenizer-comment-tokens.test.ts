@@ -2,11 +2,11 @@ import { TokenizingErrors } from "../../common/errors";
 import { HtmlTokenType } from "../../tokens";
 import { testHtmlTokenizer as t } from "./test-utils";
 
-const { Comment } = HtmlTokenType;
+const { Comment, EOF } = HtmlTokenType;
 const { EofInComment } = TokenizingErrors;
 
 describe("tokenizer: comment tokens", () => {
-  t("Comment", ["<!-- comment -->", [Comment]]);
+  t("Comment", ["<!-- comment -->", [Comment, EOF]]);
   t("Comment EOF", [
     "<!-- comment",
     [Comment],

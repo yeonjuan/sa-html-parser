@@ -2,14 +2,14 @@ import { TokenizingErrors } from "../../common/errors";
 import { HtmlTokenType } from "../../tokens";
 import { testHtmlTokenizer as t } from "./test-utils";
 
-const { Doctype, Comment } = HtmlTokenType;
+const { Doctype, Comment, EOF } = HtmlTokenType;
 const { EofInDoctype, MissingDoctypeName, MissingWhitespaceBeforeDoctypeName } =
   TokenizingErrors;
 
 describe("tokenizer: doctype tokens", () => {
-  t("Doctype lower case", ["<!DOCTYPE html>", [Doctype]]);
-  t("Doctype upper case", ["<!DOCTYPE HTML>", [Doctype]]);
-  t("Doctype mixed case", ["<!DOCTYPE HTML>", [Doctype]]);
+  t("Doctype lower case", ["<!DOCTYPE html>", [Doctype, EOF]]);
+  t("Doctype upper case", ["<!DOCTYPE HTML>", [Doctype, EOF]]);
+  t("Doctype mixed case", ["<!DOCTYPE HTML>", [Doctype, EOF]]);
   t("Doctype EOF 1", [
     "<!DOCTYPE HTML",
     [Doctype],
@@ -50,18 +50,18 @@ describe("tokenizer: doctype tokens", () => {
 
   t("Doctype double quoted publicId", [
     `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">`,
-    [Doctype],
+    [Doctype, EOF],
   ]);
   t("Doctype single quoted publicId", [
     `<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>`,
-    [Doctype],
+    [Doctype, EOF],
   ]);
   t("Doctype double quoted systemId", [
     `<!DOCTYPE document SYSTEM "subjects.dtd">`,
-    [Doctype],
+    [Doctype, EOF],
   ]);
   t("Doctype single quoted systemId", [
     `<!DOCTYPE document SYSTEM 'subjects.dtd'>`,
-    [Doctype],
+    [Doctype, EOF],
   ]);
 });

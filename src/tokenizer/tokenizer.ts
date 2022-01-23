@@ -350,6 +350,7 @@ export class Tokenizer {
     }
     doctypeToken.publicId.value += char;
     doctypeToken.publicId.range[1] = range[1];
+    doctypeToken.publicId.end = range[1];
     doctypeToken.publicId.loc.end = loc.end;
   }
 
@@ -362,6 +363,7 @@ export class Tokenizer {
     }
     doctypeToken.systemId.value += char;
     doctypeToken.systemId.range[1] = range[1];
+    doctypeToken.systemId.end = range[1];
     doctypeToken.systemId.loc.end = loc.end;
   }
 
