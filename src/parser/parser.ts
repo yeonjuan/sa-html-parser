@@ -150,15 +150,15 @@ class Parser {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private [HtmlTokenType.EOF](token: EofToken) {
-    const poppedElements = this.openElementStack.popUntilBeforeElementPopped(
+    this.running = false;
+    const poppedElements = this.openElementStack.popUntilElementPopped(
       this.root
     );
-    if (poppedElements.length) {
-      for (let i = poppedElements.length - 2; i >= 0; i--) {
-        this.root.children.push(poppedElements[i]);
-      }
+    if (poppedElements.length > 2) {
+      const element = poppedElements[poppedElements.length - 2]!;
+      this.root.children.push(...utils.getChildrenRecursively(element));
     }
-    this.running = false;
+
     const lastChild = utils.last<AnyNode>(this.root.children);
     this.root.range[1] = lastChild?.range[1] || 0;
     this.root.end = lastChild?.range[1] || 0;

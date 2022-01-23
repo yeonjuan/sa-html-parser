@@ -98,4 +98,43 @@ describe("parser: void element", () => {
     expect(area.children.length).toBe(0);
     expect(text2.type).toBe("Text");
   });
+
+  test("multiple 1", () => {
+    const result = parse(`
+      <area>
+      <area>`);
+
+    const elements = result.children.filter(onlyElement);
+    expect(elements.length).toBe(2);
+    const [area1, area2] = elements;
+    expect(area1.type).toBe("Element");
+    expect(area1.children.length).toBe(0);
+    expect(area2.type).toBe("Element");
+    expect(area2.children.length).toBe(0);
+  });
+
+  test("multiple 2", () => {
+    const result = parse(`
+      <area>
+      <area>
+      <div>
+        <area>
+        <area>
+      </div>`);
+
+    const elements = result.children.filter(onlyElement);
+    expect(elements.length).toBe(3);
+    const [area1, area2, div] = elements;
+    expect(area1.type).toBe("Element");
+    expect(area1.children.length).toBe(0);
+    expect(area2.type).toBe("Element");
+    expect(area2.children.length).toBe(0);
+
+    const innerElements = div.children.filter(onlyElement);
+    const [area3, area4] = innerElements;
+    expect(area3.type).toBe("Element");
+    expect(area3.children.length).toBe(0);
+    expect(area4.type).toBe("Element");
+    expect(area4.children.length).toBe(0);
+  });
 });
