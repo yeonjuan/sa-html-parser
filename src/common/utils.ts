@@ -159,6 +159,7 @@ export const getChildrenRecursively = (node: AnyNode) => {
       children.push(child);
       children.push(...getChildrenRecursively(child));
     });
+    node.children = [];
   }
   return children;
 };

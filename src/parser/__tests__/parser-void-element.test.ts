@@ -80,4 +80,22 @@ describe("parser: void element", () => {
     expect(base2.type).toBe("Element");
     expect(base2.openingElement.name.value).toBe("base");
   });
+
+  test("content", () => {
+    const result = parse(`<div>
+      <area>
+      content
+    </div>`);
+
+    expect(result.children.length).toBe(1);
+
+    const [div] = result.children.filter(onlyElement);
+    expect(div.type).toBe("Element");
+    expect(div.openingElement.name.value).toBe("div");
+    const [text1, area, text2] = div.children as ElementNode[];
+    expect(text1.type).toBe("Text");
+    expect(area.type).toBe("Element");
+    expect(area.children.length).toBe(0);
+    expect(text2.type).toBe("Text");
+  });
 });
