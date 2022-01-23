@@ -15,6 +15,26 @@ RootNode {
           "line": 1,
         },
       },
+      "name": DoctypeName {
+        "end": 14,
+        "loc": Object {
+          "end": Object {
+            "column": 14,
+            "line": 1,
+          },
+          "start": Object {
+            "column": 10,
+            "line": 1,
+          },
+        },
+        "range": Array [
+          10,
+          14,
+        ],
+        "start": 10,
+        "type": "DoctypeName",
+        "value": "html",
+      },
       "publicId": null,
       "range": Array [
         0,

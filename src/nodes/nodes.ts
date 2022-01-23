@@ -205,6 +205,7 @@ export class CommentNode extends BaseNode<"Comment"> {
 export class DoctypeNode extends BaseNode<"DocumentType"> {
   public publicId: DoctypeId | null = null;
   public systemId: DoctypeId | null = null;
+  public name!: DoctypeName;
   private constructor(
     public start: number,
     public end: number,
@@ -214,6 +215,7 @@ export class DoctypeNode extends BaseNode<"DocumentType"> {
   }
   static fromToken(token: DoctypeToken) {
     const element = new DoctypeNode(token.start, token.end, token.loc);
+    element.name = DoctypeName.fromToken(token.name);
     element.publicId = token.publicId
       ? DoctypeId.fromToken(token.publicId)
       : null;
@@ -221,6 +223,20 @@ export class DoctypeNode extends BaseNode<"DocumentType"> {
       ? DoctypeId.fromToken(token.systemId)
       : null;
     return element;
+  }
+}
+
+export class DoctypeName extends BaseNode<"DoctypeName"> {
+  private constructor(
+    public start: number,
+    public end: number,
+    public loc: SourceCodeLocation,
+    public value: string
+  ) {
+    super("DoctypeName", start, end, loc);
+  }
+  static fromToken(token: CharactersToken) {
+    return new DoctypeName(token.start, token.end, token.loc, token.value);
   }
 }
 
