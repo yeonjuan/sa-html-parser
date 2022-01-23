@@ -91,28 +91,28 @@ describe("tokenizer: doctype locations", () => {
       ],
       [
         AtomTokenType.Characters,
-        "-//W3C//DTD HTML 4.01 Transitional//EN",
-        [23, 61],
+        `"-//W3C//DTD HTML 4.01 Transitional//EN"`,
+        [22, 62],
         {
           line: 1,
-          column: 23,
+          column: 22,
         },
         {
           line: 1,
-          column: 61,
+          column: 62,
         },
       ],
       [
         AtomTokenType.Characters,
-        "http://www.w3.org/TR/html4/loose.dtd",
-        [63, 100],
+        `"http://www.w3.org/TR/html4/loose.dtd"`,
+        [63, 101],
         {
           line: 1,
           column: 63,
         },
         {
           line: 1,
-          column: 100,
+          column: 101,
         },
       ],
       [
@@ -175,15 +175,15 @@ describe("tokenizer: doctype locations", () => {
       ],
       [
         AtomTokenType.Characters,
-        "subjects.dtd",
-        [26, 39],
+        `"subjects.dtd"`,
+        [26, 40],
         {
           line: 1,
           column: 26,
         },
         {
           line: 1,
-          column: 39,
+          column: 40,
         },
       ],
       [

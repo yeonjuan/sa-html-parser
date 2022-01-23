@@ -6,6 +6,7 @@ import {
   AttrNameToken,
   AttrValueToken,
   CharacterLikeToken,
+  CharactersToken,
   CommentToken,
   DoctypeToken,
   EndTagToken,
@@ -202,6 +203,8 @@ export class CommentNode extends BaseNode<"Comment"> {
 }
 
 export class DoctypeNode extends BaseNode<"DocumentType"> {
+  public publicId: DoctypeId | null = null;
+  public systemId: DoctypeId | null = null;
   private constructor(
     public start: number,
     public end: number,
@@ -210,6 +213,27 @@ export class DoctypeNode extends BaseNode<"DocumentType"> {
     super("DocumentType", start, end, loc);
   }
   static fromToken(token: DoctypeToken) {
-    return new DoctypeNode(token.start, token.end, token.loc);
+    const element = new DoctypeNode(token.start, token.end, token.loc);
+    element.publicId = token.publicId
+      ? DoctypeId.fromToken(token.publicId)
+      : null;
+    element.systemId = token.systemId
+      ? DoctypeId.fromToken(token.systemId)
+      : null;
+    return element;
+  }
+}
+
+export class DoctypeId extends BaseNode<"DoctypeId"> {
+  private constructor(
+    public start: number,
+    public end: number,
+    public loc: SourceCodeLocation,
+    public value: string
+  ) {
+    super("DoctypeId", start, end, loc);
+  }
+  static fromToken(token: CharactersToken) {
+    return new DoctypeId(token.start, token.end, token.loc, token.value);
   }
 }

@@ -1778,10 +1778,12 @@ export class Tokenizer {
     if (utils.isWhitespace(codePoint)) {
       return;
     } else if (codePoint === CODE_POINTS.QUOTATION_MARK) {
+      this.appendCharToDoctypePublicId('"');
       this.switchStateTo(
         TokenizerState.DoctypePublicIdentifierDoubleQuotedState
       );
     } else if (codePoint === CODE_POINTS.APOSTROPHE) {
+      this.appendCharToDoctypePublicId("'");
       this.switchStateTo(
         TokenizerState.DoctypePublicIdentifierSingleQuotedState
       );
@@ -1808,6 +1810,7 @@ export class Tokenizer {
     codePoint: number
   ) {
     if (codePoint === CODE_POINTS.QUOTATION_MARK) {
+      this.appendCharToDoctypePublicId('"');
       this.switchStateTo(TokenizerState.AfterDoctypePublicIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
       this.parseError(TokenizingErrors.UnexpectedNullCharacter);
@@ -1834,6 +1837,7 @@ export class Tokenizer {
     codePoint: number
   ) {
     if (codePoint === CODE_POINTS.APOSTROPHE) {
+      this.appendCharToDoctypePublicId("'");
       this.switchStateTo(TokenizerState.AfterDoctypePublicIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
       this.parseError(TokenizingErrors.UnexpectedNullCharacter);
@@ -1903,12 +1907,12 @@ export class Tokenizer {
     } else if (codePoint === CODE_POINTS.GREATER_THAN_SIGN) {
       this.switchStateTo(TokenizerState.DataState);
     } else if (codePoint === CODE_POINTS.QUOTATION_MARK) {
-      this.appendCharToDoctypeSystemId("");
+      this.appendCharToDoctypeSystemId('"');
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierDoubleQuotedState
       );
     } else if (codePoint === CODE_POINTS.APOSTROPHE) {
-      this.appendCharToDoctypeSystemId("");
+      this.appendCharToDoctypeSystemId("'");
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierSingleQuotedState
       );
@@ -1969,7 +1973,7 @@ export class Tokenizer {
     if (utils.isWhitespace(codePoint)) {
       return;
     } else if (codePoint === CODE_POINTS.QUOTATION_MARK) {
-      this.appendCharToDoctypeSystemId("");
+      this.appendCharToDoctypeSystemId('"');
       this.switchStateTo(
         TokenizerState.DoctypeSystemIdentifierDoubleQuotedState
       );
@@ -2001,6 +2005,7 @@ export class Tokenizer {
     codePoint: number
   ) {
     if (codePoint === CODE_POINTS.QUOTATION_MARK) {
+      this.appendCharToDoctypeSystemId('"');
       this.switchStateTo(TokenizerState.AfterDoctypeSystemIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
       this.parseError(TokenizingErrors.UnexpectedNullCharacter);
@@ -2027,6 +2032,7 @@ export class Tokenizer {
     codePoint: number
   ) {
     if (codePoint === CODE_POINTS.APOSTROPHE) {
+      this.appendCharToDoctypeSystemId("'");
       this.switchStateTo(TokenizerState.AfterDoctypeSystemIdentifierState);
     } else if (codePoint === CODE_POINTS.NULL) {
       this.parseError(TokenizingErrors.UnexpectedNullCharacter);

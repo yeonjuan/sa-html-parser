@@ -15,11 +15,13 @@ RootNode {
           "line": 1,
         },
       },
+      "publicId": null,
       "range": Array [
         0,
         15,
       ],
       "start": 0,
+      "systemId": null,
       "type": "DocumentType",
     },
     TextNode {
