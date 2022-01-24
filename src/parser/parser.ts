@@ -1,11 +1,11 @@
 import {
-  CommentNode,
-  DoctypeNode,
-  RootNode,
+  Comment,
+  Doctype,
+  Root,
   AnyNode,
-  ElementNode,
-  ClosingElementNode,
-  TextNode,
+  Element,
+  ClosingElement,
+  Text,
 } from "../nodes";
 import { Tokenizer } from "../tokenizer/tokenizer";
 import {
@@ -26,7 +26,7 @@ import { ParsingError, ParsingErrors } from "../common/errors";
 import { Position } from "../common/types";
 
 class Parser {
-  private root!: RootNode;
+  private root!: Root;
   private html!: string;
   private tokenizer!: Tokenizer;
   private openElementStack = new OpenElementStack();
@@ -37,7 +37,7 @@ class Parser {
     return parser.parseHTML(html);
   }
 
-  private parseHTML(html: string): RootNode {
+  private parseHTML(html: string): Root {
     this.html = html;
     this.tokenizer = Tokenizer.create(this.html);
     this.createRoot();
@@ -57,11 +57,11 @@ class Parser {
   }
 
   private createRoot() {
-    this.root = new RootNode();
+    this.root = new Root();
     this.openElementStack.push(this.root);
   }
 
-  private insertCommentNodeToRoot(node: CommentNode) {
+  private insertCommentToRoot(node: Comment) {
     this.root.comments.push(node);
   }
 
@@ -76,9 +76,9 @@ class Parser {
   private popFromOpenStackUntilTagName(tagName: string): null | any[] {
     let unclosedElements: null | any[] = null;
     for (let i = this.openElementStack.stackTop; i >= 0; i--) {
-      const element: ElementNode = this.openElementStack.elements[i];
-      if (element.openingElement?.name.value === tagName) {
-        unclosedElements = this.openElementStack.popUntilElementPopped(element);
+      const Element: Element = this.openElementStack.elements[i];
+      if (Element.openingElement?.name.value === tagName) {
+        unclosedElements = this.openElementStack.popUntilElementPopped(Element);
         break;
       }
     }
@@ -94,17 +94,17 @@ class Parser {
   }
 
   private [HtmlTokenType.Comment](token: CommentToken) {
-    const comment = CommentNode.fromToken(token);
+    const comment = Comment.fromToken(token);
     this.insertToCurrent(comment);
-    this.insertCommentNodeToRoot(comment);
+    this.insertCommentToRoot(comment);
   }
 
   private [HtmlTokenType.Doctype](token: DoctypeToken) {
-    this.insertToCurrent(DoctypeNode.fromToken(token));
+    this.insertToCurrent(Doctype.fromToken(token));
   }
 
   private [HtmlTokenType.StartTag](token: StartTagToken) {
-    const tagNode = ElementNode.fromToken(token);
+    const tagNode = Element.fromToken(token);
     this.insertToCurrent(tagNode);
     if (token.selfClosing) {
       tagNode.openingElement.selfClosing = true;
@@ -114,7 +114,7 @@ class Parser {
   }
 
   private [HtmlTokenType.EndTag](token: EndTagToken) {
-    const closing = ClosingElementNode.fromToken(token);
+    const closing = ClosingElement.fromToken(token);
     const poppedElements = this.popFromOpenStackUntilTagName(
       token.tagName.value
     );
@@ -126,26 +126,26 @@ class Parser {
       );
       return;
     }
-    const element = utils.last<ElementNode>(poppedElements)!;
-    element.children = utils.getChildrenRecursively(element);
-    element.closingElement = closing;
-    element.end = closing.end;
-    element.loc.end = closing.loc.end;
-    element.range[1] = closing.range[1];
+    const Element = utils.last<Element>(poppedElements)!;
+    Element.children = utils.getChildrenRecursively(Element);
+    Element.closingElement = closing;
+    Element.end = closing.end;
+    Element.loc.end = closing.loc.end;
+    Element.range[1] = closing.range[1];
   }
 
   private [HtmlTokenType.CharacterLike](token: CharacterLikeToken) {
     if (this.openElementStack.top.children?.length) {
       const lastChild: any = utils.last(this.openElementStack.top.children);
       if (lastChild.type === "Text") {
-        const textNode = lastChild as TextNode;
-        textNode.value += token.value.value;
-        textNode.end = token.end;
-        textNode.loc.end = token.value.loc.end;
+        const Text = lastChild as Text;
+        Text.value += token.value.value;
+        Text.end = token.end;
+        Text.loc.end = token.value.loc.end;
         return;
       }
     }
-    this.insertToCurrent(TextNode.fromToken(token));
+    this.insertToCurrent(Text.fromToken(token));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -155,8 +155,8 @@ class Parser {
       this.root
     );
     if (poppedElements.length > 2) {
-      const element = poppedElements[poppedElements.length - 2]!;
-      this.root.children.push(...utils.getChildrenRecursively(element));
+      const Element = poppedElements[poppedElements.length - 2]!;
+      this.root.children.push(...utils.getChildrenRecursively(Element));
     }
 
     const lastChild = utils.last<AnyNode>(this.root.children);

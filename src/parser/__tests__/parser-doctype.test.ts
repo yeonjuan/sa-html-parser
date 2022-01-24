@@ -1,4 +1,4 @@
-import { DoctypeNode } from "../../nodes";
+import { Doctype } from "../../nodes";
 import { parse } from "../parser";
 
 describe("parser: doctype", () => {
@@ -7,7 +7,7 @@ describe("parser: doctype", () => {
     expect(result.children.length).toBe(1);
 
     const [doctype] = result.children;
-    expect(doctype.type).toBe("DocumentType");
+    expect(doctype.type).toBe("Doctype");
     expect(doctype.start).toBe(0);
     expect(doctype.end).toBe(15);
 
@@ -24,8 +24,8 @@ describe("parser: doctype", () => {
     );
     expect(result.children.length).toBe(1);
 
-    const [doctype] = result.children as [DoctypeNode];
-    expect(doctype.type).toBe("DocumentType");
+    const [doctype] = result.children as [Doctype];
+    expect(doctype.type).toBe("Doctype");
 
     expect(doctype.publicId?.type).toBe("DoctypeId");
     expect(doctype.publicId?.value).toBe(

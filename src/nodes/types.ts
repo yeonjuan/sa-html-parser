@@ -1,14 +1,3 @@
-import type {
-  CommentNode,
-  ElementNode,
-  TextNode,
-  DoctypeNode,
-  AttributeNode,
-} from "./nodes";
+import type { Comment, Element, Text, Doctype, Attribute } from "./nodes";
 
-export type AnyNode =
-  | ElementNode
-  | TextNode
-  | DoctypeNode
-  | CommentNode
-  | AttributeNode;
+export type AnyNode = Element | Text | Doctype | Comment | Attribute;

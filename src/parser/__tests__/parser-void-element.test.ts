@@ -1,7 +1,7 @@
-import { ElementNode } from "../../nodes";
+import { Element } from "../../nodes";
 import { parse } from "../parser";
 
-const onlyElement = (e: any): e is ElementNode => e.type === "Element";
+const onlyElement = (e: any): e is Element => e.type === "Element";
 
 describe("parser: void element", () => {
   test("basic", () => {
@@ -92,7 +92,7 @@ describe("parser: void element", () => {
     const [div] = result.children.filter(onlyElement);
     expect(div.type).toBe("Element");
     expect(div.openingElement.name.value).toBe("div");
-    const [text1, area, text2] = div.children as ElementNode[];
+    const [text1, area, text2] = div.children as Element[];
     expect(text1.type).toBe("Text");
     expect(area.type).toBe("Element");
     expect(area.children.length).toBe(0);

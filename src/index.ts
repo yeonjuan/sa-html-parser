@@ -1,13 +1,13 @@
 export { parse } from "./parser";
 export type {
-  AttributeNode,
-  OpeningElementNode,
-  ClosingElementNode,
-  TextNode,
-  ElementNode,
-  RootNode,
-  DoctypeNode,
-  CommentNode,
-  AttributeNameNode,
-  AttributeValueNode,
+  Attribute,
+  OpeningElement,
+  ClosingElement,
+  Text,
+  Element,
+  Root,
+  Doctype,
+  Comment,
+  AttributeName,
+  AttributeValue,
 } from "./nodes";

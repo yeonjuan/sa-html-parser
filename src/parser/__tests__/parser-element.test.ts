@@ -1,4 +1,4 @@
-import { ElementNode } from "../../nodes";
+import { Element } from "../../nodes";
 import { parse } from "../parser";
 
 describe("parser: element", () => {
@@ -7,7 +7,7 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const [div] = result.children as ElementNode[];
+    const [div] = result.children as Element[];
 
     expect(div.openingElement.selfClosing).toBe(false);
     expect(div.type).toBe("Element");
@@ -27,7 +27,7 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const [div] = result.children as ElementNode[];
+    const [div] = result.children as Element[];
 
     expect(div.openingElement.selfClosing).toBe(false);
     expect(div.type).toBe("Element");
@@ -48,7 +48,7 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const [div] = result.children as ElementNode[];
+    const [div] = result.children as Element[];
 
     expect(div.openingElement.selfClosing).toBe(true);
     expect(div.type).toBe("Element");
@@ -68,7 +68,7 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const [outer] = result.children as ElementNode[];
+    const [outer] = result.children as Element[];
 
     expect(outer.type).toBe("Element");
     expect(outer.openingElement.name.value).toBe("div");
@@ -81,7 +81,7 @@ describe("parser: element", () => {
     expect(outer.loc.end.column).toBe(20);
     expect(outer.loc.end.line).toBe(1);
 
-    const [inner] = outer.children as ElementNode[];
+    const [inner] = outer.children as Element[];
 
     expect(inner.type).toBe("Element");
     expect(inner.openingElement.name.value).toBe("input");
@@ -100,7 +100,7 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(2);
 
-    const [first, second] = result.children as ElementNode[];
+    const [first, second] = result.children as Element[];
 
     expect(first.type).toBe("Element");
     expect(first.openingElement.name.value).toBe("div");
@@ -114,12 +114,12 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const [div] = result.children as ElementNode[];
+    const [div] = result.children as Element[];
 
     expect(div.type).toBe("Element");
     expect(div.openingElement.name.value).toBe("div");
 
-    const [span] = div.children as ElementNode[];
+    const [span] = div.children as Element[];
 
     expect(span.type).toBe("Element");
     expect(span.openingElement.name.value).toBe("span");
@@ -130,12 +130,12 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const [outDiv] = result.children as ElementNode[];
+    const [outDiv] = result.children as Element[];
 
     expect(outDiv.type).toBe("Element");
     expect(outDiv.openingElement.name.value).toBe("div");
 
-    const [innerDic] = outDiv.children as ElementNode[];
+    const [innerDic] = outDiv.children as Element[];
 
     expect(innerDic.type).toBe("Element");
     expect(innerDic.openingElement.name.value).toBe("div");
@@ -145,7 +145,7 @@ describe("parser: element", () => {
     const result = parse("<div>");
     expect(result.children.length).toBe(1);
 
-    const [div] = result.children as ElementNode[];
+    const [div] = result.children as Element[];
 
     expect(div.type).toBe("Element");
     expect(div.openingElement.name.value).toBe("div");
@@ -156,7 +156,7 @@ describe("parser: element", () => {
     const result = parse("<div><span>");
 
     expect(result.children.length).toBe(2);
-    const [first, second] = result.children as ElementNode[];
+    const [first, second] = result.children as Element[];
 
     expect(first.type).toBe("Element");
     expect(first.openingElement.name.value).toBe("div");
@@ -172,11 +172,11 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const div = result.children[0] as ElementNode;
+    const div = result.children[0] as Element;
     expect(div.type).toBe("Element");
     expect(div.openingElement.name.value).toBe("div");
 
-    const input = div.children[0] as ElementNode;
+    const input = div.children[0] as Element;
     expect(input.type).toBe("Element");
     expect(input.openingElement.name.value).toBe("input");
   });
@@ -186,7 +186,7 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const div = result.children[0] as ElementNode;
+    const div = result.children[0] as Element;
     expect(div.type).toBe("Element");
 
     const [text] = div.children;
@@ -198,7 +198,7 @@ describe("parser: element", () => {
 
     expect(result.children.length).toBe(1);
 
-    const div = result.children[0] as ElementNode;
+    const div = result.children[0] as Element;
     expect(div.type).toBe("Element");
     expect(div.openingElement.name.value).toBe("div");
     expect(div.openingElement.attributes.length).toBe(2);

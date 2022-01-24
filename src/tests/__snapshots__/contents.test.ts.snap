@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`contents contents.html 1`] = `
-RootNode {
+Root {
   "children": Array [
-    DoctypeNode {
+    Doctype {
       "end": 15,
       "loc": Object {
         "end": Object {
@@ -42,9 +42,9 @@ RootNode {
       ],
       "start": 0,
       "systemId": null,
-      "type": "DocumentType",
+      "type": "Doctype",
     },
-    TextNode {
+    Text {
       "end": 16,
       "loc": Object {
         "end": Object {
@@ -65,9 +65,9 @@ RootNode {
       "value": "
 ",
     },
-    ElementNode {
+    Element {
       "children": Array [
-        TextNode {
+        Text {
           "end": 25,
           "loc": Object {
             "end": Object {
@@ -88,9 +88,9 @@ RootNode {
           "value": "
   ",
         },
-        ElementNode {
+        Element {
           "children": Array [
-            TextNode {
+            Text {
               "end": 36,
               "loc": Object {
                 "end": Object {
@@ -111,9 +111,9 @@ RootNode {
               "value": "
     ",
             },
-            ElementNode {
+            Element {
               "children": Array [
-                TextNode {
+                Text {
                   "end": 44,
                   "loc": Object {
                     "end": Object {
@@ -134,7 +134,7 @@ RootNode {
                   "value": "1<2",
                 },
               ],
-              "closingElement": ClosingElementNode {
+              "closingElement": ClosingElement {
                 "end": 50,
                 "loc": Object {
                   "end": Object {
@@ -146,7 +146,7 @@ RootNode {
                     "line": 4,
                   },
                 },
-                "name": ElementNameNode {
+                "name": ElementName {
                   "end": 49,
                   "loc": Object {
                     "end": Object {
@@ -184,7 +184,7 @@ RootNode {
                   "line": 4,
                 },
               },
-              "openingElement": OpeningElementNode {
+              "openingElement": OpeningElement {
                 "attributes": Array [],
                 "end": 41,
                 "loc": Object {
@@ -197,7 +197,7 @@ RootNode {
                     "line": 4,
                   },
                 },
-                "name": ElementNameNode {
+                "name": ElementName {
                   "end": 40,
                   "loc": Object {
                     "end": Object {
@@ -232,7 +232,7 @@ RootNode {
               "start": 36,
               "type": "Element",
             },
-            TextNode {
+            Text {
               "end": 53,
               "loc": Object {
                 "end": Object {
@@ -254,7 +254,7 @@ RootNode {
   ",
             },
           ],
-          "closingElement": ClosingElementNode {
+          "closingElement": ClosingElement {
             "end": 60,
             "loc": Object {
               "end": Object {
@@ -266,7 +266,7 @@ RootNode {
                 "line": 5,
               },
             },
-            "name": ElementNameNode {
+            "name": ElementName {
               "end": 59,
               "loc": Object {
                 "end": Object {
@@ -304,7 +304,7 @@ RootNode {
               "line": 3,
             },
           },
-          "openingElement": OpeningElementNode {
+          "openingElement": OpeningElement {
             "attributes": Array [],
             "end": 31,
             "loc": Object {
@@ -317,7 +317,7 @@ RootNode {
                 "line": 3,
               },
             },
-            "name": ElementNameNode {
+            "name": ElementName {
               "end": 30,
               "loc": Object {
                 "end": Object {
@@ -352,7 +352,7 @@ RootNode {
           "start": 25,
           "type": "Element",
         },
-        TextNode {
+        Text {
           "end": 61,
           "loc": Object {
             "end": Object {
@@ -374,7 +374,7 @@ RootNode {
 ",
         },
       ],
-      "closingElement": ClosingElementNode {
+      "closingElement": ClosingElement {
         "end": 68,
         "loc": Object {
           "end": Object {
@@ -386,7 +386,7 @@ RootNode {
             "line": 6,
           },
         },
-        "name": ElementNameNode {
+        "name": ElementName {
           "end": 67,
           "loc": Object {
             "end": Object {
@@ -424,7 +424,7 @@ RootNode {
           "line": 2,
         },
       },
-      "openingElement": OpeningElementNode {
+      "openingElement": OpeningElement {
         "attributes": Array [],
         "end": 22,
         "loc": Object {
@@ -437,7 +437,7 @@ RootNode {
             "line": 2,
           },
         },
-        "name": ElementNameNode {
+        "name": ElementName {
           "end": 21,
           "loc": Object {
             "end": Object {
@@ -472,7 +472,7 @@ RootNode {
       "start": 16,
       "type": "Element",
     },
-    TextNode {
+    Text {
       "end": 69,
       "loc": Object {
         "end": Object {

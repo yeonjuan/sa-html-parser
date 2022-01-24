@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`large simple.html 1`] = `
-RootNode {
+Root {
   "children": Array [
-    DoctypeNode {
+    Doctype {
       "end": 15,
       "loc": Object {
         "end": Object {
@@ -42,9 +42,9 @@ RootNode {
       ],
       "start": 0,
       "systemId": null,
-      "type": "DocumentType",
+      "type": "Doctype",
     },
-    TextNode {
+    Text {
       "end": 16,
       "loc": Object {
         "end": Object {
@@ -65,9 +65,9 @@ RootNode {
       "value": "
 ",
     },
-    ElementNode {
+    Element {
       "children": Array [
-        TextNode {
+        Text {
           "end": 25,
           "loc": Object {
             "end": Object {
@@ -88,9 +88,9 @@ RootNode {
           "value": "
   ",
         },
-        ElementNode {
+        Element {
           "children": Array [
-            TextNode {
+            Text {
               "end": 36,
               "loc": Object {
                 "end": Object {
@@ -111,7 +111,7 @@ RootNode {
               "value": "
     ",
             },
-            CommentNode {
+            Comment {
               "end": 48,
               "loc": Object {
                 "end": Object {
@@ -131,7 +131,7 @@ RootNode {
               "type": "Comment",
               "value": " foo ",
             },
-            TextNode {
+            Text {
               "end": 53,
               "loc": Object {
                 "end": Object {
@@ -152,9 +152,9 @@ RootNode {
               "value": "
     ",
             },
-            ElementNode {
+            Element {
               "children": Array [
-                TextNode {
+                Text {
                   "end": 61,
                   "loc": Object {
                     "end": Object {
@@ -175,7 +175,7 @@ RootNode {
                   "value": "bar",
                 },
               ],
-              "closingElement": ClosingElementNode {
+              "closingElement": ClosingElement {
                 "end": 67,
                 "loc": Object {
                   "end": Object {
@@ -187,7 +187,7 @@ RootNode {
                     "line": 5,
                   },
                 },
-                "name": ElementNameNode {
+                "name": ElementName {
                   "end": 66,
                   "loc": Object {
                     "end": Object {
@@ -225,7 +225,7 @@ RootNode {
                   "line": 5,
                 },
               },
-              "openingElement": OpeningElementNode {
+              "openingElement": OpeningElement {
                 "attributes": Array [],
                 "end": 58,
                 "loc": Object {
@@ -238,7 +238,7 @@ RootNode {
                     "line": 5,
                   },
                 },
-                "name": ElementNameNode {
+                "name": ElementName {
                   "end": 57,
                   "loc": Object {
                     "end": Object {
@@ -273,7 +273,7 @@ RootNode {
               "start": 53,
               "type": "Element",
             },
-            TextNode {
+            Text {
               "end": 72,
               "loc": Object {
                 "end": Object {
@@ -294,7 +294,7 @@ RootNode {
               "value": "
     ",
             },
-            ElementNode {
+            Element {
               "children": Array [],
               "closingElement": null,
               "end": 90,
@@ -308,9 +308,9 @@ RootNode {
                   "line": 6,
                 },
               },
-              "openingElement": OpeningElementNode {
+              "openingElement": OpeningElement {
                 "attributes": Array [
-                  AttributeNode {
+                  Attribute {
                     "end": 87,
                     "loc": Object {
                       "end": Object {
@@ -322,7 +322,7 @@ RootNode {
                         "line": 6,
                       },
                     },
-                    "name": AttributeNameNode {
+                    "name": AttributeName {
                       "end": 81,
                       "loc": Object {
                         "end": Object {
@@ -348,7 +348,7 @@ RootNode {
                     ],
                     "start": 79,
                     "type": "Attribute",
-                    "value": AttributeValueNode {
+                    "value": AttributeValue {
                       "end": 87,
                       "loc": Object {
                         "end": Object {
@@ -381,7 +381,7 @@ RootNode {
                     "line": 6,
                   },
                 },
-                "name": ElementNameNode {
+                "name": ElementName {
                   "end": 78,
                   "loc": Object {
                     "end": Object {
@@ -416,7 +416,7 @@ RootNode {
               "start": 72,
               "type": "Element",
             },
-            TextNode {
+            Text {
               "end": 93,
               "loc": Object {
                 "end": Object {
@@ -438,7 +438,7 @@ RootNode {
   ",
             },
           ],
-          "closingElement": ClosingElementNode {
+          "closingElement": ClosingElement {
             "end": 100,
             "loc": Object {
               "end": Object {
@@ -450,7 +450,7 @@ RootNode {
                 "line": 7,
               },
             },
-            "name": ElementNameNode {
+            "name": ElementName {
               "end": 99,
               "loc": Object {
                 "end": Object {
@@ -488,7 +488,7 @@ RootNode {
               "line": 3,
             },
           },
-          "openingElement": OpeningElementNode {
+          "openingElement": OpeningElement {
             "attributes": Array [],
             "end": 31,
             "loc": Object {
@@ -501,7 +501,7 @@ RootNode {
                 "line": 3,
               },
             },
-            "name": ElementNameNode {
+            "name": ElementName {
               "end": 30,
               "loc": Object {
                 "end": Object {
@@ -536,7 +536,7 @@ RootNode {
           "start": 25,
           "type": "Element",
         },
-        TextNode {
+        Text {
           "end": 101,
           "loc": Object {
             "end": Object {
@@ -558,7 +558,7 @@ RootNode {
 ",
         },
       ],
-      "closingElement": ClosingElementNode {
+      "closingElement": ClosingElement {
         "end": 108,
         "loc": Object {
           "end": Object {
@@ -570,7 +570,7 @@ RootNode {
             "line": 8,
           },
         },
-        "name": ElementNameNode {
+        "name": ElementName {
           "end": 107,
           "loc": Object {
             "end": Object {
@@ -608,7 +608,7 @@ RootNode {
           "line": 2,
         },
       },
-      "openingElement": OpeningElementNode {
+      "openingElement": OpeningElement {
         "attributes": Array [],
         "end": 22,
         "loc": Object {
@@ -621,7 +621,7 @@ RootNode {
             "line": 2,
           },
         },
-        "name": ElementNameNode {
+        "name": ElementName {
           "end": 21,
           "loc": Object {
             "end": Object {
@@ -656,7 +656,7 @@ RootNode {
       "start": 16,
       "type": "Element",
     },
-    TextNode {
+    Text {
       "end": 109,
       "loc": Object {
         "end": Object {
@@ -679,7 +679,7 @@ RootNode {
     },
   ],
   "comments": Array [
-    CommentNode {
+    Comment {
       "end": 48,
       "loc": Object {
         "end": Object {

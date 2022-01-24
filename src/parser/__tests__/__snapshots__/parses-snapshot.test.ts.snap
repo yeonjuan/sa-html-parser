@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`parses: snapshot basic 1`] = `
-RootNode {
+Root {
   "children": Array [
-    ElementNode {
+    Element {
       "children": Array [
-        ElementNode {
+        Element {
           "children": Array [
-            TextNode {
+            Text {
               "end": 140,
               "loc": Object {
                 "end": Object {
@@ -28,7 +28,7 @@ RootNode {
               "value": "웨일 사용자 목소리입니다.",
             },
           ],
-          "closingElement": ClosingElementNode {
+          "closingElement": ClosingElement {
             "end": 147,
             "loc": Object {
               "end": Object {
@@ -40,7 +40,7 @@ RootNode {
                 "line": 1,
               },
             },
-            "name": ElementNameNode {
+            "name": ElementName {
               "end": 146,
               "loc": Object {
                 "end": Object {
@@ -78,7 +78,7 @@ RootNode {
               "line": 1,
             },
           },
-          "openingElement": OpeningElementNode {
+          "openingElement": OpeningElement {
             "attributes": Array [],
             "end": 126,
             "loc": Object {
@@ -91,7 +91,7 @@ RootNode {
                 "line": 1,
               },
             },
-            "name": ElementNameNode {
+            "name": ElementName {
               "end": 125,
               "loc": Object {
                 "end": Object {
@@ -127,7 +127,7 @@ RootNode {
           "type": "Element",
         },
       ],
-      "closingElement": ClosingElementNode {
+      "closingElement": ClosingElement {
         "end": 154,
         "loc": Object {
           "end": Object {
@@ -139,7 +139,7 @@ RootNode {
             "line": 1,
           },
         },
-        "name": ElementNameNode {
+        "name": ElementName {
           "end": 153,
           "loc": Object {
             "end": Object {
@@ -177,9 +177,9 @@ RootNode {
           "line": 1,
         },
       },
-      "openingElement": OpeningElementNode {
+      "openingElement": OpeningElement {
         "attributes": Array [
-          AttributeNode {
+          Attribute {
             "end": 33,
             "loc": Object {
               "end": Object {
@@ -191,7 +191,7 @@ RootNode {
                 "line": 1,
               },
             },
-            "name": AttributeNameNode {
+            "name": AttributeName {
               "end": 11,
               "loc": Object {
                 "end": Object {
@@ -217,7 +217,7 @@ RootNode {
             ],
             "start": 6,
             "type": "Attribute",
-            "value": AttributeValueNode {
+            "value": AttributeValue {
               "end": 33,
               "loc": Object {
                 "end": Object {
@@ -238,7 +238,7 @@ RootNode {
               "value": "\\"_1syGnXOL _3di88A4c\\"",
             },
           },
-          AttributeNode {
+          Attribute {
             "end": 57,
             "loc": Object {
               "end": Object {
@@ -250,7 +250,7 @@ RootNode {
                 "line": 1,
               },
             },
-            "name": AttributeNameNode {
+            "name": AttributeName {
               "end": 42,
               "loc": Object {
                 "end": Object {
@@ -276,7 +276,7 @@ RootNode {
             ],
             "start": 34,
             "type": "Attribute",
-            "value": AttributeValueNode {
+            "value": AttributeValue {
               "end": 57,
               "loc": Object {
                 "end": Object {
@@ -297,7 +297,7 @@ RootNode {
               "value": "\\"dropbanner1b\\"",
             },
           },
-          AttributeNode {
+          Attribute {
             "end": 119,
             "loc": Object {
               "end": Object {
@@ -309,7 +309,7 @@ RootNode {
                 "line": 1,
               },
             },
-            "name": AttributeNameNode {
+            "name": AttributeName {
               "end": 63,
               "loc": Object {
                 "end": Object {
@@ -335,7 +335,7 @@ RootNode {
             ],
             "start": 58,
             "type": "Attribute",
-            "value": AttributeValueNode {
+            "value": AttributeValue {
               "end": 119,
               "loc": Object {
                 "end": Object {
@@ -368,7 +368,7 @@ RootNode {
             "line": 1,
           },
         },
-        "name": ElementNameNode {
+        "name": ElementName {
           "end": 5,
           "loc": Object {
             "end": Object {
