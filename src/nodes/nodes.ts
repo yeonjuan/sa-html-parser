@@ -47,7 +47,7 @@ export class AttributeValue extends BaseNode<"AttributeValue"> {
 
 export class Attribute extends BaseNode<"Attribute"> {
   public name!: AttributeName;
-  public value?: AttributeValue;
+  public value: AttributeValue | null = null;
 
   private constructor(
     public start: number,
@@ -141,7 +141,7 @@ export class Text extends BaseNode<"Text"> {
 }
 
 export class Element extends BaseNode<"Element"> {
-  public children: (Text | Element)[] = [];
+  public children: (Text | Element | Comment)[] = [];
   public openingElement!: OpeningElement;
   public closingElement: ClosingElement | null = null;
   private constructor(

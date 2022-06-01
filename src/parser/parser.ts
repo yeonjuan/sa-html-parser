@@ -126,22 +126,22 @@ class Parser {
       );
       return;
     }
-    const Element = utils.last<Element>(poppedElements)!;
-    Element.children = utils.getChildrenRecursively(Element);
-    Element.closingElement = closing;
-    Element.end = closing.end;
-    Element.loc.end = closing.loc.end;
-    Element.range[1] = closing.range[1];
+    const element = utils.last<Element>(poppedElements)!;
+    element.children = utils.getChildrenRecursively(element);
+    element.closingElement = closing;
+    element.end = closing.end;
+    element.loc.end = closing.loc.end;
+    element.range[1] = closing.range[1];
   }
 
   private [HtmlTokenType.CharacterLike](token: CharacterLikeToken) {
     if (this.openElementStack.top.children?.length) {
       const lastChild: any = utils.last(this.openElementStack.top.children);
       if (lastChild.type === "Text") {
-        const Text = lastChild as Text;
-        Text.value += token.value.value;
-        Text.end = token.end;
-        Text.loc.end = token.value.loc.end;
+        const text = lastChild as Text;
+        text.value += token.value.value;
+        text.end = token.end;
+        text.loc.end = token.value.loc.end;
         return;
       }
     }
@@ -155,8 +155,8 @@ class Parser {
       this.root
     );
     if (poppedElements.length > 2) {
-      const Element = poppedElements[poppedElements.length - 2]!;
-      this.root.children.push(...utils.getChildrenRecursively(Element));
+      const element = poppedElements[poppedElements.length - 2]!;
+      this.root.children.push(...utils.getChildrenRecursively(element));
     }
 
     const lastChild = utils.last<AnyNode>(this.root.children);
