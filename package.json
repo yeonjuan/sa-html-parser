@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
     "check:all": "yarn check:ts && yarn lint && yarn check:format && yarn test",
