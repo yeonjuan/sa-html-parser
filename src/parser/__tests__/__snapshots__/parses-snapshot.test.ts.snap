@@ -21,7 +21,7 @@ Root {
               },
               "range": Array [
                 126,
-                128,
+                140,
               ],
               "start": 126,
               "type": "Text",

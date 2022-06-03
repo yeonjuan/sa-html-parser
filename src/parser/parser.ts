@@ -142,6 +142,7 @@ class Parser {
         text.value += token.value.value;
         text.end = token.end;
         text.loc.end = token.value.loc.end;
+        text.range[1] = token.range[1];
         return;
       }
     }

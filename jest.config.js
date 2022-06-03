@@ -4,4 +4,5 @@ module.exports = {
   testEnvironment: "node",
   testTimeout: 20000,
   testMatch: ["**/*.test.ts"],
+  setupFilesAfterEnv: ["./src/tests/setup-jest.ts"],
 };

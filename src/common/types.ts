@@ -18,3 +18,9 @@ export interface Base<T extends string> {
   loc: SourceCodeLocation;
   range: Range;
 }
+
+export interface TestNode {
+  type?: string;
+  range?: Range;
+  loc?: Position[];
+}
