@@ -29,7 +29,7 @@ class Parser {
   private root!: Root;
   private html!: string;
   private tokenizer!: Tokenizer;
-  private openElementStack = new OpenElementStack();
+  private openElementStack = new OpenElementStack<any>();
   private running = true;
 
   public static parse(html: string) {
@@ -79,7 +79,7 @@ class Parser {
     for (let i = this.openElementStack.stackTop; i >= 0; i--) {
       const Element: Element = this.openElementStack.elements[i];
       if (Element.openingElement?.name.value === tagName) {
-        unclosedElements = this.openElementStack.popUntilElementPopped(Element);
+        unclosedElements = this.openElementStack.popUntilFind(Element);
         break;
       }
     }
@@ -153,9 +153,7 @@ class Parser {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private [HtmlTokenType.EOF](token: EofToken) {
     this.running = false;
-    const poppedElements = this.openElementStack.popUntilElementPopped(
-      this.root
-    );
+    const poppedElements = this.openElementStack.popUntilFind(this.root);
     if (poppedElements.length > 2) {
       const element = poppedElements[poppedElements.length - 2]!;
       this.root.children.push(...utils.getChildrenRecursively(element));
