@@ -1,5 +1,5 @@
-export class OpenElementStack {
-  public readonly elements: any[] = [];
+export class OpenElementStack<T> {
+  public readonly elements: T[] = [];
   public stackTop = -1;
   public top: any = null;
 
@@ -14,7 +14,7 @@ export class OpenElementStack {
     this.top = this.elements[this.stackTop];
   }
 
-  public popUntilElementPopped(element: any): any[] {
+  public popUntilFind(element: T): T[] {
     let elements: any[] = [];
     while (this.stackTop > -1) {
       const poppedElement = this.top;
@@ -23,19 +23,6 @@ export class OpenElementStack {
       if (poppedElement === element) {
         break;
       }
-    }
-    return elements;
-  }
-
-  public popUntilBeforeElementPopped(element: any): any[] {
-    let elements: any[] = [];
-    while (this.stackTop > -1) {
-      const poppedElement = this.top;
-      if (poppedElement === element) {
-        break;
-      }
-      elements.push(poppedElement);
-      this.pop();
     }
     return elements;
   }
