@@ -309,4 +309,67 @@ describe("Test node's positions", () => {
       ],
     });
   });
+
+  test("doctype", () => {
+    const root = parse("<!DOCTYPE html>\n<html>\n</html>");
+    const [doctype, text, html] = root.children;
+
+    expect(root).toBeNode({
+      type: "Root",
+      range: [0, 30],
+      loc: [
+        {
+          line: 1,
+          column: 0,
+        },
+        {
+          line: 3,
+          column: 7,
+        },
+      ],
+    });
+
+    expect(doctype).toBeNode({
+      type: "Doctype",
+      range: [0, 15],
+      loc: [
+        {
+          line: 1,
+          column: 0,
+        },
+        {
+          line: 1,
+          column: 15,
+        },
+      ],
+    });
+    expect(text).toBeNode({
+      type: "Text",
+      range: [15, 16],
+      loc: [
+        {
+          line: 1,
+          column: 15,
+        },
+        {
+          line: 1,
+          column: 16,
+        },
+      ],
+    });
+    expect(html).toBeNode({
+      type: "Element",
+      range: [16, 30],
+      loc: [
+        {
+          line: 2,
+          column: 0,
+        },
+        {
+          line: 3,
+          column: 7,
+        },
+      ],
+    });
+  });
 });
