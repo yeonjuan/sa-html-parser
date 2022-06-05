@@ -372,4 +372,39 @@ describe("Test node's positions", () => {
       ],
     });
   });
+
+  test("self-closing", () => {
+    const root = parse("<img />");
+    const [img] = root.children;
+
+    expect(root).toBeNode({
+      type: "Root",
+      range: [0, 7],
+      loc: [
+        {
+          line: 1,
+          column: 0,
+        },
+        {
+          line: 1,
+          column: 7,
+        },
+      ],
+    });
+
+    expect(img).toBeNode({
+      type: "Element",
+      range: [0, 7],
+      loc: [
+        {
+          line: 1,
+          column: 0,
+        },
+        {
+          line: 1,
+          column: 7,
+        },
+      ],
+    });
+  });
 });
