@@ -51,6 +51,7 @@ class Parser {
         this.root.errors.push(...this.tokenizer.flushErrors());
       }
       this.process(token);
+      this.root.tokens.push(...(token.tokenize() || []));
     }
 
     return this.root;
