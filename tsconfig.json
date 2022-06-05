@@ -9,5 +9,6 @@
     "declaration": true
   },
   "include": ["src"],
-  "exclude": ["website", "**/*.test.ts"]
+  "exclude": ["website"],
+  "files": ["global.d.ts"]
 }

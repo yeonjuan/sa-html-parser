@@ -51,6 +51,7 @@ class Parser {
         this.root.errors.push(...this.tokenizer.flushErrors());
       }
       this.process(token);
+      this.root.tokens.push(...(token.tokenize() || []));
     }
 
     return this.root;
@@ -142,6 +143,7 @@ class Parser {
         text.value += token.value.value;
         text.end = token.end;
         text.loc.end = token.value.loc.end;
+        text.range[1] = token.range[1];
         return;
       }
     }

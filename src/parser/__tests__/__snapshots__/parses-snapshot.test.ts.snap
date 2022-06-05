@@ -21,7 +21,7 @@ Root {
               },
               "range": Array [
                 126,
-                128,
+                140,
               ],
               "start": 126,
               "type": "Text",
@@ -422,7 +422,528 @@ Root {
     154,
   ],
   "start": 0,
-  "tokens": Array [],
+  "tokens": Array [
+    PunctuatorToken {
+      "end": 1,
+      "loc": Object {
+        "end": Object {
+          "column": 1,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 0,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        0,
+        1,
+      ],
+      "start": 0,
+      "type": "Punctuator",
+      "value": "<",
+    },
+    TagNameToken {
+      "end": 5,
+      "loc": Object {
+        "end": Object {
+          "column": 5,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 1,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        1,
+        5,
+      ],
+      "start": 1,
+      "type": "TagName",
+      "value": "span",
+    },
+    AttrNameToken {
+      "end": 11,
+      "loc": Object {
+        "end": Object {
+          "column": 11,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 6,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        6,
+        11,
+      ],
+      "start": 6,
+      "type": "AttributeName",
+      "value": "class",
+    },
+    PunctuatorToken {
+      "end": 12,
+      "loc": Object {
+        "end": Object {
+          "column": 12,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 11,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        11,
+        12,
+      ],
+      "start": 11,
+      "type": "Punctuator",
+      "value": "=",
+    },
+    AttrValueToken {
+      "end": 33,
+      "loc": Object {
+        "end": Object {
+          "column": 33,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 12,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        12,
+        33,
+      ],
+      "start": 12,
+      "type": "AttributeValue",
+      "value": "\\"_1syGnXOL _3di88A4c\\"",
+    },
+    AttrNameToken {
+      "end": 42,
+      "loc": Object {
+        "end": Object {
+          "column": 42,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 34,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        34,
+        42,
+      ],
+      "start": 34,
+      "type": "AttributeName",
+      "value": "data-clk",
+    },
+    PunctuatorToken {
+      "end": 43,
+      "loc": Object {
+        "end": Object {
+          "column": 43,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 42,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        42,
+        43,
+      ],
+      "start": 42,
+      "type": "Punctuator",
+      "value": "=",
+    },
+    AttrValueToken {
+      "end": 57,
+      "loc": Object {
+        "end": Object {
+          "column": 57,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 43,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        43,
+        57,
+      ],
+      "start": 43,
+      "type": "AttributeValue",
+      "value": "\\"dropbanner1b\\"",
+    },
+    AttrNameToken {
+      "end": 63,
+      "loc": Object {
+        "end": Object {
+          "column": 63,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 58,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        58,
+        63,
+      ],
+      "start": 58,
+      "type": "AttributeName",
+      "value": "style",
+    },
+    PunctuatorToken {
+      "end": 64,
+      "loc": Object {
+        "end": Object {
+          "column": 64,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 63,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        63,
+        64,
+      ],
+      "start": 63,
+      "type": "Punctuator",
+      "value": "=",
+    },
+    AttrValueToken {
+      "end": 119,
+      "loc": Object {
+        "end": Object {
+          "column": 119,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 64,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        64,
+        119,
+      ],
+      "start": 64,
+      "type": "AttributeValue",
+      "value": "\\"padding-right: 20px; color: white; padding-left: 20px\\"",
+    },
+    PunctuatorToken {
+      "end": 120,
+      "loc": Object {
+        "end": Object {
+          "column": 120,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 119,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        119,
+        120,
+      ],
+      "start": 119,
+      "type": "Punctuator",
+      "value": ">",
+    },
+    PunctuatorToken {
+      "end": 121,
+      "loc": Object {
+        "end": Object {
+          "column": 121,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 120,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        120,
+        121,
+      ],
+      "start": 120,
+      "type": "Punctuator",
+      "value": "<",
+    },
+    TagNameToken {
+      "end": 125,
+      "loc": Object {
+        "end": Object {
+          "column": 125,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 121,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        121,
+        125,
+      ],
+      "start": 121,
+      "type": "TagName",
+      "value": "span",
+    },
+    PunctuatorToken {
+      "end": 126,
+      "loc": Object {
+        "end": Object {
+          "column": 126,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 125,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        125,
+        126,
+      ],
+      "start": 125,
+      "type": "Punctuator",
+      "value": ">",
+    },
+    CharactersToken {
+      "end": 128,
+      "loc": Object {
+        "end": Object {
+          "column": 140,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 126,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        126,
+        128,
+      ],
+      "start": 126,
+      "type": "Characters",
+      "value": "웨일",
+    },
+    WhiteSpacesToken {
+      "end": 129,
+      "loc": Object {
+        "end": Object {
+          "column": 129,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 128,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        128,
+        129,
+      ],
+      "start": 128,
+      "type": "WhiteSpaces",
+      "value": " ",
+    },
+    CharactersToken {
+      "end": 132,
+      "loc": Object {
+        "end": Object {
+          "column": 132,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 129,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        129,
+        132,
+      ],
+      "start": 129,
+      "type": "Characters",
+      "value": "사용자",
+    },
+    WhiteSpacesToken {
+      "end": 133,
+      "loc": Object {
+        "end": Object {
+          "column": 133,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 132,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        132,
+        133,
+      ],
+      "start": 132,
+      "type": "WhiteSpaces",
+      "value": " ",
+    },
+    CharactersToken {
+      "end": 140,
+      "loc": Object {
+        "end": Object {
+          "column": 140,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 133,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        133,
+        140,
+      ],
+      "start": 133,
+      "type": "Characters",
+      "value": "목소리입니다.",
+    },
+    PunctuatorToken {
+      "end": 142,
+      "loc": Object {
+        "end": Object {
+          "column": 142,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 140,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        140,
+        142,
+      ],
+      "start": 140,
+      "type": "Punctuator",
+      "value": "</",
+    },
+    TagNameToken {
+      "end": 146,
+      "loc": Object {
+        "end": Object {
+          "column": 146,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 142,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        142,
+        146,
+      ],
+      "start": 142,
+      "type": "TagName",
+      "value": "span",
+    },
+    PunctuatorToken {
+      "end": 147,
+      "loc": Object {
+        "end": Object {
+          "column": 147,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 146,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        146,
+        147,
+      ],
+      "start": 146,
+      "type": "Punctuator",
+      "value": ">",
+    },
+    PunctuatorToken {
+      "end": 149,
+      "loc": Object {
+        "end": Object {
+          "column": 149,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 147,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        147,
+        149,
+      ],
+      "start": 147,
+      "type": "Punctuator",
+      "value": "</",
+    },
+    TagNameToken {
+      "end": 153,
+      "loc": Object {
+        "end": Object {
+          "column": 153,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 149,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        149,
+        153,
+      ],
+      "start": 149,
+      "type": "TagName",
+      "value": "span",
+    },
+    PunctuatorToken {
+      "end": 154,
+      "loc": Object {
+        "end": Object {
+          "column": 154,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 153,
+          "line": 1,
+        },
+      },
+      "range": Array [
+        153,
+        154,
+      ],
+      "start": 153,
+      "type": "Punctuator",
+      "value": ">",
+    },
+  ],
   "type": "Root",
 }
 `;
