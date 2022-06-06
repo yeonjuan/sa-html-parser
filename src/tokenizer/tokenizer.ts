@@ -471,6 +471,22 @@ export class Tokenizer {
     return isMatch;
   }
 
+  private isCharacterReferenceInAttribute(): boolean {
+    return (
+      this.returnState === TokenizerState.AttributeValueDoubleQuotedState ||
+      this.returnState === TokenizerState.AttributeValueSingleQuotedState ||
+      this.returnState === TokenizerState.AttributeValueUnquotedState
+    );
+  }
+
+  private flushCodePointConsumedAsCharacterReference(codePoint: number) {
+    if (this.isCharacterReferenceInAttribute()) {
+      this.appendValueToCurrentAttributeToken(String.fromCodePoint(codePoint));
+    } else {
+      this.emitCodePoint(codePoint);
+    }
+  }
+
   /**
    * @see https://html.spec.whatwg.org/multipage/parsing.html#data-state
    */
@@ -2137,15 +2153,15 @@ export class Tokenizer {
    * @see https://html.spec.whatwg.org/multipage/parsing.html#character-reference-state
    */
   private [TokenizerState.CharacterReferenceState](codePoint: number) {
-    this.temporaryBuffer = [CODE_POINTS.AMPERSAND];
+    // this.temporaryBuffer = [CODE_POINTS.AMPERSAND];
 
     if (utils.isAsciiAlphaNumeric(codePoint)) {
       this.reconsumeInState(TokenizerState.NamedCharacterReferenceState);
     } else if (codePoint === CODE_POINTS.NUMBER_SIGN) {
       this.temporaryBuffer.push(codePoint);
     } else {
-      // TODO Flush code points consumed as a character reference.
       this.reconsumeInState(this.returnState!);
+      this.flushCodePointConsumedAsCharacterReference(CODE_POINTS.AMPERSAND);
     }
   }
 

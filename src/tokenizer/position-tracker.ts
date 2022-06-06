@@ -2,13 +2,17 @@ import type { Range, Position, SourceCodeLocation } from "../common/types";
 
 export class PositionTracker {
   private line: number = 1;
-  private column: number = 0;
+  // private column: number = 0;
   private wasEndOfLine: boolean = false;
-  private rangeIndex: number = 0;
+  public rangeIndex: number = -1;
   private lineStartRangeIndex = 0;
 
+  private getColumn(): number {
+    return this.rangeIndex - this.lineStartRangeIndex;
+  }
+
   public track(index: number, character: string): void {
-    this.rangeIndex = index;
+    this.rangeIndex++;
     if (this.wasEndOfLine) {
       this.wasEndOfLine = false;
       this.line++;
@@ -18,11 +22,10 @@ export class PositionTracker {
     if (character === "\n") {
       this.wasEndOfLine = true;
     }
-
-    this.column = this.rangeIndex - this.lineStartRangeIndex;
   }
 
   public back(): void {
+    this.rangeIndex--;
     this.wasEndOfLine = false;
   }
 
@@ -33,7 +36,7 @@ export class PositionTracker {
   public getStartPosition(): Position {
     return {
       line: this.line,
-      column: this.column,
+      column: this.getColumn(),
     };
   }
 
@@ -44,7 +47,7 @@ export class PositionTracker {
   public getEndPosition(): Position {
     return {
       line: this.line,
-      column: this.column + 1,
+      column: this.getColumn() + 1,
     };
   }
 
