@@ -1,4 +1,3 @@
-export { parse } from "./parser";
 export type {
   Attribute,
   OpeningElement,
