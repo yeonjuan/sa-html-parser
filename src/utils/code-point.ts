@@ -1,5 +1,4 @@
-import { AnyNode } from "../nodes";
-import { CODE_POINTS } from "./constants";
+import { CODE_POINTS } from "../common/constants";
 
 const UNDEFINED_CODE_POINTS = [
   0xfffe, 0xffff, 0x1fffe, 0x1ffff, 0x2fffe, 0x2ffff, 0x3fffe, 0x3ffff, 0x4fffe,
@@ -43,8 +42,8 @@ export const isNonCharacter = (codePoint: number): boolean =>
  * @param {number} codePoint
  * @returns {boolean} Returns `true` if the given `codePoint` is an ASCII alpha, otherwise `false`.
  */
-export const isAsciiAlpha = (codePoint: number): boolean =>
-  isAsciiLowerAlpha(codePoint) || isAsciiUpperAlpha(codePoint);
+export const isAsciiAlphabet = (codePoint: number): boolean =>
+  isAsciiLowerAlphabet(codePoint) || isAsciiUpperAlphabet(codePoint);
 
 /**
  * Checks whether a code point is an ASCII lower alpha or not.
@@ -52,7 +51,7 @@ export const isAsciiAlpha = (codePoint: number): boolean =>
  * @param {number} codePoint
  * @returns {boolean}
  */
-export const isAsciiLowerAlpha = (codePoint: number): boolean =>
+export const isAsciiLowerAlphabet = (codePoint: number): boolean =>
   codePoint >= CODE_POINTS.LATIN_SMALL_A &&
   codePoint <= CODE_POINTS.LATIN_SMALL_Z;
 
@@ -61,7 +60,7 @@ export const isAsciiLowerAlpha = (codePoint: number): boolean =>
  * @param {number} codePoint
  * @returns {boolean}
  */
-export const isAsciiUpperAlpha = (codePoint: number): boolean =>
+export const isAsciiUpperAlphabet = (codePoint: number): boolean =>
   codePoint >= CODE_POINTS.LATIN_CAPITAL_A &&
   codePoint <= CODE_POINTS.LATIN_CAPITAL_Z;
 
@@ -123,12 +122,17 @@ export const isAsciiDigit = (codePoint: number): boolean =>
  * @returns {boolean}
  */
 export const isAsciiAlphaNumeric = (codePoint: number): boolean =>
-  isAsciiAlpha(codePoint) || isAsciiDigit(codePoint);
+  isAsciiAlphabet(codePoint) || isAsciiDigit(codePoint);
 
 export const isUndefinedCodePoint = (codePoint: number): boolean =>
   (codePoint >= 0xfdd0 && codePoint <= 0xfdef) ||
   UNDEFINED_CODE_POINTS.indexOf(codePoint) > -1;
 
+/**
+ * Checks whether the given `codePoint` is a control code point or not.
+ * @param codePoint
+ * @returns {boolean}
+ */
 export const isControlCodePoint = (codePoint: number): boolean =>
   (codePoint !== 0x20 &&
     codePoint !== 0x0a &&
@@ -139,27 +143,20 @@ export const isControlCodePoint = (codePoint: number): boolean =>
     codePoint <= 0x1f) ||
   (codePoint >= 0x7f && codePoint <= 0x9f);
 
+/**
+ * Checks whether the given `codePoint` is an ascii upper case hex digit or not.
+ * @param codePoint
+ * @returns
+ */
 export const isAsciiUpperHexDigit = (codePoint: number): boolean =>
   codePoint >= CODE_POINTS.LATIN_CAPITAL_A &&
   codePoint <= CODE_POINTS.LATIN_CAPITAL_F;
 
+/**
+ * Checks whether the given `codePoint` is an ascii lower case hex digit or not.
+ * @param codePoint
+ * @returns
+ */
 export const isAsciiLowerHexDigit = (codePoint: number): boolean =>
   codePoint >= CODE_POINTS.LATIN_SMALL_A &&
   codePoint <= CODE_POINTS.LATIN_SMALL_F;
-
-export const last = <T>(arr: T[]): T | undefined => arr[arr.length - 1];
-
-export const getChildrenRecursively = (node: AnyNode) => {
-  const children: any[] = [];
-  if (node.type === "Element") {
-    if (node.closingElement) {
-      return children;
-    }
-    node.children.forEach((child: any) => {
-      children.push(child);
-      children.push(...getChildrenRecursively(child));
-    });
-    node.children = [];
-  }
-  return children;
-};
