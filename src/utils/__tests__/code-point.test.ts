@@ -7,6 +7,10 @@ import {
   isAsciiUpperHexDigit,
   isAsciiLowerHexDigit,
   isAsciiDigit,
+  toAsciiLowerCharacter,
+  isAsciiAlphaNumeric,
+  isNonCharacter,
+  isUndefinedCodePoint,
 } from "../code-point";
 
 describe("CodePoints Utils", () => {
@@ -54,5 +58,27 @@ describe("CodePoints Utils", () => {
   test("isAsciiDigit", () => {
     expect(isAsciiDigit("1".charCodeAt(0))).toBe(true);
     expect(isAsciiDigit("a".charCodeAt(0))).toBe(false);
+  });
+
+  test("toAsciiLowerCharacter", () => {
+    expect(toAsciiLowerCharacter("A".charCodeAt(0))).toBe("a");
+  });
+
+  test("isAsciiAlphaNumeric", () => {
+    expect(isAsciiAlphaNumeric("a".charCodeAt(0))).toBe(true);
+    expect(isAsciiAlphaNumeric("1".charCodeAt(0))).toBe(true);
+    expect(isAsciiAlphaNumeric("!".charCodeAt(0))).toBe(false);
+  });
+
+  test("isNonCharacter", () => {
+    expect(isNonCharacter(0xfdd0)).toBe(true);
+    expect(isNonCharacter(0xfdd1)).toBe(true);
+    expect(isNonCharacter(0xfddf)).toBe(true);
+    expect(isNonCharacter("a".charCodeAt(0))).toBe(false);
+  });
+
+  test("isUndefinedCodePoint", () => {
+    expect(isUndefinedCodePoint(0xfdd0)).toBe(true);
+    expect(isUndefinedCodePoint("a".charCodeAt(0))).toBe(false);
   });
 });
